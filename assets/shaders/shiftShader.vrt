@@ -1,0 +1,9 @@
+attribute vec4 aPosition;
+attribute vec2 aTexture;
+uniform mat4 uMatrix;
+uniform vec2 uShift;
+varying vec2 vTexture;
+void main() {
+	vTexture = aTexture;
+	gl_Position = uMatrix * vec4(aPosition.x + uShift.x, aPosition.y + uShift.y, 0.5, aPosition.w);
+};
