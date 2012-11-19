@@ -7,6 +7,7 @@
 
 #include "logic/actors/Pacman.h"
 #include "logic/actors/Monster.h"
+#include "logic/actors/StupidMonster.h"
 
 #include "Game.h"
 
@@ -189,7 +190,7 @@ void Game::loadLevel(const Texture* level){
 
 			if(b > 0 && b <= MAX_MONSTER_B){
 				LOGW("Monster: %d, %d", j/4, i);
-				monsters.pushTail(new Monster((float)(j/4), (float)i));
+				monsters.pushTail(new StupidMonster(this, (float)(j/4), (float)i, shiftProgram));
 				continue;
 			}
 

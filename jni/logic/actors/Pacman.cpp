@@ -41,7 +41,6 @@ void Pacman::step(double elapsedTime){
 				x += speedX*elapsedTime;
 			}else{
 				x = fCurrentXFloor + 0.5;
-				//LOGI("Left: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
 				switchDirection(false);
@@ -55,7 +54,6 @@ void Pacman::step(double elapsedTime){
 				x += speedX*elapsedTime;
 			}else{
 				x = fCurrentXFloor + 0.5;
-				//LOGI("Right: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
 				switchDirection(false);
@@ -69,7 +67,6 @@ void Pacman::step(double elapsedTime){
 				y += speedY*elapsedTime;
 			}else{
 				y = fCurrentYFloor + 0.5;
-				//LOGI("Up: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
 				switchDirection(true);
@@ -83,7 +80,6 @@ void Pacman::step(double elapsedTime){
 				y += speedY*elapsedTime;
 			}else{
 				y = fCurrentYFloor + 0.5;
-				//LOGI("Down: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
 				switchDirection(true);

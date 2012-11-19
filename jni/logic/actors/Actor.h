@@ -27,13 +27,14 @@ public:
 */
 	virtual void event(EngineEvent e){};
 	virtual bool intersect(const Actor* other) const;
-	virtual float getXCellCenterDistance() const {LOGI("dist X: %f", fabs(x - floorf(x) - 0.5f));return fabs(x - floorf(x) - 0.5f);};
-	virtual float getYCellCenterDistance() const {LOGI("dist Y: %f", fabs(y - floorf(y) - 0.5f));return fabs(y - floorf(y) - 0.5f);};
+	virtual float getXCellCenterDistance() const {return fabs(x - floorf(x) - 0.5f);};
+	virtual float getYCellCenterDistance() const {return fabs(y - floorf(y) - 0.5f);};
 	virtual ~Actor();
 
 protected:
 	float x, y;
 	float radius;
+	float speed;
 	float speedX, speedY;
 
 	GLuint textureId;
