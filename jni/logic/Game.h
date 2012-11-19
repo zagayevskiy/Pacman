@@ -44,6 +44,7 @@ public:
 
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
+	List<Actor*>& getMonsters(){return monsters;};
 
 
 	float getTileSize() const {return tileSize;}
@@ -56,6 +57,13 @@ public:
 	float maxY;
 private:
 
+	enum GameState{
+		PACMAN_DEAD = 0,
+		PACMAN_ALIVE = 1,
+		GAME_OVER = 2
+	};
+
+	GameState state;
 	int* map;
 	int mapWidth, mapHeight;
 
@@ -64,7 +72,6 @@ private:
 	EngineEvent lastEvent;
 
 	float x, y;
-
 
 	float tileSize;
 	GLuint stableProgram;

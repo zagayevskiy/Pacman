@@ -51,17 +51,38 @@ void Game::event(EngineEvent e){
 }
 
 void Game::step(double elapsedTime){
-	if(lastEvent != EVENT_NONE){
-		pacman->event(lastEvent);
-		lastEvent = EVENT_NONE;
+	bool exists;
+	switch(state){
+		case PACMAN_ALIVE:
+			if(lastEvent != EVENT_NONE){
+				pacman->event(lastEvent);
+				lastEvent = EVENT_NONE;
+			}
+			Actor* monster;
+			exists = monsters.getHead(monster);
+			while(exists){
+				monster->step(elapsedTime);
+				exists = monsters.getNext(monster);
+			}
+			pacman->step(elapsedTime);
+			if(((Pacman*)pacman)->isDead()){
+				state = PACMAN_DEAD;
+			}
+		break;
+
+		case PACMAN_DEAD:
+			pacman->step(elapsedTime);
+			if(!((Pacman*)pacman)->isDead()){
+				state = PACMAN_ALIVE;
+			}
+		break;
+
+		case GAME_OVER:
+		break;
+
+		default: break;
 	}
-	pacman->step(elapsedTime);
-	Actor* monster;
-	bool exists = monsters.getHead(monster);
-	while(exists){
-		monster->step(elapsedTime);
-		exists = monsters.getNext(monster);
-	}
+
 
 }
 
@@ -205,6 +226,7 @@ void Game::loadLevel(const Texture* level){
 	if(!pacman){
 		LOGE("LEVEL FORMAT ERROR: CAN NOT FIND PACMAN!");
 	}
+	state = PACMAN_ALIVE;
 
 }
 

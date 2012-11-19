@@ -25,6 +25,8 @@
 #include "logic/Engine.h"
 #include "managers/Art.h"
 
+#define MAX_ELAPSED_TIME 250.0f
+
 static double getTime()
 {
     struct timeval tv;
@@ -54,13 +56,17 @@ extern "C" {
 		double time = getTime();
 		double elapsedTime = time - lastTime;
 		lastTime = time;
+		if(elapsedTime > MAX_ELAPSED_TIME){
+			LOGE("Critical elapsed time: %f", elapsedTime);
+			elapsedTime = MAX_ELAPSED_TIME;
+		}
 		engine->step(elapsedTime);
 		engine->render(elapsedTime);
 
 		up2Second += elapsedTime;
 		++framesCount;
 		if(up2Second >= 1000){
-			LOGI("FPS: %d", framesCount);
+			//LOGI("FPS: %d", framesCount);
 			up2Second = 0;
 			framesCount = 0;
 		}

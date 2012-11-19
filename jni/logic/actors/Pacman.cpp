@@ -22,6 +22,21 @@ void Pacman::event(EngineEvent e){
 
 void Pacman::step(double elapsedTime){
 
+	if(state != PACMAN_DIED){
+		List<Actor*>& monsters = game->getMonsters();
+		Actor* monster;
+		bool exists = monsters.getHead(monster);
+
+		while(exists){
+			if(intersect(monster)){
+				diedTime = 0.0f;
+				state = PACMAN_DIED;
+				return;
+			}
+			exists = monsters.getNext(monster);
+		}
+	}
+
 	int iX, iY;
 	float fCurrentXFloor = floorf(x);
 	float fCurrentYFloor = floorf(y);
@@ -83,6 +98,18 @@ void Pacman::step(double elapsedTime){
 			}
 			if(lastEvent != EVENT_NONE){
 				switchDirection(true);
+			}
+		break;
+
+		case PACMAN_DIED:
+			if(diedTime > MAX_DIED_TIME){
+				x = initialX;
+				y = initialY;
+				state = initialState;
+				speedX = speed;
+				speedY = 0;
+			}else{
+				diedTime += elapsedTime;
 			}
 		break;
 

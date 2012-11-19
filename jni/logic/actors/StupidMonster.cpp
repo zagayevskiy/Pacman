@@ -11,7 +11,6 @@ void StupidMonster::step(double elapsedTime){
 	if(remainingTime <= 0.0){
 		remainingTime = drand48()*5000;
 		randomDirectionEvent();
-		LOGI("remTime: %f", remainingTime);
 	}else{
 		int iX, iY;
 		float fCurrentXFloor = floorf(x);
