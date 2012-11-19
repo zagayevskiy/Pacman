@@ -41,6 +41,7 @@ Engine* engine = new Engine();
 extern "C" {
 
 	JNIEXPORT void JNICALL Java_com_zagayevskiy_pacman_PacmanLib_init(JNIEnv* env, jobject obj, jint width, jint height, jobject pngManager, jobject assetManager){
+		srand48(time(NULL));
 		lastTime = getTime();
 		up2Second = 0;
 		framesCount = 0;

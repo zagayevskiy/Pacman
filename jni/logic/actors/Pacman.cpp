@@ -23,21 +23,24 @@ void Pacman::event(EngineEvent e){
 void Pacman::step(double elapsedTime){
 
 	int iX, iY;
-
-	if(game->getMapAt((int) floor(x), (int) floor(y)) == Game::TILE_FOOD){
-		game->setMapAt((int) floor(x), (int) floor(y), Game::TILE_FREE);
+	float fCurrentXFloor = floorf(x);
+	float fCurrentYFloor = floorf(y);
+	int iCurrentX = (int) fCurrentXFloor;
+	int iCurrentY = (int) fCurrentYFloor;
+	if(game->getMapAt(iCurrentX, iCurrentY) == Game::TILE_FOOD){
+		game->setMapAt(iCurrentX, iCurrentY, Game::TILE_FREE);
 	}
 
 
 	switch(state){
 		case PACMAN_GO_LEFT:
 			iX = (int) floor(x - radius + speedX*elapsedTime);
-			iY = (int) floor(y);
+			iY = iCurrentY;
 
 			if(game->getMapAt(iX, iY) != Game::TILE_WALL){
 				x += speedX*elapsedTime;
 			}else{
-				x = floorf(x) + 0.5;
+				x = fCurrentXFloor + 0.5;
 				//LOGI("Left: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
@@ -47,11 +50,11 @@ void Pacman::step(double elapsedTime){
 
 		case PACMAN_GO_RIGHT:
 			iX = (int) floor(x + radius + speedX*elapsedTime);
-			iY = (int) floor(y);
+			iY = iCurrentY;
 			if(game->getMapAt(iX, iY) != Game::TILE_WALL){
 				x += speedX*elapsedTime;
 			}else{
-				x = floorf(x) + 0.5;
+				x = fCurrentXFloor + 0.5;
 				//LOGI("Right: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
@@ -60,12 +63,12 @@ void Pacman::step(double elapsedTime){
 		break;
 
 		case PACMAN_GO_UP:
-			iX = (int) floor(x);
+			iX = iCurrentX;
 			iY = (int) floor(y - radius + speedY*elapsedTime);
 			if(game->getMapAt(iX, iY) != Game::TILE_WALL){
 				y += speedY*elapsedTime;
 			}else{
-				y = floorf(y) + 0.5;
+				y = fCurrentYFloor + 0.5;
 				//LOGI("Up: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
@@ -74,12 +77,12 @@ void Pacman::step(double elapsedTime){
 		break;
 
 		case PACMAN_GO_DOWN:
-			iX = (int) floor(x);
+			iX = iCurrentX;
 			iY = (int) floor(y + radius + speedY*elapsedTime);
 			if(game->getMapAt(iX, iY) != Game::TILE_WALL){
 				y += speedY*elapsedTime;
 			}else{
-				y = floorf(y) + 0.5;
+				y = fCurrentYFloor + 0.5;
 				//LOGI("Down: %f, %f, %d, %d, %d", x, y, iX, iY, lastEvent);
 			}
 			if(lastEvent != EVENT_NONE){
@@ -94,7 +97,7 @@ void Pacman::step(double elapsedTime){
 	totalStepsCount += 1.0;
 	averageStepLength = totalPathLength / totalStepsCount;
 
-	LOGI("Total path: %f, Speed: %f, Average step length: %f, Current step length: %f", totalPathLength, speed, averageStepLength, speed*elapsedTime);
+	//LOGI("Total path: %f, Speed: %f, Average step length: %f, Current step length: %f", totalPathLength, speed, averageStepLength, speed*elapsedTime);
 /*
 	x += speedX*elapsedTime;
 	y += speedY*elapsedTime;*/

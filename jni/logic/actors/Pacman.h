@@ -52,7 +52,6 @@ private:
 	};
 
 	Game*game;
-	float speed;
 	EngineEvent lastEvent;
 	PacmanState state;
 	float totalPathLength;
