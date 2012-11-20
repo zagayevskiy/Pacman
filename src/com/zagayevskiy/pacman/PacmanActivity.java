@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.TextView;
 
@@ -54,4 +55,13 @@ public class PacmanActivity extends Activity{
         //is called when an activity is no longer visible to, or interacting with, the user
         super.onStop();
     }
+    
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	        if (keyCode == KeyEvent.KEYCODE_BACK) {
+	                // your code here
+	        		Log.e("pacman", "Android:Back pressed");
+	                return true;
+	        }
+	    return super.onKeyDown(keyCode, event);
+	}
 }
