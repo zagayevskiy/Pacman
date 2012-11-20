@@ -15,6 +15,7 @@ GLfloat texCoords[] = {
 };
 
 void Engine::init(int w, int h){
+	levelToLoadNumber = 1;
 	state = STATE_LOADING;
 	LOGI("Engine::init");
 	setupGraphics(w, h);
@@ -39,7 +40,7 @@ void Engine::step(double elapsedTime){
 			if(lastEvent == EVENT_PLAY){
 				lastEvent = EVENT_NONE;
 				currentMenu = gameMenu;
-				game->loadLevel(Art::getLevel(1));
+				game->loadLevel(Art::getLevel(levelToLoadNumber));
 				state = STATE_PLAY;
 				LOGI("state = STATE_PLAY");
 			}
@@ -51,6 +52,21 @@ void Engine::step(double elapsedTime){
 				lastEvent = EVENT_NONE;
 			}
 			game->step(elapsedTime);
+			if(game->isGameOver()){
+				currentMenu = gameOverMenu;
+				state = STATE_GAME_OVER;
+				LOGI("state = STATE_GAME_OVER");
+			}
+		break;
+
+		case STATE_GAME_OVER:
+			if(lastEvent == EVENT_PLAY){
+				lastEvent = EVENT_NONE;
+				currentMenu = gameMenu;
+				game->loadLevel(Art::getLevel(levelToLoadNumber));
+				state = STATE_PLAY;
+				LOGI("state = STATE_PLAY");
+			}
 		break;
 
 		default: LOGI("default state in engine");
@@ -74,7 +90,7 @@ void Engine::render(double elapsedTime){
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	checkGlError("glClear");
 
-	if(state == STATE_PLAY){
+	if(state == STATE_PLAY || state == STATE_GAME_OVER){
 		game->render(elapsedTime);
 
 	}
@@ -204,6 +220,8 @@ bool Engine::setupGraphics(int w, int h) {
     mainMenu = new MainMenu(vertexHandle, textureHandle);
     gameMenu = new GameMenu();
     gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+    gameOverMenu = new GameOverMenu();
+    gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     game = new Game();
     game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 

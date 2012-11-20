@@ -73,7 +73,8 @@ void Game::step(double elapsedTime){
 		case PACMAN_DEAD:
 			pacman->step(elapsedTime);
 			if(!((Pacman*)pacman)->isDead()){
-				state = PACMAN_ALIVE;
+				//TODO: state = PACMAN_ALIVE;
+				state = GAME_OVER;
 			}
 		break;
 

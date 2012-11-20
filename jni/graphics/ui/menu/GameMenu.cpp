@@ -7,10 +7,6 @@
 
 #include "GameMenu.h"
 
-GameMenu::GameMenu(){
-	init();
-}
-
 void GameMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint textureHandle){
 	free();
 

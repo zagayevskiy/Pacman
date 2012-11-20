@@ -42,6 +42,8 @@ public:
 	void render(double elapsedTime);
 	void clear();
 
+	bool isGameOver() const {return state == GAME_OVER;};
+
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
 	List<Actor*>& getMonsters(){return monsters;};

@@ -14,7 +14,6 @@
 class MainMenu: public Menu {
 public:
 	MainMenu(GLuint vHandle, GLuint tHandle){
-		init();
 		RectButton* button = new RectButton(0.1, 0.1, 0.3, 0.3);
 		button->initGraphics(Art::getTexture(Art::TEXTURE_PLAY_BUTTON), NULL, NULL, vHandle, tHandle);
 		//, , vHandle, tHandle

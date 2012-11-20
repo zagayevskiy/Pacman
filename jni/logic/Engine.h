@@ -15,6 +15,7 @@
 #include "Game.h"
 #include "graphics/ui/menu/MainMenu.h"
 #include "graphics/ui/menu/GameMenu.h"
+#include "graphics/ui/menu/GameOverMenu.h"
 
 #include "managers/Art.h"
 
@@ -37,11 +38,13 @@ private:
 		STATE_AFTER_LOADING = 1,
 		STATE_MAIN_MENU = 2,
 		STATE_PLAY = 3,
-		STATE_PAUSE = 4
+		STATE_PAUSE = 4,
+		STATE_GAME_OVER = 5
 	};
 
 	EngineState state;
 	EngineEvent lastEvent;
+	int levelToLoadNumber;
 
 	bool setupGraphics(int width, int height);
 
@@ -55,6 +58,7 @@ private:
 	Menu* currentMenu;
 	MainMenu* mainMenu;
 	GameMenu* gameMenu;
+	GameOverMenu* gameOverMenu;
 
 	Game* game;
 };

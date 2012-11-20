@@ -1,22 +1,23 @@
 /*
- * GameMenu.h
+ * GameOverMenu.h
  *
- *  Created on: 10.11.2012
+ *  Created on: 20.11.2012
  *      Author: Denis Zagayevskiy
  */
 
-#ifndef GAMEMENU_H_
-#define GAMEMENU_H_
+#ifndef GAMEOVERMENU_H_
+#define GAMEOVERMENU_H_
 
 #include "Menu.h"
 #include "graphics/ui/RectButton.h"
 
-class GameMenu: public Menu {
+class GameOverMenu: public Menu {
 public:
 
+	GameOverMenu();
 	void initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint textureHandle);
+	virtual ~GameOverMenu();
 
-	virtual ~GameMenu();
 };
 
-#endif /* GAMEMENU_H_ */
+#endif /* GAMEOVERMENU_H_ */

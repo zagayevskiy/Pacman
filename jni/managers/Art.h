@@ -68,6 +68,9 @@ public:
 	static GLfloat TEX_COORDS_BUTTON_DOWN[12];
 	static GLfloat TEX_COORDS_BUTTON_DOWN_PRESSED[12];
 
+	static GLfloat TEX_COORDS_BUTTON_RETRY[12];
+	static GLfloat TEX_COORDS_BUTTON_LIST[12];
+
 	static void init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager);
 
 	static void generateTextures();
