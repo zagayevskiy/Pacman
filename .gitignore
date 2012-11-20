@@ -6,3 +6,4 @@ tmp
 *.settings
 bin/
 obj/
+libs/
