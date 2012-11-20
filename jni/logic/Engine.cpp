@@ -27,6 +27,7 @@ void Engine::init(int w, int h){
 void Engine::step(double elapsedTime){
 
 	switch(state){
+
 		case STATE_LOADING:
 		break;
 
@@ -60,12 +61,24 @@ void Engine::step(double elapsedTime){
 		break;
 
 		case STATE_GAME_OVER:
-			if(lastEvent == EVENT_PLAY){
-				lastEvent = EVENT_NONE;
-				currentMenu = gameMenu;
-				game->loadLevel(Art::getLevel(levelToLoadNumber));
-				state = STATE_PLAY;
-				LOGI("state = STATE_PLAY");
+			switch(lastEvent){
+
+				case EVENT_RETRY:
+					lastEvent = EVENT_NONE;
+					currentMenu = gameMenu;
+					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					state = STATE_PLAY;
+					LOGI("state = STATE_PLAY");
+				break;
+
+				case EVENT_MAINMENU:
+					lastEvent = EVENT_NONE;
+					currentMenu = mainMenu;
+					state = STATE_MAIN_MENU;
+					LOGI("state = STATE_MAIN_MENU");
+				break;
+
+				default: break;
 			}
 		break;
 
@@ -83,16 +96,18 @@ void Engine::performAction(Action act, float x, float y){
 }
 
 void Engine::render(double elapsedTime){
-	//LOGI("Engine::render(%f)", elapsedTime);
 
 	glClearColor(0.0, 0.17, 0.0, 1.0f);
 	checkGlError("glClearColor");
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	checkGlError("glClear");
 
-	if(state == STATE_PLAY || state == STATE_GAME_OVER){
+	if(state == STATE_PLAY){
 		game->render(elapsedTime);
-
+	}else if(state == STATE_GAME_OVER){
+		game->render(elapsedTime);
+		glUseProgram(stableProgram);
+		gameMenu->render(elapsedTime);
 	}
 	glUseProgram(stableProgram);
 	currentMenu->render(elapsedTime);

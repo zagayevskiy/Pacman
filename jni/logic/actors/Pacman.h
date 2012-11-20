@@ -16,7 +16,7 @@
 class Pacman: public Actor {
 public:
 
-	static const float MAX_DIED_TIME = 3000.0f;
+	static const float MAX_DIED_TIME = 300.0f;
 
 	Pacman(Game* _game, float _x, float _y, GLuint _shiftProgram): game(_game){
 		radius = 0.5f;
