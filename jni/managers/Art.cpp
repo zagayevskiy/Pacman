@@ -19,17 +19,18 @@ jmethodID Art::pmGetWidthId;
 jmethodID Art::pmGetHeightId;
 jmethodID Art::pmGetPixelsId;
 
-Texture** Art::texturesSources = new Texture*[TEXTURES_COUNT];
-GLuint* Art::textures;
+Texture** Art::texturesSources = NULL;
+GLuint* Art::textures = NULL;
 
-char** Art::shadersSources = new char*[SHADERS_COUNT];
+char** Art::shadersSources = NULL;
 
 Texture** Art::levels = NULL;
-int Art::levelsCount;
+GLfloat** Art::levelsTexCoords = NULL;
+int Art::levelsCount = 0;
 
 void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	LOGI("Art::init");
-
+	free();
 	pngManager = _pngManager;
 	pmEnv = env;
 
@@ -42,36 +43,22 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 
 	assetManager = AAssetManager_fromJava(env, javaAssetManager);
 
+	loadLevels();
+
+	texturesSources = new Texture*[TEXTURES_COUNT];
 	texturesSources[TEXTURE_PLAY_BUTTON] = loadPng("textures/button1.png");
 	texturesSources[TEXTURE_GRAD] = loadPng("textures/tex.png");
 	texturesSources[TEXTURE_YELLOW] = loadPng("textures/yellow.png");
 	texturesSources[TEXTURE_PACMAN] = loadPng("textures/pacman.png");
 	texturesSources[TEXTURE_MAP_0] = loadPng("textures/map.png");
 	texturesSources[TEXTURE_MONSTER] = loadPng("textures/monster.png");
-	texturesSources[TEXTURE_LEVEL0] = loadPng("textures/level0.png");
 	texturesSources[TEXTURE_BUTTONS] = loadPng("textures/buttons.png");
+	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 
+	shadersSources = new char*[SHADERS_COUNT];
 	shadersSources[SHADER_VERTEX_0] = loadTextFile("shaders/shader.vrt");
 	shadersSources[SHADER_FRAGMENT_0] = loadTextFile("shaders/shader.frg");
 	shadersSources[SHADER_VERTEX_SHIFT] = loadTextFile("shaders/shiftShader.vrt");
-
-	List<char*> files = loadFilesList(LEVELS_PATH);
-	levelsCount = files.getLength();
-	char buffer[128];
-	if(!files.isEmpty()){
-		levels = new Texture*[levelsCount];
-		char* file;
-		bool exists = files.getHead(file);
-		int i = 0;
-		while(exists){
-			sprintf(buffer, "%s/%s", LEVELS_PATH, file);
-			levels[i] = loadPng(buffer);
-			++i;
-			delete[] file;
-			exists = files.getNext(file);
-		}
-		files.clear();
-	}
 
 }
 
@@ -104,11 +91,12 @@ char* Art::getShaderSource(int id){
 }
 
 Texture* Art::getLevel(int number){
-	if(number >= 0 && number < levelsCount){
-		return levels[number];
-	}else{
-		return NULL;
-	}
+	return (number >= 0 && number < levelsCount) ? levels[number] : NULL;
+}
+
+GLfloat* Art::getLevelTexCoords(int number){
+	LOGI("Art::getLevelTexCoords(%d)", number);
+	return (number >= 0 && number < levelsCount) ? levelsTexCoords[number] : NULL;
 }
 
 void Art::free(){
@@ -144,6 +132,16 @@ void Art::free(){
 		}
 		delete[] levels;
 	}
+
+	if(levelsTexCoords){
+		for(int i = 0; i < levelsCount; ++i){
+			if(levelsTexCoords[i]){
+				delete levelsTexCoords[i];
+			}
+		}
+		delete[] levelsTexCoords;
+	}
+
 }
 
 Texture* Art::loadPng(const char* filename){
@@ -252,16 +250,87 @@ List<char*> Art::loadFilesList(const char* path){
 	return result;
 }
 
-void Art::loadMaps(){
-	/*AAssetDir* assetDir = AAssetManager_openDir(assetManager, path);
-		const char* c;
-		while(((c = AAssetDir_getNextFileName(assetDir)) != NULL)){
-			char * buffer = new char[32];
-			sprintf(buffer, "%s", c);
-			LOGI("file:%s", buffer);
+void Art::loadLevels(){
+	List<char*> files = loadFilesList(LEVELS_PATH);
+	levelsCount = files.getLength();
+	char buffer[MAX_PATH];
+	if(!files.isEmpty()){
+		levels = new Texture*[levelsCount];
+		char* file;
+		bool exists = files.getHead(file);
+		int i = 0;
+		while(exists){
+			sprintf(buffer, "%s/%s", LEVELS_PATH, file);
+			levels[i] = loadPng(buffer);
+			++i;
+			delete[] file;
+			exists = files.getNext(file);
+		}
+		files.clear();
+	}
+}
+
+/*
+ * 		Method return big image with all (<= MAX_LEVELS_COUNT) levels printed on it
+ * and fill levelsTexCoords array with texture coords of levels.
+ */
+Texture* Art::makeTextureFromLevels(){
+	LOGI("Art::makeTextureFromLevels");
+
+	if(levelsCount <= 0){
+		return NULL;
+	}
+
+	int w = LEVELS_ON_SIDE_COUNT*MAX_LEVEL_SIZE;
+	int h = w;
+	char* pixels = new char[w*h*4];
+	memset(pixels, 0, w*h*4*sizeof(char));
+
+	levelsTexCoords = new GLfloat*[levelsCount];
+	float fWidth = (float) LEVELS_ON_SIDE_COUNT*MAX_LEVEL_SIZE;
+	float fHeight = fWidth;
+
+	for(int k = 0; k < levelsCount && k < MAX_LEVELS_COUNT; ++k){
+
+		/*Compute position of this level*/
+		int posX = k % LEVELS_ON_SIDE_COUNT;
+		int posY = k / LEVELS_ON_SIDE_COUNT;
+
+		int globalOffset =
+				posX*MAX_LEVEL_SIZE*4 +
+				posY*MAX_LEVEL_SIZE*MAX_LEVEL_SIZE*LEVELS_ON_SIDE_COUNT*4;
+
+		Texture* currentLevel = levels[k];
+		int iLevelWidth = currentLevel->width < MAX_LEVEL_SIZE ? currentLevel->width : MAX_LEVEL_SIZE;
+		int iLevelHeight = currentLevel->height < MAX_LEVEL_SIZE ? currentLevel->height : MAX_LEVEL_SIZE;
+
+
+		/*Print level image to big image*/
+		for(int i = 0; i < iLevelHeight; ++i){
+			memcpy(&(pixels[globalOffset + i*MAX_LEVEL_SIZE*LEVELS_ON_SIDE_COUNT*4]), &(currentLevel->pixels[i*currentLevel->width*4]), iLevelWidth*4);
 		}
 
-		AAssetDir_close(assetDir);*/
+		/*Compute texture coords of this level in big texture*/
+		float fLevelWidth = float(iLevelWidth) / (float)(MAX_LEVEL_SIZE*LEVELS_ON_SIDE_COUNT);
+		float fLevelHeight = float(iLevelHeight) / (float)(MAX_LEVEL_SIZE*LEVELS_ON_SIDE_COUNT);
+		float fX = (float)posX / float(LEVELS_ON_SIDE_COUNT);
+		float fY = (float)posY / float(LEVELS_ON_SIDE_COUNT);
+
+		GLfloat tempCoords[12] = {
+			fX, fY, fX + fLevelWidth, fY, fX + fLevelWidth, fY + fLevelHeight,
+			fX + fLevelWidth, fY + fLevelHeight, fX, fY + fLevelHeight, fX, fY
+		};
+
+		levelsTexCoords[k] = new GLfloat[12];
+
+		for(int i = 0; i < 12; ++i){
+			levelsTexCoords[k][i] = tempCoords[i];
+		}
+
+	}
+
+	return new Texture(pixels, w, h);
+
 }
 
 #define btnTexSize 0.25

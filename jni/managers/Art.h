@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <jni.h>
 
 #include <GLES2/gl2.h>
@@ -42,6 +43,9 @@ public:
 
 	static const int MAX_PATH = 32;
 	static const char* LEVELS_PATH;
+	static const int LEVELS_ON_SIDE_COUNT = 4;
+	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
+	static const int MAX_LEVEL_SIZE = 32;
 
 	static const int TEXTURE_PLAY_BUTTON = 0;
 	static const int TEXTURE_GRAD = 1;
@@ -49,7 +53,7 @@ public:
 	static const int TEXTURE_PACMAN = 3;
 	static const int TEXTURE_MAP_0 = 4;
 	static const int TEXTURE_MONSTER = 5;
-	static const int TEXTURE_LEVEL0 = 6;
+	static const int TEXTURE_ALL_LEVELS = 6;
 	static const int TEXTURE_BUTTONS = 7;
 	static const int TEXTURES_COUNT = 8;
 	static const int TEXTURE_NONE = 0;
@@ -80,6 +84,7 @@ public:
 
 	static int getLevelsCount() {return levelsCount;};
 	static Texture* getLevel(int number);
+	static GLfloat* getLevelTexCoords(int number);
 
 	static void free();
 
@@ -103,13 +108,15 @@ private:
 
 	static Texture** levels;
 	static int levelsCount;
+	static GLfloat** levelsTexCoords;
 
 	static char* argb2rgba(unsigned int* src, int width, int weight);
 	static Texture* loadPng(const char* filename);
 	static GLuint createTexture(Texture* texture);
 	static List<char*> loadFilesList(const char* path);
 	static char* loadTextFile(const char* filename);
-	static void loadMaps();
+	static void loadLevels();
+	static Texture* makeTextureFromLevels();
 
 };
 

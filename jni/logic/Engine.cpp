@@ -232,7 +232,7 @@ bool Engine::setupGraphics(int w, int h) {
 
     Art::generateTextures();
 
-    mainMenu = new MainMenu(vertexHandle, textureHandle);
+    mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
     gameMenu = new GameMenu();
     gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     gameOverMenu = new GameOverMenu();
