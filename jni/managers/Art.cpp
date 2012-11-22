@@ -384,3 +384,8 @@ GLfloat Art::TEX_COORDS_BUTTON_LIST[12] = {
 	3*btnTexSize, 0.0, 4*btnTexSize, 0.0, 4*btnTexSize, btnTexSize,
 	4*btnTexSize, btnTexSize, 3*btnTexSize, btnTexSize, 3*btnTexSize, 0.0
 };
+
+GLfloat Art::TEX_COORDS_BUTTON_PLAY[12] = {
+	0.0, btnTexSize, btnTexSize, btnTexSize, btnTexSize, 2*btnTexSize,
+	btnTexSize, 2*btnTexSize, 0.0, 2*btnTexSize, 0.0, btnTexSize
+};

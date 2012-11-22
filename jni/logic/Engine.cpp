@@ -51,8 +51,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_NONE: break;
 
 				case EVENT_STOP:
-					//TODO: currentMenu = pauseMenu;
-					currentMenu = gameOverMenu;
+					currentMenu = pauseMenu;
 					setState(STATE_PAUSE);
 					LOGI("State: STATE_PAUSE");
 				break;
@@ -93,6 +92,14 @@ void Engine::step(double elapsedTime){
 
 		case STATE_PAUSE:
 			switch(lastEvent){
+
+				case EVENT_PLAY:
+					lastEvent = EVENT_NONE;
+					currentMenu = gameMenu;
+					setState(STATE_PLAY);
+					LOGI("State: STATE_PLAY");
+				break;
+
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
 					currentMenu = gameMenu;
@@ -277,6 +284,8 @@ bool Engine::setupGraphics(int w, int h) {
     gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     gameOverMenu = new GameOverMenu();
     gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+    pauseMenu = new PauseMenu();
+    pauseMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     game = new Game();
     game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 

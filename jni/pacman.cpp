@@ -351,7 +351,7 @@ bool setupGraphics(int w, int h) {
 
     /******************************************************************************************************/
 
-    menu = new MainMenu(vertexHandle, textureHandle);
+
     return true;
 }
 

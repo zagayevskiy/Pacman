@@ -16,6 +16,7 @@
 #include "graphics/ui/menu/MainMenu.h"
 #include "graphics/ui/menu/GameMenu.h"
 #include "graphics/ui/menu/GameOverMenu.h"
+#include "graphics/ui/menu/PauseMenu.h"
 
 #include "managers/Art.h"
 
@@ -62,6 +63,7 @@ private:
 	MainMenu* mainMenu;
 	GameMenu* gameMenu;
 	GameOverMenu* gameOverMenu;
+	PauseMenu* pauseMenu;
 
 	Game* game;
 };

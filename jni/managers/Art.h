@@ -74,6 +74,7 @@ public:
 
 	static GLfloat TEX_COORDS_BUTTON_RETRY[12];
 	static GLfloat TEX_COORDS_BUTTON_LIST[12];
+	static GLfloat TEX_COORDS_BUTTON_PLAY[12];
 
 	static void init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager);
 
