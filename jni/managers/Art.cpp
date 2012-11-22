@@ -72,22 +72,11 @@ void Art::generateTextures(){
 }
 
 GLuint Art::getTexture(int id){
-
-	if(0 <= id && id < TEXTURES_COUNT && textures){
-		return textures[id];
-	}else{
-		return TEXTURE_NONE;
-	}
+	return (0 <= id && id < TEXTURES_COUNT && textures) ? textures[id] : TEXTURE_NONE;
 }
 
 char* Art::getShaderSource(int id){
-	LOGI("Art::getShaderSource(%d)", id);
-
-	if(0 <= id && id < SHADERS_COUNT){
-		return shadersSources[id];
-	}else{
-		return NULL;
-	}
+	return (0 <= id && id < SHADERS_COUNT) ? shadersSources[id] : NULL;
 }
 
 Texture* Art::getLevel(int number){
@@ -95,7 +84,6 @@ Texture* Art::getLevel(int number){
 }
 
 GLfloat* Art::getLevelTexCoords(int number){
-	LOGI("Art::getLevelTexCoords(%d)", number);
 	return (number >= 0 && number < levelsCount) ? levelsTexCoords[number] : NULL;
 }
 
