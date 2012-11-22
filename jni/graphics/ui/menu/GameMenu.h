@@ -14,7 +14,7 @@
 class GameMenu: public Menu {
 public:
 
-	void initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint textureHandle);
+	virtual void initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint textureHandle);
 
 	virtual ~GameMenu();
 };

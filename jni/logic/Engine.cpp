@@ -130,10 +130,8 @@ void Engine::setState(EngineState nextState){
 }
 
 void Engine::performAction(Action act, float x, float y){
-	LOGI("Engine::performAction(%d, %f, %f)", act, x, y);
 	if(currentMenu->action(act, x / screenPixelWidth * maxX, y / screenPixelHeight * maxY)){
 		lastEvent = currentMenu->getEvent();
-		LOGE("Engine event: %d", lastEvent);
 	}
 }
 
@@ -280,7 +278,7 @@ bool Engine::setupGraphics(int w, int h) {
     Art::generateTextures();
 
     mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
-    gameMenu = new GameMenu();
+    gameMenu = new SwipeGameMenu(); //new GameMenu();
     gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     gameOverMenu = new GameOverMenu();
     gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);

@@ -15,6 +15,7 @@
 #include "Game.h"
 #include "graphics/ui/menu/MainMenu.h"
 #include "graphics/ui/menu/GameMenu.h"
+#include "graphics/ui/menu/SwipeGameMenu.h"
 #include "graphics/ui/menu/GameOverMenu.h"
 #include "graphics/ui/menu/PauseMenu.h"
 
