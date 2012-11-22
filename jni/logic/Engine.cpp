@@ -15,7 +15,7 @@ GLfloat texCoords[] = {
 };
 
 void Engine::init(int w, int h){
-	levelToLoadNumber = 1;
+	levelToLoadNumber = 0;
 	state = STATE_LOADING;
 	LOGI("Engine::init");
 	setupGraphics(w, h);
@@ -41,6 +41,7 @@ void Engine::step(double elapsedTime){
 			if(lastEvent == EVENT_PLAY){
 				lastEvent = EVENT_NONE;
 				currentMenu = gameMenu;
+				levelToLoadNumber = mainMenu->getLevelToLoadNumber();
 				game->loadLevel(Art::getLevel(levelToLoadNumber));
 				state = STATE_PLAY;
 				LOGI("state = STATE_PLAY");

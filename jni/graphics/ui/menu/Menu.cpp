@@ -15,16 +15,20 @@ bool Menu::action(Action act, float x, float y){
 		}
 	}else{
 		Control* control;
+		int n = 0;
 		bool exists = controls.getHead(control);
 		while(exists){
 			if(control->action(act, x, y)){
 				lastActingControl = control;
+				lastActingControlNumber = n;
 				return true;
 			}
 			exists = controls.getNext(control);
+			++n;
 		}
 	}
 	lastActingControl = NULL;
+	lastActingControlNumber = LAST_CONTROL_NONE;
 	return false;
 }
 

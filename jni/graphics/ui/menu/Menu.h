@@ -16,8 +16,11 @@
 class Menu: public Control {
 public:
 
+	static const int LAST_CONTROL_NONE = -1;
+
 	Menu(){
 		lastActingControl = NULL;
+		lastActingControlNumber = LAST_CONTROL_NONE;
 	}
 
 	virtual bool action(Action act, float x, float y);
@@ -29,6 +32,7 @@ public:
 protected:
 	List<Control*> controls;
 	Control* lastActingControl;
+	int lastActingControlNumber;
 };
 
 #endif /* MENU_H_ */

@@ -29,12 +29,15 @@ public:
 					button = new RectButton(j*buttonSize, i*buttonSize, buttonSize, buttonSize);
 					button->initGraphics(Art::getTexture(Art::TEXTURE_ALL_LEVELS), texCoords, NULL, vHandle, tHandle);
 					button->setActionEvent(ACTION_UP, EVENT_PLAY);
-					controls.pushHead(button);
+					controls.pushTail(button);
 				}
 			}
 		}
 
 	}
+
+	int getLevelToLoadNumber() const {return lastActingControlNumber != LAST_CONTROL_NONE ? lastActingControlNumber : 0;};
+
 	virtual ~MainMenu();
 };
 
