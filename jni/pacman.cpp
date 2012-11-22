@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// OpenGL ES 2.0 code
 
 
 #include <stdio.h>
