@@ -58,8 +58,9 @@ public class PacmanActivity extends Activity{
     
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 	        if (keyCode == KeyEvent.KEYCODE_BACK) {
-	                // your code here
-	        		Log.e("pacman", "Android:Back pressed");
+	        		if(PacmanLib.stop()){
+	        			finish();
+	        		}
 	                return true;
 	        }
 	    return super.onKeyDown(keyCode, event);

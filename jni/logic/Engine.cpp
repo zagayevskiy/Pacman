@@ -16,25 +16,23 @@ GLfloat texCoords[] = {
 
 void Engine::init(int w, int h){
 	levelToLoadNumber = 0;
-	state = STATE_LOADING;
+	setState(STATE_LOADING);
 	LOGI("Engine::init");
 	setupGraphics(w, h);
 	screenPixelWidth = w;
 	screenPixelHeight = h;
-	state = STATE_AFTER_LOADING;
+	setState(STATE_AFTER_LOADING);
 }
 
 void Engine::step(double elapsedTime){
 
 	switch(state){
-
-		case STATE_LOADING:
-		break;
+		case STATE_LOADING: break;
 
 		case STATE_AFTER_LOADING:
 			currentMenu = mainMenu;
-			state = STATE_MAIN_MENU;
-			LOGI("state = STATE_MAIN_MENU");
+			setState(STATE_MAIN_MENU);
+			LOGI("State: STATE_MAIN_MENU");
 		break;
 
 		case STATE_MAIN_MENU:
@@ -43,40 +41,71 @@ void Engine::step(double elapsedTime){
 				currentMenu = gameMenu;
 				levelToLoadNumber = mainMenu->getLevelToLoadNumber();
 				game->loadLevel(Art::getLevel(levelToLoadNumber));
-				state = STATE_PLAY;
-				LOGI("state = STATE_PLAY");
+				setState(STATE_PLAY);
+				LOGI("State: STATE_PLAY");
 			}
 		break;
 
 		case STATE_PLAY:
-			if(lastEvent != EVENT_NONE){
-				game->event(lastEvent);
-				lastEvent = EVENT_NONE;
+			switch(lastEvent){
+				case EVENT_NONE: break;
+
+				case EVENT_STOP:
+					//TODO: currentMenu = pauseMenu;
+					currentMenu = gameOverMenu;
+					setState(STATE_PAUSE);
+					LOGI("State: STATE_PAUSE");
+				break;
+
+				default:
+					game->event(lastEvent);
+				break;
 			}
+			lastEvent = EVENT_NONE;
 			game->step(elapsedTime);
 			if(game->isGameOver()){
 				currentMenu = gameOverMenu;
-				state = STATE_GAME_OVER;
-				LOGI("state = STATE_GAME_OVER");
+				setState(STATE_GAME_OVER);
+				LOGI("State: STATE_GAME_OVER");
 			}
 		break;
 
 		case STATE_GAME_OVER:
 			switch(lastEvent){
-
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
 					currentMenu = gameMenu;
 					game->loadLevel(Art::getLevel(levelToLoadNumber));
-					state = STATE_PLAY;
-					LOGI("state = STATE_PLAY");
+					setState(STATE_PLAY);
+					LOGI("State: STATE_PLAY");
 				break;
 
 				case EVENT_MAINMENU:
 					lastEvent = EVENT_NONE;
 					currentMenu = mainMenu;
-					state = STATE_MAIN_MENU;
-					LOGI("state = STATE_MAIN_MENU");
+					setState(STATE_MAIN_MENU);
+					LOGI("State: STATE_MAIN_MENU");
+				break;
+
+				default: break;
+			}
+		break;
+
+		case STATE_PAUSE:
+			switch(lastEvent){
+				case EVENT_RETRY:
+					lastEvent = EVENT_NONE;
+					currentMenu = gameMenu;
+					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					setState(STATE_PLAY);
+					LOGI("State: STATE_PLAY");
+				break;
+
+				case EVENT_MAINMENU:
+					lastEvent = EVENT_NONE;
+					currentMenu = mainMenu;
+					setState(STATE_MAIN_MENU);
+					LOGI("State: STATE_MAIN_MENU");
 				break;
 
 				default: break;
@@ -88,12 +117,22 @@ void Engine::step(double elapsedTime){
 
 }
 
+void Engine::setState(EngineState nextState){
+	exitOnStop = nextState != STATE_PLAY;
+	state = nextState;
+}
+
 void Engine::performAction(Action act, float x, float y){
 	LOGI("Engine::performAction(%d, %f, %f)", act, x, y);
 	if(currentMenu->action(act, x / screenPixelWidth * maxX, y / screenPixelHeight * maxY)){
 		lastEvent = currentMenu->getEvent();
 		LOGE("Engine event: %d", lastEvent);
 	}
+}
+
+bool Engine::stop(){
+	lastEvent = EVENT_STOP;
+	return exitOnStop;
 }
 
 void Engine::render(double elapsedTime){
@@ -105,7 +144,7 @@ void Engine::render(double elapsedTime){
 
 	if(state == STATE_PLAY){
 		game->render(elapsedTime);
-	}else if(state == STATE_GAME_OVER){
+	}else if(state == STATE_GAME_OVER || state == STATE_PAUSE){
 		game->render(elapsedTime);
 		glUseProgram(stableProgram);
 		gameMenu->render(elapsedTime);

@@ -26,6 +26,7 @@ public:
 
 	void init(int width, int height);
 	void step(double elapsedTime);
+	bool stop();
 	void render(double elapsedTime);
 
 	void performAction(Action act, float x, float y);
@@ -45,6 +46,8 @@ private:
 	EngineState state;
 	EngineEvent lastEvent;
 	int levelToLoadNumber;
+	bool exitOnStop;
+	void setState(EngineState nextState);
 
 	bool setupGraphics(int width, int height);
 

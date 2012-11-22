@@ -77,11 +77,16 @@ extern "C" {
 	}
 
 	JNIEXPORT void JNICALL Java_com_zagayevskiy_pacman_PacmanLib_actionMove(JNIEnv* env, jobject obj, jfloat x, jfloat y){
-		//engine->performAction(ACTION_MOVE, x, y);
+		engine->performAction(ACTION_MOVE, x, y);
 	}
 
 	JNIEXPORT void JNICALL Java_com_zagayevskiy_pacman_PacmanLib_actionUp(JNIEnv* env, jobject obj, jfloat x, jfloat y){
 		engine->performAction(ACTION_UP, x, y);
+	}
+
+
+	JNIEXPORT jboolean JNICALL Java_com_zagayevskiy_pacman_PacmanLib_stop(JNIEnv* env, jobject obj){
+		return engine->stop();
 	}
 
 }
