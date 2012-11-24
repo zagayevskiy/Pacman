@@ -53,6 +53,7 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	texturesSources[TEXTURE_MAP_0] = loadPng("textures/map.png");
 	texturesSources[TEXTURE_MONSTER] = loadPng("textures/monster.png");
 	texturesSources[TEXTURE_BUTTONS] = loadPng("textures/buttons.png");
+	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng("textures/pacmans.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 
 	shadersSources = new char*[SHADERS_COUNT];
@@ -321,59 +322,77 @@ Texture* Art::makeTextureFromLevels(){
 
 }
 
-#define btnTexSize 0.25
+#define BUTTON_SIZE 0.25
 
 GLfloat Art::TEX_COORDS_BUTTON_LEFT[12] = {
-	btnTexSize, btnTexSize, 0.0, btnTexSize, 0.0, 0.0,
-	0.0, 0.0, btnTexSize, 0.0, btnTexSize, btnTexSize
+	BUTTON_SIZE, BUTTON_SIZE, 0.0, BUTTON_SIZE, 0.0, 0.0,
+	0.0, 0.0, BUTTON_SIZE, 0.0, BUTTON_SIZE, BUTTON_SIZE
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_LEFT_PRESSED[12] = {
-	2*btnTexSize, btnTexSize, btnTexSize, btnTexSize, btnTexSize, 0.0,
-	btnTexSize, 0.0, 2*btnTexSize, 0.0, 2*btnTexSize, btnTexSize
+	2*BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, 0.0,
+	BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, BUTTON_SIZE
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_RIGHT[12] = {
-	0.0, 0.0, btnTexSize, 0.0, btnTexSize, btnTexSize,
-	btnTexSize, btnTexSize, 0.0, btnTexSize, 0.0, 0.0
+	0.0, 0.0, BUTTON_SIZE, 0.0, BUTTON_SIZE, BUTTON_SIZE,
+	BUTTON_SIZE, BUTTON_SIZE, 0.0, BUTTON_SIZE, 0.0, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_RIGHT_PRESSED[12] = {
-	btnTexSize, 0.0, 2*btnTexSize, 0.0, 2*btnTexSize, btnTexSize,
-	2*btnTexSize, btnTexSize, btnTexSize, btnTexSize, btnTexSize, 0.0
+	BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, BUTTON_SIZE,
+	2*BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_UP[12] = {
-	btnTexSize, 0.0, btnTexSize, btnTexSize, 0.0, btnTexSize,
-	0.0, btnTexSize, 0.0, 0.0, btnTexSize, 0.0
+	BUTTON_SIZE, 0.0, BUTTON_SIZE, BUTTON_SIZE, 0.0, BUTTON_SIZE,
+	0.0, BUTTON_SIZE, 0.0, 0.0, BUTTON_SIZE, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_UP_PRESSED[12] = {
-	2*btnTexSize, 0.0, 2*btnTexSize, btnTexSize, btnTexSize, btnTexSize,
-	btnTexSize, btnTexSize, btnTexSize, 0.0, 2*btnTexSize, 0.0
+	2*BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE,
+	BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_DOWN[12] = {
-	0.0, btnTexSize, 0.0, 0.0, btnTexSize, 0.0,
-	btnTexSize, 0.0, btnTexSize, btnTexSize, 0.0, btnTexSize
+	0.0, BUTTON_SIZE, 0.0, 0.0, BUTTON_SIZE, 0.0,
+	BUTTON_SIZE, 0.0, BUTTON_SIZE, BUTTON_SIZE, 0.0, BUTTON_SIZE
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_DOWN_PRESSED[12] = {
-	btnTexSize, btnTexSize, btnTexSize, 0.0, 2*btnTexSize, 0.0,
-	2*btnTexSize, 0.0, 2*btnTexSize, btnTexSize, btnTexSize, btnTexSize
+	BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, 0.0,
+	2*BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_RETRY[12] = {
-	2*btnTexSize, 0.0, 3*btnTexSize, 0.0, 3*btnTexSize, btnTexSize,
-	3*btnTexSize, btnTexSize, 2*btnTexSize, btnTexSize, 2*btnTexSize, 0.0
+	2*BUTTON_SIZE, 0.0, 3*BUTTON_SIZE, 0.0, 3*BUTTON_SIZE, BUTTON_SIZE,
+	3*BUTTON_SIZE, BUTTON_SIZE, 2*BUTTON_SIZE, BUTTON_SIZE, 2*BUTTON_SIZE, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_LIST[12] = {
-	3*btnTexSize, 0.0, 4*btnTexSize, 0.0, 4*btnTexSize, btnTexSize,
-	4*btnTexSize, btnTexSize, 3*btnTexSize, btnTexSize, 3*btnTexSize, 0.0
+	3*BUTTON_SIZE, 0.0, 4*BUTTON_SIZE, 0.0, 4*BUTTON_SIZE, BUTTON_SIZE,
+	4*BUTTON_SIZE, BUTTON_SIZE, 3*BUTTON_SIZE, BUTTON_SIZE, 3*BUTTON_SIZE, 0.0
 };
 
 GLfloat Art::TEX_COORDS_BUTTON_PLAY[12] = {
-	0.0, btnTexSize, btnTexSize, btnTexSize, btnTexSize, 2*btnTexSize,
-	btnTexSize, 2*btnTexSize, 0.0, 2*btnTexSize, 0.0, btnTexSize
+	0.0, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE, 2*BUTTON_SIZE,
+	BUTTON_SIZE, 2*BUTTON_SIZE, 0.0, 2*BUTTON_SIZE, 0.0, BUTTON_SIZE
+};
+
+#define PACMAN_SIZE 0.5
+
+GLfloat Art::TEX_COORDS_PACMAN[PACMAN_FRAMES_COUNT][12] = {
+		{
+			0.0, 0.0, PACMAN_SIZE, 0.0, PACMAN_SIZE, PACMAN_SIZE,
+			PACMAN_SIZE, PACMAN_SIZE, 0.0, PACMAN_SIZE, 0.0, 0.0
+		},
+		{
+			PACMAN_SIZE, 0.0, 2*PACMAN_SIZE, 0.0, 2*PACMAN_SIZE, PACMAN_SIZE,
+			2*PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, 0.0
+		},
+		{
+			0.0, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, 2*PACMAN_SIZE,
+			PACMAN_SIZE, 2*PACMAN_SIZE, 0.0, 2*PACMAN_SIZE, 0.0, PACMAN_SIZE
+		}
+
 };

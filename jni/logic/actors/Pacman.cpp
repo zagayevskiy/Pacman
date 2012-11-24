@@ -12,6 +12,99 @@ void Pacman::initGraphics(GLuint _shiftProgram){
 	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");
 	shiftVertexHandle = glGetAttribLocation(shiftProgram, "aPosition");
 	shiftTextureHandle = glGetAttribLocation(shiftProgram, "aTexture");
+	textureId = Art::getTexture(Art::TEXTURE_PACMAN_ANIMATION);
+
+	const GLfloat PACMAN_SIZE = 0.5f;
+	GLfloat tileSize = game->getTileSize();
+
+	// 0 ---- 1
+	// |      |
+	// |      |
+	// 3 ---- 2
+
+	const int vertexLength = 8;
+	const int verticesCount = 4;
+	const int initVertsLength = verticesCount*vertexLength;
+
+	animationOffsetsLength = 4;
+	animationOffsets = new GLuint[animationOffsetsLength];
+	animationOffsets[0] = 2*sizeof(GLfloat); //Step 0
+	animationOffsets[1] = 4*sizeof(GLfloat); //Step 1
+	animationOffsets[2] = 6*sizeof(GLfloat); //Step 2
+	animationOffsets[3] = 4*sizeof(GLfloat); //Step 1
+	animationStepTime = 1000.0 / (speed*1000.0) / animationOffsetsLength;
+	animationElapsedTime = 0.0;
+	animationStepNumber = 0;
+
+	//tx1, ty1 - animation step 1 and etc.
+	GLfloat initVertsData[initVertsLength] = {
+		//x, y, tx1, ty1, tx2, ty2, tx3, ty3
+
+		//Vertex 0
+		0.0f, 0.0f, 0.0f, 0.0f, PACMAN_SIZE, 0.0f, 0.0f, PACMAN_SIZE,
+
+		//Vertex 1
+		tileSize, 0.0f, PACMAN_SIZE, 0.0f, PACMAN_SIZE*2, 0.0f, PACMAN_SIZE, PACMAN_SIZE,
+
+		//Vertex 2
+		tileSize, tileSize, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE*2, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE*2,
+
+		//Vertex 3
+		0.0f, tileSize, 0.0f, PACMAN_SIZE, PACMAN_SIZE, PACMAN_SIZE, 0.0f, PACMAN_SIZE*2
+
+	};
+
+	//Rotation indices
+	GLshort initInds[4*verticesCount] = {
+		0, 1, 2, 3, //Right
+		1, 0, 3, 2, //Left
+		3, 0, 1, 2, //Down
+		1, 2, 3, 0  //Up
+	};
+	offsetGoRight = 0;
+	offsetGoLeft = initVertsLength*sizeof(GLfloat);
+	offsetGoDown = 2*initVertsLength*sizeof(GLfloat);
+	offsetGoUp = 3*initVertsLength*sizeof(GLfloat);
+
+	//Create 4 groups, each of initVertsCount vertices(for rotation)
+	const int verticesDataLength = initVertsLength*4;
+	GLfloat* verticesData = new GLfloat[verticesDataLength];
+	for(int i = 0; i < 4; ++i){
+		for(int j = 0; j < verticesCount; ++j){
+			verticesData[i*initVertsLength + j*vertexLength + 0] = initVertsData[j*vertexLength + 0];
+			verticesData[i*initVertsLength + j*vertexLength + 1] = initVertsData[j*vertexLength + 1];
+			for(int k = 2; k < vertexLength; ++k){
+				verticesData[i*initVertsLength + j*vertexLength + k] = initVertsData[initInds[i*4 + j]*vertexLength + k];
+			}
+		}
+	}
+
+	GLshort indicesData[6] = {
+		0, 1, 2, 2, 3, 0
+	};
+
+	glGenBuffers(1, &verticesBufferId);
+	checkGlError("glGenBuffers(1, &verticesBufferId);");
+	LOGI("verticesBufferId: %d", verticesBufferId);
+
+	glGenBuffers(1, &indicesBufferId);
+	checkGlError("glGenBuffers(1, &indicesBufferId);");
+	LOGI("indicesBufferId: %d", indicesBufferId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
+	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);");
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
+	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);");
+
+	glBufferData(GL_ARRAY_BUFFER, verticesDataLength*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ARRAY_BUFFER, verticesDataLength*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);");
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	delete[] verticesData;
 }
 
 void Pacman::event(EngineEvent e){
@@ -197,12 +290,65 @@ void Pacman::switchDirection(bool verticalDirectionNow){
 }
 
 void Pacman::render(double elapsedTime){
+
+	animationElapsedTime += elapsedTime;
+	if(animationElapsedTime >= animationStepTime){
+		animationStepNumber = (animationStepNumber + 1) % animationOffsetsLength;
+		animationElapsedTime = 0.0;
+	}
+
+	GLfloat tileSize = game->getTileSize();
+	GLfloat shiftX = (x - radius)*tileSize;
+	GLfloat shiftY = (y - radius)*tileSize;
+	GLuint vertexOffset, textureOffset;
+	switch(state){
+		case PACMAN_GO_RIGHT:
+			vertexOffset = offsetGoRight;
+		break;
+		case PACMAN_GO_LEFT:
+			vertexOffset = offsetGoLeft;
+		break;
+		case PACMAN_GO_DOWN:
+			vertexOffset = offsetGoDown;
+		break;
+		case PACMAN_GO_UP:
+			vertexOffset = offsetGoUp;
+		break;
+		default: break;
+	}
+	textureOffset = vertexOffset + animationOffsets[animationStepNumber];
+
 	glUseProgram(shiftProgram);
 
-	GLfloat texCoords[] = {
+	glUniform2f(shiftHandle, shiftX, shiftY);
+
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
+
+	//x, y, tx1, ty1, tx2, ty2, tx3, ty3
+	GLsizei stride = 8 * sizeof(float);
+
+	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(vertexOffset));
+	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (textureOffset));
+
+	glEnableVertexAttribArray(shiftVertexHandle);
+	glEnableVertexAttribArray(shiftTextureHandle);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+
+	glDisableVertexAttribArray(shiftTextureHandle);
+	glDisableVertexAttribArray(shiftVertexHandle);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	/*GLfloat texCoords[] = {
 		0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
 		1.0, 1.0, 0.0, 1.0, 0.0, 0.0
 	};
+
 	GLfloat tileSize = game->getTileSize();
 
 	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_PACMAN));
@@ -231,11 +377,10 @@ void Pacman::render(double elapsedTime){
 	checkGlError("glDrawArrays");
 
 	glDisableVertexAttribArray(shiftTextureHandle);
-	glDisableVertexAttribArray(shiftVertexHandle);
+	glDisableVertexAttribArray(shiftVertexHandle);*/
 
 }
 
 Pacman::~Pacman() {
-	// TODO Auto-generated destructor stub
 }
 

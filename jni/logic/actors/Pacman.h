@@ -74,6 +74,12 @@ private:
 	GLuint shiftProgram;
 	GLuint shiftVertexHandle, shiftTextureHandle;
 	GLuint shiftHandle;
+	GLuint verticesBufferId, indicesBufferId, textureId;
+	GLuint* animationOffsets;
+	GLuint animationOffsetsLength;
+	int animationStepNumber;
+	double animationStepTime, animationElapsedTime;
+	GLuint offsetGoLeft, offsetGoRight, offsetGoDown, offsetGoUp;
 };
 
 #endif /* PACMAN_H_ */

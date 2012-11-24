@@ -256,7 +256,7 @@ int Game::getMapAt(int _x, int _y) const{
 	if(_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight){
 		return map[_y*mapWidth + _x];
 	}else{
-		return 0;
+		return TILE_WALL;
 	}
 }
 

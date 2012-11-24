@@ -55,7 +55,8 @@ public:
 	static const int TEXTURE_MONSTER = 5;
 	static const int TEXTURE_ALL_LEVELS = 6;
 	static const int TEXTURE_BUTTONS = 7;
-	static const int TEXTURES_COUNT = 8;
+	static const int TEXTURE_PACMAN_ANIMATION = 8;
+	static const int TEXTURES_COUNT = 9;
 	static const int TEXTURE_NONE = 0;
 
 	static const int SHADER_VERTEX_0 = 0;
@@ -75,6 +76,9 @@ public:
 	static GLfloat TEX_COORDS_BUTTON_RETRY[12];
 	static GLfloat TEX_COORDS_BUTTON_LIST[12];
 	static GLfloat TEX_COORDS_BUTTON_PLAY[12];
+
+	static const int PACMAN_FRAMES_COUNT = 3;
+	static GLfloat TEX_COORDS_PACMAN[PACMAN_FRAMES_COUNT][12];
 
 	static void init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager);
 
