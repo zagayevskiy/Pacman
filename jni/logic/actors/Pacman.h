@@ -25,13 +25,13 @@ public:
 		speed = 0.003;
 		speedX = speed;
 		speedY = 0;
-		LOGI("Pacman::Pacman(%f, %f, Game)", x, y);
 		lastEvent = EVENT_NONE;
 		state = initialState = PACMAN_GO_RIGHT;
 		totalPathLength = 0.0f;
 		totalStepsCount = 0.0f;
 		averageStepLength = 0.0f;
 		diedTime = 0.0f;
+		lifes = 3;
 		animationOffsets = NULL;
 		initGraphics(_shiftProgram);
 	}
@@ -43,9 +43,9 @@ public:
 	void step(double elapsedTime);
 	void render(double elapsedTime);
 
-	bool isDead(){
-		return state == PACMAN_DIED;
-	}
+	bool isDead() const {return state == PACMAN_DIED;};
+	bool isGameOver() const {return state == PACMAN_GAME_OVER;};
+	int getLifes() const {return lifes;};
 
 	virtual ~Pacman();
 
@@ -59,7 +59,8 @@ private:
 		PACMAN_GO_RIGHT = 2,
 		PACMAN_GO_UP = 3,
 		PACMAN_GO_DOWN = 4,
-		PACMAN_DIED = 10
+		PACMAN_DIED = 10,
+		PACMAN_GAME_OVER = 11
 	};
 
 	Game* game;
@@ -70,6 +71,7 @@ private:
 	float totalStepsCount;
 	float averageStepLength;
 	float diedTime;
+	int lifes;
 
 	float initialX, initialY;
 

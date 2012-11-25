@@ -152,10 +152,14 @@ void Game::step(double elapsedTime){
 
 		case PACMAN_DEAD:
 			pacman->step(elapsedTime);
-			if(!((Pacman*)pacman)->isDead()){
-				//TODO: state = PACMAN_ALIVE;
+			if(((Pacman*)pacman)->isGameOver()){
 				state = GAME_OVER;
+			}else{
+				if(!((Pacman*)pacman)->isDead()){
+					state = PACMAN_ALIVE;
+				}
 			}
+
 		break;
 
 		case GAME_OVER:

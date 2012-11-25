@@ -36,7 +36,6 @@ public:
 
 	void loadLevel(const Texture* level);
 	void initGraphics(float maxX, float maxY, GLuint stableProgram, GLuint shiftProgram);
-	void freeBuffers();
 
 	void event(EngineEvent e);
 	void step(double elapsedTime);
@@ -90,6 +89,7 @@ private:
 	GLuint verticesBufferId, indicesBufferId;
 
 	void createBuffers();
+	void freeBuffers();
 
 };
 

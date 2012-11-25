@@ -133,6 +133,7 @@ void Pacman::step(double elapsedTime){
 			if(intersect(monster)){
 				diedTime = 0.0f;
 				state = PACMAN_DIED;
+				--lifes;
 				return;
 			}
 			exists = monsters.getNext(monster);
@@ -205,14 +206,21 @@ void Pacman::step(double elapsedTime){
 
 		case PACMAN_DIED:
 			if(diedTime > MAX_DIED_TIME){
-				x = initialX;
-				y = initialY;
-				state = initialState;
-				speedX = speed;
-				speedY = 0;
+				if(lifes){
+					x = initialX;
+					y = initialY;
+					speedX = speed;
+					speedY = 0;
+					state = initialState;
+				}else{
+					state = PACMAN_GAME_OVER;
+				}
 			}else{
 				diedTime += elapsedTime;
 			}
+		break;
+
+		case PACMAN_GAME_OVER:
 		break;
 
 		default: break;
