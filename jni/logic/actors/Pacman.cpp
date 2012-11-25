@@ -320,7 +320,9 @@ void Pacman::render(double elapsedTime){
 		case PACMAN_GO_UP:
 			vertexOffset = offsetGoUp;
 		break;
-		default: break;
+		default:
+			vertexOffset = offsetGoRight;
+		break;
 	}
 	textureOffset = vertexOffset + animationOffsets[animationStepNumber];
 
@@ -334,7 +336,7 @@ void Pacman::render(double elapsedTime){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
 
 	//x, y, tx1, ty1, tx2, ty2, tx3, ty3
-	GLsizei stride = 8 * sizeof(float);
+	GLsizei stride = 8 * sizeof(GLfloat);
 
 	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(vertexOffset));
 	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (textureOffset));

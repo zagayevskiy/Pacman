@@ -23,9 +23,6 @@ public:
 
 	RectButton(float _x, float _y, float _width, float _height)
  			: x(_x), y(_y), width(_width), height(_height), rightDownX(x + width), rightDownY(y + height){
-
-		LOGI("RectButton::RectButton(%f, %f, %f, %f", x, y, width, height);
-
 		lastAction = ACTION_NONE;
 		pressed = false;
 

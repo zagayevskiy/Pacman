@@ -8,7 +8,6 @@
 #include "Menu.h"
 
 bool Menu::action(Action act, float x, float y){
-	LOGI("Menu::action(%d)", act);
 	if(lastActingControl){
 		if(lastActingControl->action(act, x, y)){
 			return true;

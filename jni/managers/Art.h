@@ -76,6 +76,10 @@ public:
 	static const int PACMAN_FRAMES_COUNT = 3;
 	static GLfloat TEX_COORDS_PACMAN[PACMAN_FRAMES_COUNT][12];
 
+	static GLfloat TEX_COORDS_TILE_WALL[8];
+	static GLfloat TEX_COORDS_TILE_FREE[8];
+	static GLfloat TEX_COORDS_TILE_FOOD[8];
+
 	static void init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager);
 
 	static void generateTextures();

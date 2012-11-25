@@ -12,6 +12,7 @@
 #include "Game.h"
 
 void Game::initGraphics(float _maxX, float _maxY, GLuint _stableProgram, GLuint _shiftProgram){
+	LOGI("Game::initGraphics");
 	maxX = _maxX;
 	maxY = _maxY;
 	stableProgram = _stableProgram;
@@ -44,6 +45,85 @@ void Game::initGraphics(float _maxX, float _maxY, GLuint _stableProgram, GLuint 
 	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");
 	checkGlError("glGetUniformLocation");
 	x = y = 0.0;
+}
+
+void Game::createBuffers(){
+	// 0 ---- 1
+	// |      |
+	// |      |
+	// 3 ---- 2
+
+	// x, y, tx, ty
+	GLfloat* verticesData = new GLfloat[16*mapWidth*mapHeight];
+	//0, 1, 2, 2, 3, 0
+	GLshort* indicesData = new GLshort[6*mapWidth*mapHeight];
+	GLshort indicesNumbers[] = {0, 1, 2, 2, 3, 0};
+	int squareIndex = 0;
+	int iInds = 0;
+	int vertsCount = 0;
+	for(int i = 0; i < mapHeight; ++i){
+		for(int j = 0; j < mapWidth; ++j){
+
+			GLfloat verticesCoords[8] = {
+					j*tileSize, i*tileSize, 			//Vertex 0
+					(j + 1)*tileSize, i*tileSize,		//Vertex 1
+					(j + 1)*tileSize, (i + 1)*tileSize, //Vertex 2
+					j*tileSize, (i + 1)*tileSize		//Vertex 3
+			};
+
+			int m = map[i*mapWidth + j];
+			GLfloat* textureCoords  = m == TILE_FREE ? Art::TEX_COORDS_TILE_FREE : m == TILE_WALL ? Art::TEX_COORDS_TILE_WALL : Art::TEX_COORDS_TILE_FOOD;
+
+			squareIndex = (i*mapWidth + j)*16;
+
+			//Square: 4 vertex (x, y, tx, ty)
+			for(int k = 0; k < 4; ++k){
+				verticesData[squareIndex + k*4 + 0] = verticesCoords[k*2 + 0];
+				verticesData[squareIndex + k*4 + 1] = verticesCoords[k*2 + 1];
+				verticesData[squareIndex + k*4 + 2] = textureCoords[k*2 + 0];
+				verticesData[squareIndex + k*4 + 3] = textureCoords[k*2 + 1];
+			}
+
+			iInds = (i*mapWidth + j)*6;
+			vertsCount = (i*mapWidth + j)*4;
+
+			for(int k = 0; k < 6; ++k){
+				indicesData[iInds + k] = vertsCount + indicesNumbers[k];
+			}
+
+		}
+	}
+
+	glGenBuffers(1, &verticesBufferId);
+	checkGlError("glGenBuffers(1, &verticesBufferId);");
+	LOGI("Game::verticesBufferId: %d", verticesBufferId);
+
+	glGenBuffers(1, &indicesBufferId);
+	checkGlError("glGenBuffers(1, &indicesBufferId);");
+	LOGI("Game::indicesBufferId: %d", indicesBufferId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
+	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);");
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
+	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);");
+
+	glBufferData(GL_ARRAY_BUFFER, 16*mapWidth*mapHeight*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ARRAY_BUFFER, verticesDataLength*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);");
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*mapWidth*mapHeight*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, 0);");
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);");
+
+	delete[] verticesData;
+	delete[] indicesData;
+}
+
+void Game::freeBuffers(){
+	glDeleteBuffers(1, &verticesBufferId);
+	glDeleteBuffers(1, &indicesBufferId);
 }
 
 void Game::event(EngineEvent e){
@@ -91,6 +171,51 @@ void Game::render(double elapsedTime){
 
 	glUseProgram(stableProgram);
 
+	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_TILES));
+
+	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
+
+	if(isMapChanged){
+		int globalOffset = lastChangedY*mapWidth + lastChangedX;
+		int m = map[globalOffset];
+		GLfloat* tf = m == TILE_FREE ? Art::TEX_COORDS_TILE_FREE : m == TILE_WALL ? Art::TEX_COORDS_TILE_WALL : Art::TEX_COORDS_TILE_FOOD;
+		//Square: 4 vertex(x, y, tx, ty)
+		GLfloat buffer[16] = {
+				lastChangedX*tileSize, lastChangedY*tileSize, 				//Vertex 0
+				tf[0], tf[1],
+				(lastChangedX + 1)*tileSize, lastChangedY*tileSize,			//Vertex 1
+				tf[2], tf[3],
+				(lastChangedX + 1)*tileSize, (lastChangedY + 1)*tileSize, 	//Vertex 2
+				tf[4], tf[5],
+				lastChangedX*tileSize, (lastChangedY + 1)*tileSize,			//Vertex 3
+				tf[6], tf[7]
+		};
+
+		glBufferSubData(GL_ARRAY_BUFFER, globalOffset*16*sizeof(GLfloat), 16*sizeof(GLfloat), buffer);
+
+		isMapChanged = false;
+		lastChangedX = lastChangedY = -1;
+	}
+
+	//x, y, tx, ty
+	GLsizei stride = 4 * sizeof(GLfloat);
+
+	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
+	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
+
+	glEnableVertexAttribArray(stableVertexHandle);
+	glEnableVertexAttribArray(stableTextureHandle);
+
+	glDrawElements(GL_TRIANGLES, 6*mapWidth*mapHeight, GL_UNSIGNED_SHORT, 0);
+
+	glDisableVertexAttribArray(stableTextureHandle);
+	glDisableVertexAttribArray(stableVertexHandle);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+/*
 	GLfloat freeTexCoords[] = {
 		0.0, 0.0, 0.5, 0.0, 0.5, 0.5,
 		0.5, 0.5, 0.0, 0.5, 0.0, 0.0
@@ -137,7 +262,7 @@ void Game::render(double elapsedTime){
 			glDisableVertexAttribArray(shiftVertexHandle);
 		}
 	}
-
+*/
 	pacman->render(elapsedTime);
 	Actor* monster;
 	bool exists = monsters.getHead(monster);
@@ -154,6 +279,8 @@ void Game::loadLevel(const Texture* level){
 	mapWidth = level->width;
 	mapHeight = level->height;
 	tileSize = maxX / ((float) mapWidth);
+	isMapChanged = false;
+	lastChangedX = lastChangedY = -1;
 	LOGI("TileSize: %f", tileSize);
 	map = new int[mapWidth * mapHeight];
 	char r, g, b;
@@ -192,6 +319,7 @@ void Game::loadLevel(const Texture* level){
 	if(!pacman){
 		LOGE("LEVEL FORMAT ERROR: CAN NOT FIND PACMAN!");
 	}
+	createBuffers();
 	state = PACMAN_ALIVE;
 
 }
@@ -220,20 +348,20 @@ void Game::clear(){
 }
 
 int Game::getMapAt(int _x, int _y) const{
-	if(_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight){
-		return map[_y*mapWidth + _x];
-	}else{
-		return TILE_WALL;
-	}
+	return (_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight) ? map[_y*mapWidth + _x] : TILE_WALL;
 }
 
 void Game::setMapAt(int _x, int _y, int value){
 	if(_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight){
 		map[_y*mapWidth + _x] = value;
+		lastChangedX = _x;
+		lastChangedY = _y;
+		isMapChanged = true;
 	}
 }
 
 Game::~Game() {
 	clear();
+	freeBuffers();
 }
 

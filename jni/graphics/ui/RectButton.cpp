@@ -62,7 +62,6 @@ void RectButton::render(double elapsedTime){
 bool RectButton::action(Action act, float _x, float _y){
 	bool result = _x > x && _y > y && _x < rightDownX && _y < rightDownY;
 	if(result){
-		LOGE("BUTTON ACTION(%d, %f, %f)", act, _x, _y);
 		lastAction = act;
 
 		switch(act){
