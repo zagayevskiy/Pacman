@@ -169,6 +169,15 @@ Engine::~Engine() {
 	if(mainMenu){
 		delete mainMenu;
 	}
+	if(pauseMenu){
+		delete pauseMenu;
+	}
+	if(gameOverMenu){
+		delete gameOverMenu;
+	}
+	if(game){
+		delete game;
+	}
 }
 
 bool Engine::setupGraphics(int w, int h) {

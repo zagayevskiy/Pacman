@@ -89,6 +89,7 @@ void Art::free(){
 
 	if(textures){
 		delete[] textures;
+		textures = NULL;
 	}
 
 	if(texturesSources){
@@ -98,6 +99,7 @@ void Art::free(){
 			}
 		}
 		delete[] texturesSources;
+		texturesSources = NULL;
 	}
 
 	if(shadersSources){
@@ -107,6 +109,7 @@ void Art::free(){
 			}
 		}
 		delete[] shadersSources;
+		shadersSources = NULL;
 	}
 
 	if(levels){
@@ -116,6 +119,7 @@ void Art::free(){
 			}
 		}
 		delete[] levels;
+		levels = NULL;
 	}
 
 	if(levelsTexCoords){
@@ -125,6 +129,7 @@ void Art::free(){
 			}
 		}
 		delete[] levelsTexCoords;
+		levelsTexCoords = NULL;
 	}
 
 }

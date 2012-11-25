@@ -150,7 +150,6 @@ void Game::render(double elapsedTime){
 
 void Game::loadLevel(const Texture* level){
 	clear();
-	pacman = NULL;
 	LOGI("Game::loadLevel %dx%d", level->width, level->height);
 	mapWidth = level->width;
 	mapHeight = level->height;
@@ -201,9 +200,11 @@ void Game::clear(){
 	LOGI("Game::clear");
 	if(map){
 		delete[] map;
+		map = NULL;
 	}
 	if(pacman){
 		delete pacman;
+		pacman = NULL;
 	}
 	if(!monsters.isEmpty()){
 		Actor* monster;

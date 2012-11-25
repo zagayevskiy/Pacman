@@ -112,6 +112,7 @@ void Pacman::freeGraphics(){
 	glDeleteBuffers(1, &indicesBufferId);
 	if(animationOffsets){
 		delete[] animationOffsets;
+		animationOffsets = NULL;
 	}
 }
 
