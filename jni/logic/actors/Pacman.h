@@ -32,10 +32,12 @@ public:
 		totalStepsCount = 0.0f;
 		averageStepLength = 0.0f;
 		diedTime = 0.0f;
+		animationOffsets = NULL;
 		initGraphics(_shiftProgram);
 	}
 
 	void initGraphics(GLuint shiftProgram);
+	void freeGraphics();
 
 	void event(EngineEvent);
 	void step(double elapsedTime);
@@ -60,7 +62,7 @@ private:
 		PACMAN_DIED = 10
 	};
 
-	Game*game;
+	Game* game;
 	EngineEvent lastEvent;
 	PacmanState state;
 	PacmanState initialState;

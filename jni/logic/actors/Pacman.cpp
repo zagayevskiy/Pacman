@@ -107,6 +107,14 @@ void Pacman::initGraphics(GLuint _shiftProgram){
 	delete[] verticesData;
 }
 
+void Pacman::freeGraphics(){
+	glDeleteBuffers(1, &verticesBufferId);
+	glDeleteBuffers(1, &indicesBufferId);
+	if(animationOffsets){
+		delete[] animationOffsets;
+	}
+}
+
 void Pacman::event(EngineEvent e){
 	LOGI("Pacman::event(%d)", e);
 
@@ -214,9 +222,6 @@ void Pacman::step(double elapsedTime){
 	averageStepLength = totalPathLength / totalStepsCount;
 
 	//LOGI("Total path: %f, Speed: %f, Average step length: %f, Current step length: %f", totalPathLength, speed, averageStepLength, speed*elapsedTime);
-/*
-	x += speedX*elapsedTime;
-	y += speedY*elapsedTime;*/
 }
 
 void Pacman::switchDirection(bool verticalDirectionNow){
@@ -382,5 +387,6 @@ void Pacman::render(double elapsedTime){
 }
 
 Pacman::~Pacman() {
+	freeGraphics();
 }
 

@@ -47,16 +47,12 @@ public:
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
 	static const int MAX_LEVEL_SIZE = 32;
 
-	static const int TEXTURE_PLAY_BUTTON = 0;
-	static const int TEXTURE_GRAD = 1;
-	static const int TEXTURE_YELLOW = 2;
-	static const int TEXTURE_PACMAN = 3;
-	static const int TEXTURE_MAP_0 = 4;
-	static const int TEXTURE_MONSTER = 5;
-	static const int TEXTURE_ALL_LEVELS = 6;
-	static const int TEXTURE_BUTTONS = 7;
-	static const int TEXTURE_PACMAN_ANIMATION = 8;
-	static const int TEXTURES_COUNT = 9;
+	static const int TEXTURE_PACMAN_ANIMATION = 0;
+	static const int TEXTURE_BUTTONS = 1;
+	static const int TEXTURE_TILES = 2;
+	static const int TEXTURE_MONSTER = 3;
+	static const int TEXTURE_ALL_LEVELS = 4;
+	static const int TEXTURES_COUNT = 5;
 	static const int TEXTURE_NONE = 0;
 
 	static const int SHADER_VERTEX_0 = 0;

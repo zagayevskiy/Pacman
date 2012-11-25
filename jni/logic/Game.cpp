@@ -88,41 +88,7 @@ void Game::step(double elapsedTime){
 }
 
 void Game::render(double elapsedTime){
-	/*glUseProgram(shiftProgram);
 
-	float top = 0.0;
-
-	GLfloat triangles[] = {
-		0.0, top, maxX, top, maxX, top + maxX,
-		maxX, top + maxX, 0.0, top + maxX, 0.0, top
-	};
-
-	GLfloat texCoords[] = {
-		0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-		1.0, 1.0, 0.0, 1.0, 0.0, 0.0
-	};
-
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_LEVEL0));
-	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, 0, triangles);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftVertexHandle);
-	checkGlError("glEnableVertexAttribArray");
-
-	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftTextureHandle);
-	checkGlError("glEnableVertexAttribArray");
-
-	//x += 0.0005;
-	//y += 0.0005;
-	glUniform2f(shiftHandle, x, y);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	checkGlError("glDrawArrays");
-
-	glDisableVertexAttribArray(shiftTextureHandle);
-	glDisableVertexAttribArray(shiftVertexHandle);
-*/
 	glUseProgram(stableProgram);
 
 	GLfloat freeTexCoords[] = {
@@ -144,7 +110,7 @@ void Game::render(double elapsedTime){
 
 
 	GLfloat top = 0.05;
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_MAP_0));
+	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_TILES));
 	for(int i = 0; i < mapHeight; ++i){
 		for(int j = 0; j < mapWidth; ++j){
 

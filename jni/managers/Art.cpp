@@ -46,11 +46,7 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	loadLevels();
 
 	texturesSources = new Texture*[TEXTURES_COUNT];
-	texturesSources[TEXTURE_PLAY_BUTTON] = loadPng("textures/button1.png");
-	texturesSources[TEXTURE_GRAD] = loadPng("textures/tex.png");
-	texturesSources[TEXTURE_YELLOW] = loadPng("textures/yellow.png");
-	texturesSources[TEXTURE_PACMAN] = loadPng("textures/pacman.png");
-	texturesSources[TEXTURE_MAP_0] = loadPng("textures/map.png");
+	texturesSources[TEXTURE_TILES] = loadPng("textures/tiles.png");
 	texturesSources[TEXTURE_MONSTER] = loadPng("textures/monster.png");
 	texturesSources[TEXTURE_BUTTONS] = loadPng("textures/buttons.png");
 	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng("textures/pacmans.png");
