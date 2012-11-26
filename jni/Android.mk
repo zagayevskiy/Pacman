@@ -16,6 +16,7 @@ LOCAL_SRC_FILES := \
 	graphics/ui/menu/SwipeGameMenu.cpp \
 	graphics/ui/menu/GameOverMenu.cpp \
 	graphics/ui/menu/PauseMenu.cpp \
+	graphics/ui/menu/WinMenu.cpp \
 	managers/Art.cpp \
 	managers/ShadersManager.cpp \
 	logic/Game.cpp \

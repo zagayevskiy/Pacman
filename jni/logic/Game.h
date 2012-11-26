@@ -43,10 +43,12 @@ public:
 	void clear();
 
 	bool isGameOver() const {return state == GAME_OVER;};
+	bool isWin() const {return state == WIN;};
 
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
 	List<Actor*>& getMonsters(){return monsters;};
+	int getMaxLevelScore() const {return maxLevelScore;};
 
 
 	float getTileSize() const {return tileSize;}
@@ -62,7 +64,8 @@ private:
 	enum GameState{
 		PACMAN_DEAD = 0,
 		PACMAN_ALIVE = 1,
-		GAME_OVER = 2
+		GAME_OVER = 2,
+		WIN = 3
 	};
 
 	GameState state;

@@ -67,6 +67,11 @@ void Engine::step(double elapsedTime){
 				setState(STATE_GAME_OVER);
 				LOGI("State: STATE_GAME_OVER");
 			}
+			if(game->isWin()){
+				currentMenu = winMenu;
+				setState(STATE_WIN);
+				LOGI("State: STATE_WIN");
+			}
 		break;
 
 		case STATE_GAME_OVER:
@@ -96,6 +101,37 @@ void Engine::step(double elapsedTime){
 				case EVENT_PLAY:
 					lastEvent = EVENT_NONE;
 					currentMenu = gameMenu;
+					setState(STATE_PLAY);
+					LOGI("State: STATE_PLAY");
+				break;
+
+				case EVENT_RETRY:
+					lastEvent = EVENT_NONE;
+					currentMenu = gameMenu;
+					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					setState(STATE_PLAY);
+					LOGI("State: STATE_PLAY");
+				break;
+
+				case EVENT_MAINMENU:
+					lastEvent = EVENT_NONE;
+					currentMenu = mainMenu;
+					setState(STATE_MAIN_MENU);
+					LOGI("State: STATE_MAIN_MENU");
+				break;
+
+				default: break;
+			}
+		break;
+
+		case STATE_WIN:
+			switch(lastEvent){
+
+				case EVENT_NEXT_LEVEL:
+					lastEvent = EVENT_NONE;
+					currentMenu = gameMenu;
+					levelToLoadNumber = (levelToLoadNumber + 1) % Art::getLevelsCount();
+					game->loadLevel(Art::getLevel(levelToLoadNumber));
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -149,7 +185,7 @@ void Engine::render(double elapsedTime){
 
 	if(state == STATE_PLAY){
 		game->render(elapsedTime);
-	}else if(state == STATE_GAME_OVER || state == STATE_PAUSE){
+	}else if(state == STATE_GAME_OVER || state == STATE_PAUSE || state == STATE_WIN){
 		game->render(elapsedTime);
 		glUseProgram(stableProgram);
 		gameMenu->render(elapsedTime);
@@ -293,6 +329,8 @@ bool Engine::setupGraphics(int w, int h) {
     gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     pauseMenu = new PauseMenu();
     pauseMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+    winMenu = new WinMenu();
+    winMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     game = new Game();
     game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 

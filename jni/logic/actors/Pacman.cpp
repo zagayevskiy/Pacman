@@ -138,6 +138,10 @@ void Pacman::step(double elapsedTime){
 			}
 			exists = monsters.getNext(monster);
 		}
+
+		if(score == game->getMaxLevelScore()){
+			state = PACMAN_WIN;
+		}
 	}
 
 	int iX, iY;
@@ -222,6 +226,9 @@ void Pacman::step(double elapsedTime){
 		break;
 
 		case PACMAN_GAME_OVER:
+		break;
+
+		case PACMAN_WIN:
 		break;
 
 		default: break;

@@ -72,6 +72,7 @@ public:
 	static GLfloat TEX_COORDS_BUTTON_RETRY[12];
 	static GLfloat TEX_COORDS_BUTTON_LIST[12];
 	static GLfloat TEX_COORDS_BUTTON_PLAY[12];
+	static GLfloat TEX_COORDS_BUTTON_NEXT[12];
 
 	static GLfloat TEX_COORDS_TILE_WALL[8];
 	static GLfloat TEX_COORDS_TILE_FREE[8];

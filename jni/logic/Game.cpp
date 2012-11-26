@@ -181,6 +181,7 @@ void Game::event(EngineEvent e){
 
 void Game::step(double elapsedTime){
 	bool exists;
+	Pacman* pacman = (Pacman*) this->pacman;
 	switch(state){
 		case PACMAN_ALIVE:
 			if(lastEvent != EVENT_NONE){
@@ -194,17 +195,21 @@ void Game::step(double elapsedTime){
 				exists = monsters.getNext(monster);
 			}
 			pacman->step(elapsedTime);
-			if(((Pacman*)pacman)->isDead()){
+			if(pacman->isDead()){
 				state = PACMAN_DEAD;
+			}else{
+				if(pacman->isWin()){
+					state = WIN;
+				}
 			}
 		break;
 
 		case PACMAN_DEAD:
 			pacman->step(elapsedTime);
-			if(((Pacman*)pacman)->isGameOver()){
+			if(pacman->isGameOver()){
 				state = GAME_OVER;
 			}else{
-				if(!((Pacman*)pacman)->isDead()){
+				if(!pacman->isDead()){
 					state = PACMAN_ALIVE;
 				}
 			}
@@ -212,6 +217,9 @@ void Game::step(double elapsedTime){
 		break;
 
 		case GAME_OVER:
+		break;
+
+		case WIN:
 		break;
 
 		default: break;

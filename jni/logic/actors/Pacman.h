@@ -47,6 +47,7 @@ public:
 
 	bool isDead() const {return state == PACMAN_DIED;};
 	bool isGameOver() const {return state == PACMAN_GAME_OVER;};
+	bool isWin() const {return state == PACMAN_WIN;};
 	int getLifes() const {return lifes;};
 	int getScore() const {return score;};
 
@@ -63,7 +64,8 @@ private:
 		PACMAN_GO_UP = 3,
 		PACMAN_GO_DOWN = 4,
 		PACMAN_DIED = 10,
-		PACMAN_GAME_OVER = 11
+		PACMAN_GAME_OVER = 11,
+		PACMAN_WIN = 12
 	};
 
 	Game* game;

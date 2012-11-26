@@ -18,6 +18,7 @@
 #include "graphics/ui/menu/SwipeGameMenu.h"
 #include "graphics/ui/menu/GameOverMenu.h"
 #include "graphics/ui/menu/PauseMenu.h"
+#include "graphics/ui/menu/WinMenu.h"
 
 #include "managers/Art.h"
 
@@ -42,7 +43,8 @@ private:
 		STATE_MAIN_MENU = 2,
 		STATE_PLAY = 3,
 		STATE_PAUSE = 4,
-		STATE_GAME_OVER = 5
+		STATE_GAME_OVER = 5,
+		STATE_WIN = 6
 	};
 
 	EngineState state;
@@ -65,6 +67,7 @@ private:
 	GameMenu* gameMenu;
 	GameOverMenu* gameOverMenu;
 	PauseMenu* pauseMenu;
+	WinMenu* winMenu;
 
 	Game* game;
 };
