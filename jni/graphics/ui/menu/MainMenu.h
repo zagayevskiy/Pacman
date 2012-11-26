@@ -14,19 +14,16 @@
 class MainMenu: public Menu {
 public:
 	MainMenu(float maxX, float maxY, GLuint vHandle, GLuint tHandle){
-		float buttonSize = maxX / Art::LEVELS_ON_SIDE_COUNT;
+		float indentX =  maxX / 30.0f;
+		float size = (maxX - indentX*(Art::LEVELS_ON_SIDE_COUNT + 1)) / Art::LEVELS_ON_SIDE_COUNT ;
+		float indentY = (maxY - size*Art::LEVELS_ON_SIDE_COUNT) / (Art::LEVELS_ON_SIDE_COUNT + 1);
 		RectButton* button;
-
-		/*button = new RectButton(0.0, 0.0, 0.5, 0.5);
-		button->initGraphics(Art::getTexture(Art::TEXTURE_PLAY_BUTTON), NULL, NULL, vHandle, tHandle);
-		button->setActionEvent(ACTION_UP, EVENT_PLAY);
-		controls.pushHead(button);*/
 
 		for(int i = 0; i < Art::LEVELS_ON_SIDE_COUNT; ++i){
 			for(int j = 0; j < Art::LEVELS_ON_SIDE_COUNT; ++j){
 				GLfloat* texCoords = Art::getLevelTexCoords(i*Art::LEVELS_ON_SIDE_COUNT + j);
 				if(texCoords != NULL){
-					button = new RectButton(j*buttonSize, i*buttonSize, buttonSize, buttonSize);
+					button = new RectButton(j*(size + indentX) + indentX, i*(size + indentY) + indentY, size, size);
 					button->initGraphics(Art::getTexture(Art::TEXTURE_ALL_LEVELS), texCoords, NULL, vHandle, tHandle);
 					button->setActionEvent(ACTION_UP, EVENT_PLAY);
 					controls.pushTail(button);
