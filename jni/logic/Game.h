@@ -68,6 +68,7 @@ private:
 	GameState state;
 	int* map;
 	int mapWidth, mapHeight;
+	int maxLevelScore;
 	int lastChangedX, lastChangedY;
 	bool isMapChanged;
 

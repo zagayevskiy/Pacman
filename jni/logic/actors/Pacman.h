@@ -33,6 +33,7 @@ public:
 		averageStepLength = 0.0f;
 		diedTime = 0.0f;
 		lifes = MAX_LIFES_COUNT;
+		score = 0;
 		animationOffsets = NULL;
 		initGraphics(_shiftProgram);
 	}
@@ -47,6 +48,7 @@ public:
 	bool isDead() const {return state == PACMAN_DIED;};
 	bool isGameOver() const {return state == PACMAN_GAME_OVER;};
 	int getLifes() const {return lifes;};
+	int getScore() const {return score;};
 
 	virtual ~Pacman();
 
@@ -73,6 +75,7 @@ private:
 	float averageStepLength;
 	float diedTime;
 	int lifes;
+	int score;
 
 	float initialX, initialY;
 

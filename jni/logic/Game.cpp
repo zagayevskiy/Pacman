@@ -263,9 +263,6 @@ void Game::render(double elapsedTime){
 
 	glDrawElements(GL_TRIANGLES, 6*mapWidth*mapHeight, GL_UNSIGNED_SHORT, 0);
 
-	//glDisableVertexAttribArray(stableTextureHandle);
-	//glDisableVertexAttribArray(stableVertexHandle);
-
 	glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
 
@@ -273,9 +270,6 @@ void Game::render(double elapsedTime){
 
 	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
 	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
-
-	//glEnableVertexAttribArray(stableVertexHandle);
-	//glEnableVertexAttribArray(stableTextureHandle);
 
 	glDrawElements(GL_TRIANGLES, 6*((Pacman*) pacman)->getLifes(), GL_UNSIGNED_SHORT, 0);
 
@@ -303,7 +297,7 @@ void Game::loadLevel(const Texture* level){
 	tileSize = maxX / ((float) mapWidth);
 	isMapChanged = false;
 	lastChangedX = lastChangedY = -1;
-	LOGI("TileSize: %f", tileSize);
+	maxLevelScore = 0;
 	map = new int[mapWidth * mapHeight];
 	char r, g, b;
 	for(int i = 0; i < mapHeight; ++i){
@@ -321,17 +315,16 @@ void Game::loadLevel(const Texture* level){
 
 			if(g > 0 && g <= MAX_FOOD_G){
 				map[i*mapWidth + j/4] = TILE_FOOD;
+				++maxLevelScore;
 				continue;
 			}
 
 			if(b > 0 && b <= MAX_MONSTER_B){
-				LOGW("Monster: %d, %d", j/4, i);
 				monsters.pushTail(new StupidMonster(this, (float)(j/4), (float)i, shiftProgram));
 				continue;
 			}
 
 			if(r > MIN_PACMAN_R && g > MIN_PACMAN_G){
-				LOGW("Pacman: %d, %d", j/4, i);
 				pacman = new Pacman(this, (float)(j/4), (float)i, shiftProgram);
 				continue;
 			}

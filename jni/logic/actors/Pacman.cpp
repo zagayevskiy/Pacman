@@ -147,6 +147,7 @@ void Pacman::step(double elapsedTime){
 	int iCurrentY = (int) fCurrentYFloor;
 	if(game->getMapAt(iCurrentX, iCurrentY) == Game::TILE_FOOD){
 		game->setMapAt(iCurrentX, iCurrentY, Game::TILE_FREE);
+		++score;
 	}
 
 
