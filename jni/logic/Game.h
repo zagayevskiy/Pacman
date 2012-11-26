@@ -87,6 +87,7 @@ private:
 	GLuint shiftHandle;
 
 	GLuint verticesBufferId, indicesBufferId;
+	GLuint lifesVerticesBufferId, lifesIndicesBufferId;
 
 	void createBuffers();
 	void freeBuffers();

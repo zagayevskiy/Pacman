@@ -25,7 +25,7 @@
 #include "logic/Engine.h"
 #include "managers/Art.h"
 
-#define MAX_ELAPSED_TIME 250.0f
+#define MAX_ELAPSED_TIME 100.0f
 
 static double getTime()
 {

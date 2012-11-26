@@ -112,6 +112,52 @@ void Game::createBuffers(){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*mapWidth*mapHeight*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
 	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
 
+	delete[] verticesData;
+	delete[] indicesData;
+
+	//Lifes Texture Coords
+	GLfloat ltc[] = {
+		0.0, 0.0,
+		0.5, 0.0,
+		0.5, 0.5,
+		0.0, 0.5
+	};
+
+	verticesData = new GLfloat[Pacman::MAX_LIFES_COUNT*16];
+	indicesData = new GLshort[Pacman::MAX_LIFES_COUNT*6];
+
+
+	for(int i = 0; i < Pacman::MAX_LIFES_COUNT; ++i){
+		GLfloat squareData[16] = {
+				i*tileSize, mapHeight*tileSize, ltc[0], ltc[1],
+				(i + 1)*tileSize, mapHeight*tileSize, ltc[2], ltc[3],
+				(i + 1)*tileSize, (mapHeight + 1)*tileSize, ltc[4], ltc[5],
+				i*tileSize, (mapHeight + 1)*tileSize, ltc[6], ltc[7]
+		};
+		memcpy(&(verticesData[16*i]), squareData, 16*sizeof(GLfloat));
+		for(int j = 0; j < 6; ++j){
+			indicesData[i*6 + j] = indicesNumbers[j] + i*4;
+		}
+	}
+
+	glGenBuffers(1, &lifesVerticesBufferId);
+	checkGlError("glGenBuffers(1, &lifesVerticesBufferId);");
+	LOGI("Game::lifesVerticesBufferId: %d", lifesVerticesBufferId);
+
+	glGenBuffers(1, &lifesIndicesBufferId);
+	checkGlError("glGenBuffers(1, &lifesIndicesBufferId);");
+	LOGI("Game::lifesIndicesBufferId: %d", lifesIndicesBufferId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
+	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);");
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
+	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);");
+
+	glBufferData(GL_ARRAY_BUFFER, Pacman::MAX_LIFES_COUNT*16*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ARRAY_BUFFER, verticesDataLength*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);");
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Pacman::MAX_LIFES_COUNT*6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
+	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, 0);");
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -119,11 +165,14 @@ void Game::createBuffers(){
 
 	delete[] verticesData;
 	delete[] indicesData;
+
 }
 
 void Game::freeBuffers(){
 	glDeleteBuffers(1, &verticesBufferId);
 	glDeleteBuffers(1, &indicesBufferId);
+	glDeleteBuffers(1, &lifesVerticesBufferId);
+	glDeleteBuffers(1, &lifesIndicesBufferId);
 }
 
 void Game::event(EngineEvent e){
@@ -202,6 +251,7 @@ void Game::render(double elapsedTime){
 		lastChangedX = lastChangedY = -1;
 	}
 
+	//Render the map
 	//x, y, tx, ty
 	GLsizei stride = 4 * sizeof(GLfloat);
 
@@ -213,60 +263,28 @@ void Game::render(double elapsedTime){
 
 	glDrawElements(GL_TRIANGLES, 6*mapWidth*mapHeight, GL_UNSIGNED_SHORT, 0);
 
+	//glDisableVertexAttribArray(stableTextureHandle);
+	//glDisableVertexAttribArray(stableVertexHandle);
+
+	glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
+
+	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_PACMAN_ANIMATION));
+
+	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
+	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
+
+	//glEnableVertexAttribArray(stableVertexHandle);
+	//glEnableVertexAttribArray(stableTextureHandle);
+
+	glDrawElements(GL_TRIANGLES, 6*((Pacman*) pacman)->getLifes(), GL_UNSIGNED_SHORT, 0);
+
 	glDisableVertexAttribArray(stableTextureHandle);
 	glDisableVertexAttribArray(stableVertexHandle);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-/*
-	GLfloat freeTexCoords[] = {
-		0.0, 0.0, 0.5, 0.0, 0.5, 0.5,
-		0.5, 0.5, 0.0, 0.5, 0.0, 0.0
-	};
-
-	GLfloat wallTexCoords[] = {
-		0.5, 0.0, 1.0, 0.0, 1.0, 0.5,
-		1.0, 0.5, 0.5, 0.5, 0.5, 0.0
-	};
-
-	GLfloat foodTexCoords[] = {
-		0.0, 0.5, 0.5, 0.5, 0.5, 1.0,
-		0.5, 1.0, 0.0, 1.0, 0.0, 0.5
-	};
-
-
-
-
-	GLfloat top = 0.05;
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_TILES));
-	for(int i = 0; i < mapHeight; ++i){
-		for(int j = 0; j < mapWidth; ++j){
-
-			GLfloat triangles[] = {
-				tileSize*j, tileSize*i, tileSize*(j + 1), tileSize*i, tileSize*(j + 1), tileSize*(i + 1),
-				tileSize*(j + 1), tileSize*(i + 1), tileSize*j, tileSize*(i + 1), tileSize*j, tileSize*i
-			};
-
-
-			glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, 0, triangles);
-			checkGlError("glVertexAttribPointer");
-			glEnableVertexAttribArray(stableVertexHandle);
-			checkGlError("glEnableVertexAttribArray");
-
-			int m = map[i*mapWidth + j];
-			glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, 0, m == TILE_FREE ? freeTexCoords : m == TILE_WALL ? wallTexCoords : foodTexCoords);
-			checkGlError("glVertexAttribPointer");
-			glEnableVertexAttribArray(stableTextureHandle);
-			checkGlError("glEnableVertexAttribArray");
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			checkGlError("glDrawArrays");
-
-			glDisableVertexAttribArray(shiftTextureHandle);
-			glDisableVertexAttribArray(shiftVertexHandle);
-		}
-	}
-*/
 	pacman->render(elapsedTime);
 	Actor* monster;
 	bool exists = monsters.getHead(monster);
