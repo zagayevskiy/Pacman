@@ -13,154 +13,7 @@ int CleverMonster::mapsCountY = 0;
 int CleverMonster::mapSize = 0;
 int** CleverMonster::maps = NULL;
 
-void CleverMonster::step(double elapsedTime){
-	if(remainingTime <= 0.0){
-		remainingTime = drand48()*700;
-		newDirectionEvent();
-	}else{
-		int iX, iY;
-		float fCurrentXFloor = floorf(x);
-		float fCurrentYFloor = floorf(y);
-		int iCurrentX = (int) fCurrentXFloor;
-		int iCurrentY = (int) fCurrentYFloor;
 
-		switch(state){
-			case CM_GO_LEFT:
-				iX = (int) floor(x - radius + speedX*elapsedTime);
-				iY = iCurrentY;
-
-				if(game->getMapAt(iX, iY) != Game::TILE_WALL){
-					x += speedX*elapsedTime;
-				}else{
-					x = fCurrentXFloor + 0.5;
-					newDirectionEvent();
-				}
-				if(lastEvent != EVENT_NONE){
-					switchDirection(false);
-				}
-			break;
-
-			case CM_GO_RIGHT:
-				iX = (int) floor(x + radius + speedX*elapsedTime);
-				iY = iCurrentY;
-				if(game->getMapAt(iX, iY) != Game::TILE_WALL){
-					x += speedX*elapsedTime;
-				}else{
-					x = fCurrentXFloor + 0.5;
-					newDirectionEvent();
-				}
-				if(lastEvent != EVENT_NONE){
-					switchDirection(false);
-				}
-			break;
-
-			case CM_GO_UP:
-				iX = iCurrentX;
-				iY = (int) floor(y - radius + speedY*elapsedTime);
-				if(game->getMapAt(iX, iY) != Game::TILE_WALL){
-					y += speedY*elapsedTime;
-				}else{
-					y = fCurrentYFloor + 0.5;
-					newDirectionEvent();
-				}
-				if(lastEvent != EVENT_NONE){
-					switchDirection(true);
-				}
-			break;
-
-			case CM_GO_DOWN:
-				iX = iCurrentX;
-				iY = (int) floor(y + radius + speedY*elapsedTime);
-				if(game->getMapAt(iX, iY) != Game::TILE_WALL){
-					y += speedY*elapsedTime;
-				}else{
-					y = fCurrentYFloor + 0.5;
-					newDirectionEvent();
-				}
-				if(lastEvent != EVENT_NONE){
-					switchDirection(true);
-				}
-			break;
-
-			default: break;
-		}
-		remainingTime -= elapsedTime;
-
-		totalPathLength += speed*elapsedTime;
-		totalStepsCount += 1.0;
-		averageStepLength = totalPathLength / totalStepsCount;
-	}
-}
-
-void CleverMonster::switchDirection(bool verticalDirectionNow){
-	switch(lastEvent){
-		case EVENT_MOVE_LEFT:
-			if(verticalDirectionNow){
-				if(getYCellCenterDistance() < averageStepLength){
-					y = floorf(y) + 0.5;
-					speedX = -speed;
-					speedY = 0.0;
-					lastEvent = EVENT_NONE;
-					state = CM_GO_LEFT;
-				}
-			}else{
-				lastEvent = EVENT_NONE;
-				speedX = -speed;
-				state = CM_GO_LEFT;
-			}
-		break;
-
-		case EVENT_MOVE_RIGHT:
-			if(verticalDirectionNow){
-				if(getYCellCenterDistance() < averageStepLength){
-					y = floorf(y) + 0.5;
-					speedX = speed;
-					speedY = 0.0;
-					lastEvent = EVENT_NONE;
-					state = CM_GO_RIGHT;
-				}
-			}else{
-				lastEvent = EVENT_NONE;
-				speedX = speed;
-				state = CM_GO_RIGHT;
-			}
-		break;
-
-		case EVENT_MOVE_UP:
-			if(verticalDirectionNow){
-				lastEvent = EVENT_NONE;
-				speedY = -speed;
-				state = CM_GO_UP;
-			}else{
-				if(getXCellCenterDistance() < averageStepLength){
-					x = floorf(x) + 0.5;
-					speedX = 0.0f;
-					speedY = -speed;
-					lastEvent = EVENT_NONE;
-					state = CM_GO_UP;
-				}
-			}
-		break;
-
-		case EVENT_MOVE_DOWN:
-			if(verticalDirectionNow){
-				lastEvent = EVENT_NONE;
-				speedY = speed;
-				state = CM_GO_DOWN;
-			}else{
-				if(getXCellCenterDistance() < averageStepLength){
-					x = floorf(x) + 0.5;
-					speedX = 0.0f;
-					speedY = speed;
-					lastEvent = EVENT_NONE;
-					state = CM_GO_DOWN;
-				}
-			}
-		break;
-
-		default: break;
-	}
-}
 
 void CleverMonster::newDirectionEvent(){
 	int minX = 0, minY = 0, min = mapSize + 1;
@@ -173,15 +26,12 @@ void CleverMonster::newDirectionEvent(){
 
 	int* map = getMap(pX, pY);
 
-
-	LOGI("My X:%f, Y:%f", x, y);
 	for(int i = -1; i <= 1; ++i){
 		for(int j = -1; j <= 1; ++j){
 			if((i == 0) ^ (j == 0)){
 				int curX = iX + i;
 				int curY = iY + j;
 				if(curX >= 0 && curX < width && curY >= 0 && curY < height && map[curY*width + curX]){
-					LOGI("i = %d, j = %d, x=%d, y=%d, map:%d", i, j, curX, curY, map[curY*width + curX]);
 					if(min > map[curY*width + curX]){
 						min = map[curY*width + curX];
 						minX = i;
@@ -192,9 +42,8 @@ void CleverMonster::newDirectionEvent(){
 			}
 		}
 	}
-	LOGI("min:%d, minx:%d, miny:%d,", min, minX, minY);
 
-	if(minX  == 1){
+	if(minX == 1){
 		lastEvent = EVENT_MOVE_RIGHT;
 	}else if(minX == -1){
 		lastEvent = EVENT_MOVE_LEFT;
@@ -228,7 +77,6 @@ void CleverMonster::freeMaps(){
 }
 
 int* CleverMonster::getMap(int x, int y){
-	//LOGI("CleverMonster::getMap(%d, %d)", x, y);
 	return maps[y*mapsCountX + x] != NULL ? maps[y*mapsCountX + x] : buildMap(x, y);
 }
 
@@ -306,51 +154,6 @@ int* CleverMonster::buildMap(int targetX, int targetY){
 	delete yWaveNew;
 
 	return maps[mapsCountX*targetY + targetX] = target;
-}
-
-void CleverMonster::initGraphics(GLuint _shiftProgram){
-	shiftProgram = _shiftProgram;
-	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");
-	shiftVertexHandle = glGetAttribLocation(shiftProgram, "aPosition");
-	shiftTextureHandle = glGetAttribLocation(shiftProgram, "aTexture");
-}
-
-void CleverMonster::render(double elapsedTime){
-	glUseProgram(shiftProgram);
-
-	GLfloat texCoords[] = {
-		0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-		1.0, 1.0, 0.0, 1.0, 0.0, 0.0
-	};
-	GLfloat tileSize = game->getTileSize();
-
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_MONSTER));
-
-	GLfloat shiftX = (x - radius)*tileSize;
-	GLfloat shiftY = (y - radius)*tileSize;
-	glUniform2f(shiftHandle, shiftX, shiftY);
-	//LOGI("(%f, %f)", shiftX, shiftY);
-
-
-	GLfloat monsterCoords[] = {
-		0.0, 0.0, tileSize, 0.0, tileSize, tileSize,
-		tileSize, tileSize, 0.0, tileSize, 0.0, 0.0
-	};
-
-	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, 0, monsterCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftVertexHandle);
-	checkGlError("glEnableVertexAttribArray");
-
-	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftTextureHandle);
-	checkGlError("glEnableVertexAttribArray");
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	checkGlError("glDrawArrays");
-
-	glDisableVertexAttribArray(shiftTextureHandle);
-	glDisableVertexAttribArray(shiftVertexHandle);
 }
 
 CleverMonster::~CleverMonster() {
