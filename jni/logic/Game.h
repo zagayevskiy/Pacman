@@ -30,7 +30,9 @@ public:
 	static const int TILE_FOOD = 20;
 	static const char MAX_WALL_R = 200;
 	static const char MAX_FOOD_G = 200;
-	static const char MAX_MONSTER_B = 200;
+	static const char MAX_STUPED_MONSTER_B = 200;
+	static const char MIN_CLEVER_MONSTER_R = 200;
+	static const char MIN_CLEVER_MONSTER_B = 200;
 	static const char MIN_PACMAN_R = 200;
 	static const char MIN_PACMAN_G = 200;
 

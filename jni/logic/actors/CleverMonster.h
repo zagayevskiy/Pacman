@@ -20,7 +20,7 @@ public:
 		radius = 0.5f;
 		x = _x + 0.5f;
 		y = _y + 0.5f;
-		speed = 0.0025;
+		speed = 0.002 + (rand() % 10)*0.00006;
 		speedX = speed;
 		speedY = 0;
 		lastEvent = EVENT_NONE;

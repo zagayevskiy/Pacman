@@ -328,10 +328,13 @@ void Game::loadLevel(const Texture* level){
 				continue;
 			}
 
-			if(b > 0 && b <= MAX_MONSTER_B){
-				//monsters.pushTail(new StupidMonster(this, (float)(j/4), (float)i, shiftProgram));
-				monsters.pushTail(new CleverMonster(this, (float)(j/4), (float)i, shiftProgram));
+			if(b > 0 && b <= MAX_STUPED_MONSTER_B){
+				monsters.pushTail(new StupidMonster(this, (float)(j/4), (float)i, shiftProgram));
 				continue;
+			}
+
+			if(b > MIN_CLEVER_MONSTER_B && r > MIN_CLEVER_MONSTER_R){
+				monsters.pushTail(new CleverMonster(this, (float)(j/4), (float)i, shiftProgram));
 			}
 
 			if(r > MIN_PACMAN_R && g > MIN_PACMAN_G){
