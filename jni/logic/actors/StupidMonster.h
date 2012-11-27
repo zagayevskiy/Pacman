@@ -22,7 +22,6 @@ public:
 		speed = 0.003;
 		speedX = speed;
 		speedY = 0;
-		LOGI("StupedMonster::StupedMonster(%f, %f, Game)", x, y);
 		lastEvent = EVENT_NONE;
 		state = MONSTER_GO_DOWN;
 		totalPathLength = 0.0;

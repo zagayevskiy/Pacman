@@ -81,7 +81,6 @@ int* CleverMonster::getMap(int x, int y){
 }
 
 int* CleverMonster::buildMap(int targetX, int targetY){
-	LOGI("CleverMonster::buildMap(%d, %d)", targetX, targetY);
 	int* target = new int[mapSize];
 	memset(target, 0, mapSize*sizeof(int));
 
