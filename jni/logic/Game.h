@@ -48,6 +48,7 @@ public:
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
 	List<Actor*>& getMonsters(){return monsters;};
+	void getPacmanMapPos(int& x, int& y) const {x = floorf(pacman->getX()), y = floorf(pacman->getY());};
 	int getMaxLevelScore() const {return maxLevelScore;};
 
 

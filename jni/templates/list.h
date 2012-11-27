@@ -189,9 +189,8 @@ public:
 		if(this == &other){
 			return (*this);
 		}
+		clear();
 		Node* temp = other.head;
-		head = tail = cursor = NULL;
-		length = 0;
 		while(temp){
 			pushTail(temp->data);
 			temp = temp->next;

@@ -20,17 +20,13 @@
 
 class Actor: public StateMachine, public IRenderable {
 public:
-/*
-	void virtual step(double elapsedTime);
-
-	void virtual render(double elapsedTime);
-*/
 	virtual void event(EngineEvent e){};
 	virtual bool intersect(const Actor* other) const;
 	virtual float getXCellCenterDistance() const {return fabs(x - floorf(x) - 0.5f);};
 	virtual float getYCellCenterDistance() const {return fabs(y - floorf(y) - 0.5f);};
+	virtual float getX() const {return x;};
+	virtual float getY() const {return y;};
 	virtual ~Actor();
-
 protected:
 	float x, y;
 	float radius;

@@ -15,10 +15,8 @@ class Monster: public Actor {
 public:
 
 	Monster(float _x, float _y){
-		//radius = game->getTileSize() / 2.0;
 		x = _x;
 		y = _y;
-		LOGI("Monster::Monster(%f, %f)", x, y);
 	}
 
 	void step(double elapsedTime){};

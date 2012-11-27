@@ -211,6 +211,5 @@ void StupidMonster::render(double elapsedTime){
 }
 
 StupidMonster::~StupidMonster() {
-	// TODO Auto-generated destructor stub
 }
 

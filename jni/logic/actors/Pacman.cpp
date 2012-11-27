@@ -117,8 +117,6 @@ void Pacman::freeGraphics(){
 }
 
 void Pacman::event(EngineEvent e){
-	LOGI("Pacman::event(%d)", e);
-
 	lastEvent = e;
 }
 
