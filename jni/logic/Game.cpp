@@ -6,9 +6,9 @@
  */
 
 #include "logic/actors/Pacman.h"
-#include "logic/actors/Monster.h"
-#include "logic/actors/StupidMonster.h"
-#include "logic/actors/CleverMonster.h"
+#include "logic/actors/monsters/Monster.h"
+#include "logic/actors/monsters/StupidMonster.h"
+#include "logic/actors/monsters/CleverMonster.h"
 
 #include "Game.h"
 

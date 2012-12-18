@@ -8,7 +8,7 @@
 #ifndef MONSTER_H_
 #define MONSTER_H_
 
-#include "Actor.h"
+#include "logic/actors/Actor.h"
 #include "logic/Game.h"
 #include "log.h"
 

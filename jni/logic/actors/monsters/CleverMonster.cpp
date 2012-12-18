@@ -32,7 +32,7 @@ void CleverMonster::newDirectionEvent(){
 				int curX = iX + i;
 				int curY = iY + j;
 				if(curX >= 0 && curX < width && curY >= 0 && curY < height && map[curY*width + curX]){
-					if(min > map[curY*width + curX]){
+					if(min > map[curY*width + curX] || (min == map[curY*width + curX] && rand() % 2)){
 						min = map[curY*width + curX];
 						minX = i;
 						minY = j;

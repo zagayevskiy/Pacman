@@ -24,8 +24,8 @@ LOCAL_SRC_FILES := \
 	logic/StateMachine.cpp \
 	logic/actors/Actor.cpp \
 	logic/actors/Pacman.cpp \
-	logic/actors/Monster.cpp \
-	logic/actors/StupidMonster.cpp \
-	logic/actors/CleverMonster.cpp
+	logic/actors/monsters/Monster.cpp \
+	logic/actors/monsters/StupidMonster.cpp \
+	logic/actors/monsters/CleverMonster.cpp
  
 include $(BUILD_SHARED_LIBRARY)
