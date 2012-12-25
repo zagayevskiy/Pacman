@@ -40,6 +40,7 @@ void RectButton::initGraphics(GLuint _textureId, GLfloat* _texCoords, GLfloat* _
 }
 
 void RectButton::render(double elapsedTime){
+	//LOGI("Presssed: %d", pressed);
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glVertexAttribPointer(vertexHandle, 2, GL_FLOAT, GL_FALSE, 0, vertices);

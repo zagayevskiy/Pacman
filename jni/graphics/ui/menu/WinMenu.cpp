@@ -18,17 +18,17 @@ void WinMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint t
 	RectButton* button;
 
 	button = new RectButton(indent, maxY/2 - buttonSize / 2, buttonSize, buttonSize);
-	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_NEXT, NULL, vertexHandle, textureHandle);
+	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_NEXT, Art::TEX_COORDS_BUTTON_NEXT_PRESSED, vertexHandle, textureHandle);
 	button->setActionEvent(ACTION_UP, EVENT_NEXT_LEVEL);
 	controls.pushTail(button);
 
 	button = new RectButton(indent*2 + buttonSize, maxY/2 - buttonSize / 2, buttonSize, buttonSize);
-	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_RETRY, NULL, vertexHandle, textureHandle);
+	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_RETRY, Art::TEX_COORDS_BUTTON_RETRY_PRESSED, vertexHandle, textureHandle);
 	button->setActionEvent(ACTION_UP, EVENT_RETRY);
 	controls.pushTail(button);
 
 	button = new RectButton(indent*3 + buttonSize*2, maxY/2 - buttonSize / 2, buttonSize, buttonSize);
-	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_LIST, NULL, vertexHandle, textureHandle);
+	button->initGraphics(Art::getTexture(Art::TEXTURE_BUTTONS), Art::TEX_COORDS_BUTTON_LIST, Art::TEX_COORDS_BUTTON_LIST_PRESSED, vertexHandle, textureHandle);
 	button->setActionEvent(ACTION_UP, EVENT_MAINMENU);
 	controls.pushTail(button);
 
