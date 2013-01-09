@@ -6,6 +6,7 @@
  */
 
 #include "Pacman.h"
+#include "monsters/Monster.h"
 
 void Pacman::initGraphics(GLuint _shiftProgram){
 	shiftProgram = _shiftProgram;
@@ -123,8 +124,8 @@ void Pacman::event(EngineEvent e){
 void Pacman::step(double elapsedTime){
 
 	if(state != PACMAN_DIED){
-		List<Actor*>& monsters = game->getMonsters();
-		Actor* monster;
+		List<Monster*>& monsters = game->getMonsters();
+		Monster* monster;
 		bool exists = monsters.getHead(monster);
 
 		while(exists){

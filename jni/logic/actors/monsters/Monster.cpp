@@ -157,7 +157,7 @@ void Monster::switchDirection(bool verticalDirectionNow){
 }
 
 void Monster::initGraphics(GLuint _shiftProgram){
-	animation = new Animation(_shiftProgram, Art::getTexture(Art::TEXTURE_MONSTER_ANIMATION), 3, 2, 2, 500.0, game->getTileSize(), game->getTileSize());
+	animation = new Animation(_shiftProgram, Art::getTexture(Art::TEXTURE_MONSTER_ANIMATION), 2, 2, 2, 500.0, game->getTileSize(), game->getTileSize());
 }
 
 void Monster::render(double elapsedTime){

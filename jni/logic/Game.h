@@ -22,6 +22,9 @@
 #include "actions_events.h"
 #include "log.h"
 
+class Pacman;
+class Monster;
+
 class Game: public StateMachine, public IRenderable {
 public:
 
@@ -49,8 +52,8 @@ public:
 
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
-	List<Actor*>& getMonsters(){return monsters;};
-	void getPacmanMapPos(int& x, int& y) const {x = floorf(pacman->getX()), y = floorf(pacman->getY());};
+	List<Monster*>& getMonsters(){return monsters;};
+	void getPacmanMapPos(int& x, int& y) const;
 	int getMaxLevelScore() const {return maxLevelScore;};
 
 
@@ -78,8 +81,9 @@ private:
 	int lastChangedX, lastChangedY;
 	bool isMapChanged;
 
-	Actor* pacman;
-	List<Actor*> monsters;
+	Pacman* pacman;
+	List<Monster*> monsters;
+	List<IRenderable*> objectsToRender;
 	EngineEvent lastEvent;
 
 	float x, y;

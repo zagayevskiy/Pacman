@@ -182,14 +182,13 @@ void Game::event(EngineEvent e){
 
 void Game::step(double elapsedTime){
 	bool exists;
-	Pacman* pacman = (Pacman*) this->pacman;
 	switch(state){
 		case PACMAN_ALIVE:
 			if(lastEvent != EVENT_NONE){
 				pacman->event(lastEvent);
 				lastEvent = EVENT_NONE;
 			}
-			Actor* monster;
+			Monster* monster;
 			exists = monsters.getHead(monster);
 			while(exists){
 				monster->step(elapsedTime);
@@ -280,7 +279,7 @@ void Game::render(double elapsedTime){
 	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
 	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
 
-	glDrawElements(GL_TRIANGLES, 6*((Pacman*) pacman)->getLifes(), GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, 6*pacman->getLifes(), GL_UNSIGNED_SHORT, 0);
 
 	glDisableVertexAttribArray(stableTextureHandle);
 	glDisableVertexAttribArray(stableVertexHandle);
@@ -288,12 +287,19 @@ void Game::render(double elapsedTime){
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	pacman->render(elapsedTime);
-	Actor* monster;
+	/*pacman->render(elapsedTime);
+	Monster* monster;
 	bool exists = monsters.getHead(monster);
 	while(exists){
 		monster->render(elapsedTime);
 		exists = monsters.getNext(monster);
+	}*/
+
+	IRenderable* obj;
+	bool exists = objectsToRender.getHead(obj);
+	while(exists){
+		obj->render(elapsedTime);
+		exists = objectsToRender.getNext(obj);
 	}
 
 }
@@ -329,16 +335,21 @@ void Game::loadLevel(const Texture* level){
 			}
 
 			if(b > 0 && b <= MAX_STUPED_MONSTER_B){
-				monsters.pushTail(new StupidMonster(this, (float)(j/4), (float)i, shiftProgram));
+				StupidMonster* monster = new StupidMonster(this, (float)(j/4), (float)i, shiftProgram);
+				monsters.pushTail(monster);
+				objectsToRender.pushTail(monster);
 				continue;
 			}
 
 			if(b > MIN_CLEVER_MONSTER_B && r > MIN_CLEVER_MONSTER_R){
-				monsters.pushTail(new CleverMonster(this, (float)(j/4), (float)i, shiftProgram));
+				CleverMonster* monster = new CleverMonster(this, (float)(j/4), (float)i, shiftProgram);
+				monsters.pushTail(monster);
+				objectsToRender.pushTail(monster);
 			}
 
 			if(r > MIN_PACMAN_R && g > MIN_PACMAN_G){
 				pacman = new Pacman(this, (float)(j/4), (float)i, shiftProgram);
+				objectsToRender.pushHead(pacman);
 				continue;
 			}
 
@@ -346,6 +357,7 @@ void Game::loadLevel(const Texture* level){
 	}
 	if(!pacman){
 		LOGE("LEVEL FORMAT ERROR: CAN NOT FIND PACMAN!");
+		return;
 	}
 	createBuffers();
 	state = PACMAN_ALIVE;
@@ -363,7 +375,7 @@ void Game::clear(){
 		pacman = NULL;
 	}
 	if(!monsters.isEmpty()){
-		Actor* monster;
+		Monster* monster;
 		bool exists = monsters.getHead(monster);
 		while(exists){
 			if(monster){
@@ -372,6 +384,9 @@ void Game::clear(){
 			exists = monsters.getNext(monster);
 		}
 		monsters.clear();
+	}
+	if(!objectsToRender.isEmpty()){
+		objectsToRender.clear();
 	}
 }
 
@@ -387,6 +402,11 @@ void Game::setMapAt(int _x, int _y, int value){
 		isMapChanged = true;
 	}
 }
+
+void Game::getPacmanMapPos(int& x, int& y) const{
+	x = floorf(pacman->getX());
+	y = floorf(pacman->getY());
+};
 
 Game::~Game() {
 	clear();
