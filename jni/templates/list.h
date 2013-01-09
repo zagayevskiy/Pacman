@@ -174,6 +174,37 @@ public:
 		return false;
 	}
 
+	int removeItem(const T& item){
+		int result = 0;
+		cursor = head;
+		while(cursor){
+			if(cursor->data == item){
+				Node* temp;
+
+				if(cursor->prev){
+					cursor->prev->next = cursor->next;
+					temp = cursor->prev;
+				}else{
+					head = cursor->next;
+					temp = head;
+				}
+				if(cursor->next){
+					cursor->next->prev = cursor->prev;
+				}else{
+					tail = cursor->prev;
+				}
+
+				delete cursor;
+				cursor = temp;
+				--length;
+				++result;
+			}
+			cursor = cursor->next;
+		}
+
+		return result;
+	}
+
 	T& operator[](int k) const{
 
 		Node* temp = head;

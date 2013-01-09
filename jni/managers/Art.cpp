@@ -51,6 +51,7 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	texturesSources[TEXTURE_BUTTONS] = loadPng("textures/buttons.png");
 	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng("textures/pacmans.png");
 	texturesSources[TEXTURE_MONSTER_ANIMATION] = loadPng("textures/monster_ani.png");
+	texturesSources[TEXTURE_HEART] = loadPng("textures/hearts.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 
 	shadersSources = new char*[SHADERS_COUNT];

@@ -49,6 +49,11 @@ public:
 	bool isGameOver() const {return state == PACMAN_GAME_OVER;};
 	bool isWin() const {return state == PACMAN_WIN;};
 	int getLifes() const {return lifes;};
+	inline void setLifes(int count){
+		if(count >= 0){
+			lifes = count;
+		}
+	};
 	int getScore() const {return score;};
 
 	virtual ~Pacman();

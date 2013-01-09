@@ -9,6 +9,7 @@
 #include "logic/actors/monsters/Monster.h"
 #include "logic/actors/monsters/StupidMonster.h"
 #include "logic/actors/monsters/CleverMonster.h"
+#include "logic/actors/bonuses/LifeBonus.h"
 
 #include "Game.h"
 
@@ -194,6 +195,24 @@ void Game::step(double elapsedTime){
 				monster->step(elapsedTime);
 				exists = monsters.getNext(monster);
 			}
+
+			Bonus* bonus;
+			exists = bonuses.getHead(bonus);
+			int bonusNumber;
+			bonusNumber = 0;
+			while(exists){
+				if(bonus->intersect(pacman)){
+					if(bonus->apply(pacman)){
+						bonuses.removeAt(bonusNumber);
+						objectsToRender.removeItem(bonus);
+						delete bonus;
+					}
+					break;
+				}
+				exists = bonuses.getNext(bonus);
+				++bonusNumber;
+			}
+
 			pacman->step(elapsedTime);
 			if(pacman->isDead()){
 				state = PACMAN_DEAD;
@@ -287,14 +306,6 @@ void Game::render(double elapsedTime){
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	/*pacman->render(elapsedTime);
-	Monster* monster;
-	bool exists = monsters.getHead(monster);
-	while(exists){
-		monster->render(elapsedTime);
-		exists = monsters.getNext(monster);
-	}*/
-
 	IRenderable* obj;
 	bool exists = objectsToRender.getHead(obj);
 	while(exists){
@@ -353,6 +364,13 @@ void Game::loadLevel(const Texture* level){
 				continue;
 			}
 
+			if(g > MIN_LIFE_BONUS_G && b > MIN_LIFE_BONUS_B){
+				LifeBonus* bonus = new LifeBonus(this, (float)(j/4), (float)i, shiftProgram);
+				bonuses.pushTail(bonus);
+				objectsToRender.pushTail(bonus);
+				continue;
+			}
+
 		}
 	}
 	if(!pacman){
@@ -366,14 +384,17 @@ void Game::loadLevel(const Texture* level){
 
 void Game::clear(){
 	LOGI("Game::clear");
+
 	if(map){
 		delete[] map;
 		map = NULL;
 	}
+
 	if(pacman){
 		delete pacman;
 		pacman = NULL;
 	}
+
 	if(!monsters.isEmpty()){
 		Monster* monster;
 		bool exists = monsters.getHead(monster);
@@ -385,6 +406,19 @@ void Game::clear(){
 		}
 		monsters.clear();
 	}
+
+	if(!bonuses.isEmpty()){
+		Bonus* bonus;
+		bool exists = bonuses.getHead(bonus);
+		while(exists){
+			if(bonus){
+				delete bonus;
+			}
+			exists = bonuses.getNext(bonus);
+		}
+		bonuses.clear();
+	}
+
 	if(!objectsToRender.isEmpty()){
 		objectsToRender.clear();
 	}

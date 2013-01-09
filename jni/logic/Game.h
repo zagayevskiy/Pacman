@@ -24,6 +24,7 @@
 
 class Pacman;
 class Monster;
+class Bonus;
 
 class Game: public StateMachine, public IRenderable {
 public:
@@ -38,6 +39,8 @@ public:
 	static const char MIN_CLEVER_MONSTER_B = 200;
 	static const char MIN_PACMAN_R = 200;
 	static const char MIN_PACMAN_G = 200;
+	static const char MIN_LIFE_BONUS_G = 200;
+	static const char MIN_LIFE_BONUS_B = 200;
 
 	void loadLevel(const Texture* level);
 	void initGraphics(float maxX, float maxY, GLuint stableProgram, GLuint shiftProgram);
@@ -83,6 +86,7 @@ private:
 
 	Pacman* pacman;
 	List<Monster*> monsters;
+	List<Bonus*> bonuses;
 	List<IRenderable*> objectsToRender;
 	EngineEvent lastEvent;
 

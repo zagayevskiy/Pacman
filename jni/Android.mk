@@ -27,6 +27,8 @@ LOCAL_SRC_FILES := \
 	logic/actors/Pacman.cpp \
 	logic/actors/monsters/Monster.cpp \
 	logic/actors/monsters/StupidMonster.cpp \
-	logic/actors/monsters/CleverMonster.cpp
+	logic/actors/monsters/CleverMonster.cpp \
+	logic/actors/bonuses/Bonus.cpp \
+	logic/actors/bonuses/LifeBonus.cpp
  
 include $(BUILD_SHARED_LIBRARY)
