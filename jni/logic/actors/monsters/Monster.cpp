@@ -157,50 +157,18 @@ void Monster::switchDirection(bool verticalDirectionNow){
 }
 
 void Monster::initGraphics(GLuint _shiftProgram){
-	shiftProgram = _shiftProgram;
-	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");
-	shiftVertexHandle = glGetAttribLocation(shiftProgram, "aPosition");
-	shiftTextureHandle = glGetAttribLocation(shiftProgram, "aTexture");
+	animation = new Animation(_shiftProgram, Art::getTexture(Art::TEXTURE_MONSTER_ANIMATION), 3, 2, 2, 500.0, game->getTileSize(), game->getTileSize());
 }
 
 void Monster::render(double elapsedTime){
-	glUseProgram(shiftProgram);
-
-	GLfloat texCoords[] = {
-		0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-		1.0, 1.0, 0.0, 1.0, 0.0, 0.0
-	};
 	GLfloat tileSize = game->getTileSize();
+	animation->render(elapsedTime, (x - radius)*tileSize, (y - radius)*tileSize);
 
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_MONSTER));
-
-	GLfloat shiftX = (x - radius)*tileSize;
-	GLfloat shiftY = (y - radius)*tileSize;
-	glUniform2f(shiftHandle, shiftX, shiftY);
-	//LOGI("(%f, %f)", shiftX, shiftY);
-
-
-	GLfloat monsterCoords[] = {
-		0.0, 0.0, tileSize, 0.0, tileSize, tileSize,
-		tileSize, tileSize, 0.0, tileSize, 0.0, 0.0
-	};
-
-	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, 0, monsterCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftVertexHandle);
-	checkGlError("glEnableVertexAttribArray");
-
-	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftTextureHandle);
-	checkGlError("glEnableVertexAttribArray");
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	checkGlError("glDrawArrays");
-
-	glDisableVertexAttribArray(shiftTextureHandle);
-	glDisableVertexAttribArray(shiftVertexHandle);
 }
 
 Monster::~Monster() {
+	if(animation){
+		delete animation;
+	}
 }
 

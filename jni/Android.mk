@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
  
 include $(CLEAR_VARS)
 
-LOCAL_LDLIBS    := -llog -lGLESv2 -landroid -ldl -lOpenSLES
+LOCAL_LDLIBS    := -llog -lGLESv2 -landroid -ldl
 LOCAL_CFLAGS    := -Werror -DANDROID_NDK -DDISABLE_IMPORTGL
 LOCAL_MODULE    := pacman
 LOCAL_SRC_FILES := \
@@ -17,6 +17,7 @@ LOCAL_SRC_FILES := \
 	graphics/ui/menu/GameOverMenu.cpp \
 	graphics/ui/menu/PauseMenu.cpp \
 	graphics/ui/menu/WinMenu.cpp \
+	graphics/animation/Animation.cpp \
 	managers/Art.cpp \
 	managers/ShadersManager.cpp \
 	logic/Game.cpp \

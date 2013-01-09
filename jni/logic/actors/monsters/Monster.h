@@ -10,6 +10,7 @@
 
 #include "logic/actors/Actor.h"
 #include "logic/Game.h"
+#include "graphics/animation/Animation.h"
 #include "log.h"
 
 class Monster: public Actor {
@@ -47,6 +48,8 @@ protected:
 	GLuint shiftProgram;
 	GLuint shiftVertexHandle, shiftTextureHandle;
 	GLuint shiftHandle;
+
+	Animation* animation;
 
 };
 

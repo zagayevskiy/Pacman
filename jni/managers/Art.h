@@ -52,7 +52,8 @@ public:
 	static const int TEXTURE_TILES = 2;
 	static const int TEXTURE_MONSTER = 3;
 	static const int TEXTURE_ALL_LEVELS = 4;
-	static const int TEXTURES_COUNT = 5;
+	static const int TEXTURE_MONSTER_ANIMATION = 5;
+	static const int TEXTURES_COUNT = 6;
 	static const int TEXTURE_NONE = 0;
 
 	static const int SHADER_VERTEX_0 = 0;
