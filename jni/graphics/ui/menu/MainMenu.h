@@ -10,6 +10,7 @@
 
 #include "Menu.h"
 #include "graphics/ui/RectButton.h"
+#include "graphics/ui/Label.h"
 
 class MainMenu: public Menu {
 public:
@@ -30,6 +31,9 @@ public:
 				}
 			}
 		}
+
+		Label* label = new Label(0.05, 0.05, "Pacman", vHandle, tHandle, 0.09);
+		controls.pushTail(label);
 
 	}
 

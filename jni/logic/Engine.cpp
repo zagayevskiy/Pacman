@@ -323,7 +323,7 @@ bool Engine::setupGraphics(int w, int h) {
     Art::generateTextures();
 
     mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
-    gameMenu = new SwipeGameMenu(); //new GameMenu();
+    gameMenu = new SwipeGameMenu();
     gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     gameOverMenu = new GameOverMenu();
     gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);

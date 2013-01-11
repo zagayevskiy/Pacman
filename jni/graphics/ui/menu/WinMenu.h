@@ -10,6 +10,7 @@
 
 #include "Menu.h"
 #include "graphics/ui/RectButton.h"
+#include "graphics/ui/Label.h"
 
 class WinMenu: public Menu {
 public:

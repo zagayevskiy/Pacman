@@ -74,7 +74,7 @@ void Game::createBuffers(){
 			};
 
 			int m = map[i*mapWidth + j];
-			GLfloat* textureCoords  = m == TILE_FREE ? Art::TEX_COORDS_TILE_FREE : m == TILE_WALL ? Art::TEX_COORDS_TILE_WALL : Art::TEX_COORDS_TILE_FOOD;
+			GLfloat* textureCoords = m == TILE_FREE ? Art::TEX_COORDS_TILE_FREE : m == TILE_WALL ? Art::TEX_COORDS_TILE_WALL : Art::TEX_COORDS_TILE_FOOD;
 
 			squareIndex = (i*mapWidth + j)*16;
 

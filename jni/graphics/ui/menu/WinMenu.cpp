@@ -32,6 +32,8 @@ void WinMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint t
 	button->setActionEvent(ACTION_UP, EVENT_MAINMENU);
 	controls.pushTail(button);
 
+	controls.pushTail(new Label(0.05, 0.05, "You win!!!=)", vertexHandle, textureHandle, 0.09));
+
 }
 
 WinMenu::~WinMenu() {

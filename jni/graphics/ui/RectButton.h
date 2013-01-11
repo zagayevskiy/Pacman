@@ -16,11 +16,6 @@ class RectButton: public Control {
 
 public:
 
-	float x, y; //left-up corner of the rectangle
- 	float width, height;
- 	float rightDownX, rightDownY;
-
-
 	RectButton(float _x, float _y, float _width, float _height)
  			: x(_x), y(_y), width(_width), height(_height), rightDownX(x + width), rightDownY(y + height){
 		lastAction = ACTION_NONE;
@@ -42,6 +37,10 @@ public:
 	virtual ~RectButton();
 
 private:
+
+	float x, y; //left-up corner of the rectangle
+	float width, height;
+	float rightDownX, rightDownY;
 
 	bool pressed;
 	List<Action> actions;

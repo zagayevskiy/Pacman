@@ -10,6 +10,7 @@ LOCAL_SRC_FILES := \
 	graphics/IRenderable.cpp \
 	graphics/ui/Control.cpp \
 	graphics/ui/RectButton.cpp \
+	graphics/ui/Label.cpp \
 	graphics/ui/menu/Menu.cpp \
 	graphics/ui/menu/MainMenu.cpp \
 	graphics/ui/menu/GameMenu.cpp \

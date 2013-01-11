@@ -68,6 +68,7 @@ public:
 
 	float maxX;
 	float maxY;
+
 private:
 
 	enum GameState{
@@ -106,7 +107,6 @@ private:
 
 	void createBuffers();
 	void freeBuffers();
-
 };
 
 #endif /* GAME_H_ */

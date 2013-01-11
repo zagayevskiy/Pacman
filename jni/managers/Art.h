@@ -47,6 +47,7 @@ public:
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
 	static const int MAX_LEVEL_SIZE = 32;
 
+	static const int TEXTURE_NONE = INT_MAX;
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
 	static const int TEXTURE_BUTTONS = 1;
 	static const int TEXTURE_TILES = 2;
@@ -54,8 +55,8 @@ public:
 	static const int TEXTURE_ALL_LEVELS = 4;
 	static const int TEXTURE_MONSTER_ANIMATION = 5;
 	static const int TEXTURE_HEART = 6;
-	static const int TEXTURES_COUNT = 7;
-	static const int TEXTURE_NONE = 0;
+	static const int TEXTURE_FONT_CONSOLAS = 7;
+	static const int TEXTURES_COUNT = 8;
 
 	static const int SHADER_VERTEX_0 = 0;
 	static const int SHADER_FRAGMENT_0 = 1;
