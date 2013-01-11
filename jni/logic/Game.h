@@ -59,10 +59,11 @@ public:
 	void getPacmanMapPos(int& x, int& y) const;
 	int getMaxLevelScore() const {return maxLevelScore;};
 
-
 	float getTileSize() const {return tileSize;}
 	int getMapWidth() const {return mapWidth;}
 	int getMapHeight() const {return mapHeight;}
+	inline float getShiftX() const {return shiftX;};
+	inline float getShiftY() const {return shiftY;};
 
 	virtual ~Game();
 
@@ -91,7 +92,7 @@ private:
 	List<IRenderable*> objectsToRender;
 	EngineEvent lastEvent;
 
-	float x, y;
+	float shiftX, shiftY;
 
 	float tileSize;
 	GLuint stableProgram;

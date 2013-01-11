@@ -343,7 +343,7 @@ void Pacman::render(double elapsedTime){
 
 	glUseProgram(shiftProgram);
 
-	glUniform2f(shiftHandle, shiftX, shiftY);
+	glUniform2f(shiftHandle, shiftX + game->getShiftX(), shiftY + game->getShiftY());
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 

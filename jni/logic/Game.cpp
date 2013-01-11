@@ -46,7 +46,9 @@ void Game::initGraphics(float _maxX, float _maxY, GLuint _stableProgram, GLuint 
 
 	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");
 	checkGlError("glGetUniformLocation");
-	x = y = 0.0;
+
+	shiftX = 0.0f;
+	shiftY = maxY*0.05f;
 }
 
 void Game::createBuffers(){
@@ -67,10 +69,10 @@ void Game::createBuffers(){
 		for(int j = 0; j < mapWidth; ++j){
 
 			GLfloat verticesCoords[8] = {
-					j*tileSize, i*tileSize, 			//Vertex 0
-					(j + 1)*tileSize, i*tileSize,		//Vertex 1
-					(j + 1)*tileSize, (i + 1)*tileSize, //Vertex 2
-					j*tileSize, (i + 1)*tileSize		//Vertex 3
+					shiftX + j*tileSize, shiftY + i*tileSize, 		    	//Vertex 0
+					shiftX + (j + 1)*tileSize, shiftY + i*tileSize, 		//Vertex 1
+					shiftX + (j + 1)*tileSize, shiftY + (i + 1)*tileSize,   //Vertex 2
+					shiftX + j*tileSize, shiftY + (i + 1)*tileSize		    //Vertex 3
 			};
 
 			int m = map[i*mapWidth + j];
@@ -262,13 +264,13 @@ void Game::render(double elapsedTime){
 		GLfloat* tf = m == TILE_FREE ? Art::TEX_COORDS_TILE_FREE : m == TILE_WALL ? Art::TEX_COORDS_TILE_WALL : Art::TEX_COORDS_TILE_FOOD;
 		//Square: 4 vertex(x, y, tx, ty)
 		GLfloat buffer[16] = {
-				lastChangedX*tileSize, lastChangedY*tileSize, 				//Vertex 0
+				shiftX + lastChangedX*tileSize, shiftY + lastChangedY*tileSize, 				//Vertex 0
 				tf[0], tf[1],
-				(lastChangedX + 1)*tileSize, lastChangedY*tileSize,			//Vertex 1
+				shiftX + (lastChangedX + 1)*tileSize, shiftY + lastChangedY*tileSize,			//Vertex 1
 				tf[2], tf[3],
-				(lastChangedX + 1)*tileSize, (lastChangedY + 1)*tileSize, 	//Vertex 2
+				shiftX + (lastChangedX + 1)*tileSize, shiftY + (lastChangedY + 1)*tileSize, 	//Vertex 2
 				tf[4], tf[5],
-				lastChangedX*tileSize, (lastChangedY + 1)*tileSize,			//Vertex 3
+				shiftX + lastChangedX*tileSize, shiftY + (lastChangedY + 1)*tileSize,			//Vertex 3
 				tf[6], tf[7]
 		};
 

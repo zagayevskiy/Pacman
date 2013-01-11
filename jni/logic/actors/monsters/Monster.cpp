@@ -162,7 +162,7 @@ void Monster::initGraphics(GLuint _shiftProgram){
 
 void Monster::render(double elapsedTime){
 	GLfloat tileSize = game->getTileSize();
-	animation->render(elapsedTime, (x - radius)*tileSize, (y - radius)*tileSize);
+	animation->render(elapsedTime, (x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY());
 
 }
 
