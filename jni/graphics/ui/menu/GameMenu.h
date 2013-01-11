@@ -9,7 +9,7 @@
 #define GAMEMENU_H_
 
 #include "Menu.h"
-#include "graphics/ui/RectButton.h"
+#include "graphics/ui/controls/RectButton.h"
 
 class GameMenu: public Menu {
 public:

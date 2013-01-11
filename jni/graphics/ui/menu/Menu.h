@@ -8,7 +8,7 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-#include "graphics/ui/Control.h"
+#include "graphics/ui/controls/Control.h"
 
 #include "templates/list.h"
 #include "actions_events.h"

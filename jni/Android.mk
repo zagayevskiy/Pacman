@@ -8,9 +8,9 @@ LOCAL_MODULE    := pacman
 LOCAL_SRC_FILES := \
 	pacmanlib.cpp \
 	graphics/IRenderable.cpp \
-	graphics/ui/Control.cpp \
-	graphics/ui/RectButton.cpp \
-	graphics/ui/Label.cpp \
+	graphics/ui/controls/Control.cpp \
+	graphics/ui/controls/RectButton.cpp \
+	graphics/ui/controls/Label.cpp \
 	graphics/ui/menu/Menu.cpp \
 	graphics/ui/menu/MainMenu.cpp \
 	graphics/ui/menu/GameMenu.cpp \

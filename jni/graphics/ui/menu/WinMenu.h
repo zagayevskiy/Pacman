@@ -9,8 +9,8 @@
 #define WINMENU_H_
 
 #include "Menu.h"
-#include "graphics/ui/RectButton.h"
-#include "graphics/ui/Label.h"
+#include "graphics/ui/controls/RectButton.h"
+#include "graphics/ui/controls/Label.h"
 
 class WinMenu: public Menu {
 public:
