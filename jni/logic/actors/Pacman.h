@@ -45,10 +45,10 @@ public:
 	void step(double elapsedTime);
 	void render(double elapsedTime);
 
-	bool isDead() const {return state == PACMAN_DIED;};
-	bool isGameOver() const {return state == PACMAN_GAME_OVER;};
-	bool isWin() const {return state == PACMAN_WIN;};
-	int getLifes() const {return lifes;};
+	inline bool isDead() const {return state == PACMAN_DIED;};
+	inline bool isGameOver() const {return state == PACMAN_GAME_OVER;};
+	inline bool isWin() const {return state == PACMAN_WIN;};
+	inline int getLifes() const {return lifes;};
 	inline void setLifes(int count){
 		if(count >= 0){
 			lifes = count;

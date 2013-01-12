@@ -13,8 +13,8 @@ LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_gam
 	radius = 0.5f;
 	float tileSize = game->getTileSize();
 	animation = new Animation(program, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0, tileSize, tileSize);
-	renderX = (x - radius)*tileSize;
-	renderY = (y - radius)*tileSize;
+	renderX = (x - radius)*tileSize + game->getShiftX();
+	renderY = (y - radius)*tileSize + game->getShiftY();
 }
 
 bool LifeBonus::apply(Pacman* pacman){

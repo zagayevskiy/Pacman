@@ -118,7 +118,7 @@ void Game::createBuffers(){
 
 	delete[] verticesData;
 	delete[] indicesData;
-
+/*
 	//Lifes Texture Coords
 	GLfloat ltc[] = {
 		0.0, 0.0,
@@ -162,21 +162,27 @@ void Game::createBuffers(){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Pacman::MAX_LIFES_COUNT*6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
 	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
 
+	delete[] verticesData;
+	delete[] indicesData;
+
+*/
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, 0);");
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);");
 
-	delete[] verticesData;
-	delete[] indicesData;
+	LOGI("here");
+
+	lifeImage = new Animation(shiftProgram, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0f, shiftY, shiftY);
+	lifeLabel = new Label(shiftY *1.1f, 0.0f, "x3", stableVertexHandle, stableTextureHandle, shiftY);
 
 }
 
 void Game::freeBuffers(){
 	glDeleteBuffers(1, &verticesBufferId);
 	glDeleteBuffers(1, &indicesBufferId);
-	glDeleteBuffers(1, &lifesVerticesBufferId);
-	glDeleteBuffers(1, &lifesIndicesBufferId);
+	/*glDeleteBuffers(1, &lifesVerticesBufferId);
+	glDeleteBuffers(1, &lifesIndicesBufferId);*/
 }
 
 void Game::event(EngineEvent e){
@@ -223,6 +229,14 @@ void Game::step(double elapsedTime){
 					state = WIN;
 				}
 			}
+
+			if(pacman->getLifes() != prevPacmanLifesCount){
+				prevPacmanLifesCount = pacman->getLifes();
+				char buffer[8];
+				sprintf(buffer, "x%d", pacman->getLifes());
+				lifeLabel->setText(buffer);
+			}
+
 		break;
 
 		case PACMAN_DEAD:
@@ -292,7 +306,7 @@ void Game::render(double elapsedTime){
 
 	glDrawElements(GL_TRIANGLES, 6*mapWidth*mapHeight, GL_UNSIGNED_SHORT, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
+	/*glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
 
 	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_PACMAN_ANIMATION));
@@ -300,7 +314,7 @@ void Game::render(double elapsedTime){
 	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
 	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
 
-	glDrawElements(GL_TRIANGLES, 6*pacman->getLifes(), GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, 6*pacman->getLifes(), GL_UNSIGNED_SHORT, 0);*/
 
 	glDisableVertexAttribArray(stableTextureHandle);
 	glDisableVertexAttribArray(stableVertexHandle);
@@ -314,6 +328,9 @@ void Game::render(double elapsedTime){
 		obj->render(elapsedTime);
 		exists = objectsToRender.getNext(obj);
 	}
+
+	lifeImage->render(elapsedTime, 0.0, 0.0);
+	lifeLabel->render(elapsedTime);
 
 }
 
@@ -381,7 +398,7 @@ void Game::loadLevel(const Texture* level){
 	}
 	createBuffers();
 	state = PACMAN_ALIVE;
-
+	prevPacmanLifesCount = pacman->getLifes();
 }
 
 void Game::clear(){

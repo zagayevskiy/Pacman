@@ -16,6 +16,8 @@
 #include "logic/actors/Actor.h"
 
 #include "graphics/IRenderable.h"
+#include "graphics/ui/controls/Label.h"
+#include "graphics/animation/Animation.h"
 
 #include "templates/list.h"
 #include "managers/Art.h"
@@ -50,18 +52,18 @@ public:
 	void render(double elapsedTime);
 	void clear();
 
-	bool isGameOver() const {return state == GAME_OVER;};
-	bool isWin() const {return state == WIN;};
+	inline bool isGameOver() const {return state == GAME_OVER;};
+	inline bool isWin() const {return state == WIN;};
 
 	int getMapAt(int x, int y) const;
 	void setMapAt(int x, int y, int value);
-	List<Monster*>& getMonsters(){return monsters;};
+	inline List<Monster*>& getMonsters(){return monsters;};
 	void getPacmanMapPos(int& x, int& y) const;
-	int getMaxLevelScore() const {return maxLevelScore;};
+	inline int getMaxLevelScore() const {return maxLevelScore;};
 
-	float getTileSize() const {return tileSize;}
-	int getMapWidth() const {return mapWidth;}
-	int getMapHeight() const {return mapHeight;}
+	inline float getTileSize() const {return tileSize;}
+	inline int getMapWidth() const {return mapWidth;}
+	inline int getMapHeight() const {return mapHeight;}
 	inline float getShiftX() const {return shiftX;};
 	inline float getShiftY() const {return shiftY;};
 
@@ -91,6 +93,7 @@ private:
 	List<Bonus*> bonuses;
 	List<IRenderable*> objectsToRender;
 	EngineEvent lastEvent;
+	int prevPacmanLifesCount;
 
 	float shiftX, shiftY;
 
@@ -104,7 +107,10 @@ private:
 	GLuint shiftHandle;
 
 	GLuint verticesBufferId, indicesBufferId;
-	GLuint lifesVerticesBufferId, lifesIndicesBufferId;
+	//GLuint lifesVerticesBufferId, lifesIndicesBufferId;
+
+	Animation* lifeImage;
+	Label* lifeLabel;
 
 	void createBuffers();
 	void freeBuffers();
