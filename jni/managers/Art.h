@@ -37,9 +37,17 @@ struct Texture{
 	}
 };
 
+struct ResourseDescriptor{
+	int32_t decriptor;
+	off_t start;
+	off_t length;
+};
+
 class Art {
 
 public:
+
+	static ResourseDescriptor bgMusicDescriptor;
 
 	static const int MAX_PATH = 32;
 	static const char* LEVELS_PATH;

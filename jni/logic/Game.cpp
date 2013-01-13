@@ -171,8 +171,6 @@ void Game::createBuffers(){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);");
 
-	LOGI("here");
-
 	lifeImage = new Animation(shiftProgram, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0f, shiftY, shiftY);
 	lifeLabel = new Label(shiftY *1.1f, 0.0f, "x3", stableVertexHandle, stableTextureHandle, shiftY);
 

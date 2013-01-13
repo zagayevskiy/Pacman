@@ -7,6 +7,8 @@
 
 #include "Art.h"
 
+ResourseDescriptor Art::bgMusicDescriptor = {-1, 0, 0};
+
 const char* Art::LEVELS_PATH = "levels";
 
 AAssetManager* Art::assetManager;
@@ -42,6 +44,10 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	pmGetPixelsId = env->GetMethodID(pmClass, "getPixels", "(Landroid/graphics/Bitmap;[I)V");
 
 	assetManager = AAssetManager_fromJava(env, javaAssetManager);
+
+	AAsset* asset = AAssetManager_open(assetManager, "sounds/background0.mp3", AASSET_MODE_UNKNOWN);
+	bgMusicDescriptor.decriptor = AAsset_openFileDescriptor(asset, &bgMusicDescriptor.start, &bgMusicDescriptor.length);
+	AAsset_close(asset);
 
 	loadLevels();
 
