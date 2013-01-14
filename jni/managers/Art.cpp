@@ -95,8 +95,8 @@ GLfloat* Art::getLevelTexCoords(int number){
 
 void Art::free(){
 	LOGI("Art::free");
-
 	if(textures){
+		glDeleteTextures(TEXTURES_COUNT, textures);
 		delete[] textures;
 		textures = NULL;
 	}

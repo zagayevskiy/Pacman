@@ -196,6 +196,7 @@ void Engine::render(double elapsedTime){
 }
 
 Engine::~Engine() {
+	LOGI("Engine::~Engine");
 	if(matrix){
 		delete[] matrix;
 	}
@@ -214,6 +215,7 @@ Engine::~Engine() {
 	if(game){
 		delete game;
 	}
+	LOGI("Engine::~Engine finished");
 }
 
 bool Engine::setupGraphics(int w, int h) {

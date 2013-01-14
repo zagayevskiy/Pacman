@@ -100,7 +100,6 @@ void RectButton::setActionEvent(Action on, EngineEvent what){
 }
 
 RectButton::~RectButton() {
-	// TODO Auto-generated destructor stub
 	actions.clear();
 	events.clear();
 }

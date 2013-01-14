@@ -49,7 +49,10 @@ void Menu::free(){
 		Control* control;
 		bool exists = controls.getHead(control);
 		while(exists){
-			delete control;
+			if(control){
+				delete control;
+			}
+			exists = controls.getNext(control);
 		}
 		controls.clear();
 	}

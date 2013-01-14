@@ -138,8 +138,15 @@ void Label::updateTexCoordsArray(){
 Label::~Label() {
 	if(text){
 		delete[] text;
+		text = NULL;
+	}
+	if(vertices){
 		delete[] vertices;
+		vertices = NULL;
+	}
+	if(texCoords){
 		delete[] texCoords;
+		texCoords = NULL;
 	}
 }
 

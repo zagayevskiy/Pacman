@@ -39,7 +39,7 @@ double lastTime;
 double up2Second;
 int framesCount;
 
-Engine* engine = new Engine();
+Engine* engine;
 
 extern "C" {
 
@@ -50,7 +50,8 @@ extern "C" {
 		framesCount = 0;
 		Art::init(env, pngManager, assetManager);
 		Audio::init();
-		Audio::playBGM();
+		Audio::playBackgroungMusic();
+		engine = new Engine();
 		engine->init(width, height);
 	}
 
@@ -89,8 +90,19 @@ extern "C" {
 
 
 	JNIEXPORT jboolean JNICALL Java_com_zagayevskiy_pacman_PacmanLib_stop(JNIEnv* env, jobject obj){
-		Audio::stopBGM();
-		return engine->stop();
+		if(engine->stop()){
+			Audio::pauseBackgroundMusic();
+			return true;
+		}
+		return false;
+	}
+
+	JNIEXPORT jboolean JNICALL Java_com_zagayevskiy_pacman_PacmanLib_free(JNIEnv* env, jobject obj){
+		LOGI("native free");
+		engine->stop();
+		delete engine;
+		Audio::free();
+		Art::free();
 	}
 
 }

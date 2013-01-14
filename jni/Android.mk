@@ -20,6 +20,7 @@ LOCAL_SRC_FILES := \
 	graphics/ui/menu/WinMenu.cpp \
 	graphics/animation/Animation.cpp \
 	managers/Art.cpp \
+	managers/Audio.cpp \
 	managers/ShadersManager.cpp \
 	logic/Game.cpp \
 	logic/Engine.cpp \

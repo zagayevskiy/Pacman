@@ -39,7 +39,10 @@ public class PacmanActivity extends Activity{
         //  is called when a different Activity instance is going to be visible 
         //        and the current Activity has stopped interacting with the user
         super.onPause();
+        Log.i(PacmanLib.tag, "PacmanActivity.onPause()");
+        PacmanLib.stop();
         //pacmanView.onPause();
+
     }
     
 
@@ -54,6 +57,15 @@ public class PacmanActivity extends Activity{
     protected void onStop() {
         //is called when an activity is no longer visible to, or interacting with, the user
         super.onStop();
+        Log.i(PacmanLib.tag, "PacmanActivity.onStop()");
+        PacmanLib.stop();
+    }
+    
+    @Override
+    protected void onDestroy(){	
+    	super.onDestroy();
+    	Log.i(PacmanLib.tag, "PacmanActivity.onDestroy()");
+    	PacmanLib.free();
     }
     
     public boolean onKeyDown(int keyCode, KeyEvent event) {
