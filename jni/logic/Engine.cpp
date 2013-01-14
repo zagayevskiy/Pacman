@@ -26,6 +26,15 @@ void Engine::init(int w, int h){
 
 void Engine::step(double elapsedTime){
 
+	if(lastEvent == EVENT_MUSIC_ON){
+		Audio::backgroundMusicOn();
+		lastEvent = EVENT_NONE;
+	}
+	if(lastEvent == EVENT_MUSIC_OFF){
+		Audio::backgroundMusicOff();
+		lastEvent = EVENT_NONE;
+	}
+
 	switch(state){
 		case STATE_LOADING: break;
 

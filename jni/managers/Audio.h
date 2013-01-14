@@ -25,6 +25,9 @@ public:
 	static void pauseBackgroundMusic();
 	static void stopBackgroundMusic();
 
+	static inline void backgroundMusicOn(){shouldPlayBackgroundMusic = true; playBackgroungMusic();};
+	static inline void backgroundMusicOff(){shouldPlayBackgroundMusic = false; pauseBackgroundMusic();};
+
 	static void free();
 
 private:
@@ -33,6 +36,8 @@ private:
 	static SLObjectItf bgmPlayerObj;
 	static SLPlayItf bgmPlayer;
 	static SLSeekItf bgmPlayerSeek;
+
+	static bool shouldPlayBackgroundMusic;
 
 	static void destroyAndNull(SLObjectItf& obj);
 

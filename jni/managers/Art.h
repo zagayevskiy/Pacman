@@ -90,6 +90,9 @@ public:
 	static GLfloat TEX_COORDS_BUTTON_LIST[12];
 	static GLfloat TEX_COORDS_BUTTON_LIST_PRESSED[12];
 
+	static GLfloat TEX_COORDS_BUTTON_MUSIC_ON[12];
+	static GLfloat TEX_COORDS_BUTTON_MUSIC_OFF[12];
+
 	static GLfloat TEX_COORDS_TILE_WALL[8];
 	static GLfloat TEX_COORDS_TILE_FREE[8];
 	static GLfloat TEX_COORDS_TILE_FOOD[8];

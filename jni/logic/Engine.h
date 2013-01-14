@@ -21,7 +21,7 @@
 #include "graphics/ui/menu/WinMenu.h"
 
 #include "managers/Art.h"
-
+#include "managers/Audio.h"
 
 
 class Engine: public StateMachine, public IRenderable {

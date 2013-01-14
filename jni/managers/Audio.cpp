@@ -13,6 +13,7 @@ SLObjectItf Audio::outputMixObj;
 SLObjectItf Audio::bgmPlayerObj;
 SLPlayItf Audio::bgmPlayer;
 SLSeekItf Audio::bgmPlayerSeek;
+bool Audio::shouldPlayBackgroundMusic = true;
 
 void Audio::init(){
 	LOGI("Audio::init");
@@ -142,6 +143,9 @@ void Audio::initBackgroundMusic(){
 
 void Audio::playBackgroungMusic(){
 	LOGI("Audio::playBackgroungMusic");
+	if(!shouldPlayBackgroundMusic){
+		return;
+	}
 
 	if(bgmPlayer){
 		SLuint32 state;

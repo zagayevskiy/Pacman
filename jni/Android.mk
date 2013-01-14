@@ -11,6 +11,7 @@ LOCAL_SRC_FILES := \
 	graphics/ui/controls/Control.cpp \
 	graphics/ui/controls/RectButton.cpp \
 	graphics/ui/controls/Label.cpp \
+	graphics/ui/controls/CheckBox.cpp \
 	graphics/ui/menu/Menu.cpp \
 	graphics/ui/menu/MainMenu.cpp \
 	graphics/ui/menu/GameMenu.cpp \
