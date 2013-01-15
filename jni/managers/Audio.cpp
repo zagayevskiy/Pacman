@@ -17,6 +17,7 @@ bool Audio::shouldPlayBackgroundMusic = true;
 
 void Audio::init(){
 	LOGI("Audio::init");
+	shouldPlayBackgroundMusic = true; //TODO: save/load it
 	free();
 
 	 SLresult result;

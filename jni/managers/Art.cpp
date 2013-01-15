@@ -12,7 +12,7 @@ ResourseDescriptor Art::bgMusicDescriptor = {-1, 0, 0};
 const char* Art::LEVELS_PATH = "levels";
 
 AAssetManager* Art::assetManager;
-jobject Art::pngManager;
+jobject Art::pngManager = NULL;
 JNIEnv* Art::pmEnv;
 jclass Art::pmClass;
 jmethodID Art::pmOpenId;
@@ -32,8 +32,8 @@ int Art::levelsCount = 0;
 
 void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	LOGI("Art::init");
-	free();
-	pngManager = _pngManager;
+	free(env);
+	pngManager = env->NewGlobalRef(_pngManager);
 	pmEnv = env;
 
 	pmClass = env->GetObjectClass(pngManager);
@@ -93,8 +93,14 @@ GLfloat* Art::getLevelTexCoords(int number){
 	return (number >= 0 && number < levelsCount) ? levelsTexCoords[number] : NULL;
 }
 
-void Art::free(){
+void Art::free(JNIEnv* env){
 	LOGI("Art::free");
+
+	if(pngManager){
+		env->DeleteGlobalRef(pngManager);
+		pngManager = NULL;
+	}
+
 	if(textures){
 		glDeleteTextures(TEXTURES_COUNT, textures);
 		delete[] textures;

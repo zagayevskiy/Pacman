@@ -102,7 +102,7 @@ extern "C" {
 		engine->stop();
 		delete engine;
 		Audio::free();
-		Art::free();
+		Art::free(env);
 	}
 
 }

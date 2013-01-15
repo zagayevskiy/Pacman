@@ -108,7 +108,7 @@ public:
 	static Texture* getLevel(int number);
 	static GLfloat* getLevelTexCoords(int number);
 
-	static void free();
+	static void free(JNIEnv* env);
 
 
 private:
