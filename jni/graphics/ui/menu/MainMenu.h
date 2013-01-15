@@ -45,7 +45,7 @@ public:
 				vHandle, tHandle
 		);
 		musicOnOff->setEvents(EVENT_MUSIC_ON, EVENT_MUSIC_OFF);
-		controls.pushHead(musicOnOff);
+		controls.pushTail(musicOnOff);
 
 	}
 
