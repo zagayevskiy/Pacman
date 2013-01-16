@@ -10,7 +10,7 @@ public class PacmanLib {
 	
 	public static final String tag = "pacman";
 	
-	public static native void init(int width, int height, PngManager pngManager, AssetManager assetManager);
+	public static native void init(int width, int height, PngManager pngManager, AssetManager assetManager, StoreManager storeManager);
 	public static native void step();
 	
 	public static native void actionUp(float x, float y);

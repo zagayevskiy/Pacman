@@ -22,6 +22,7 @@ LOCAL_SRC_FILES := \
 	graphics/animation/Animation.cpp \
 	managers/Art.cpp \
 	managers/Audio.cpp \
+	managers/Store.cpp \
 	managers/ShadersManager.cpp \
 	logic/Game.cpp \
 	logic/Engine.cpp \

@@ -14,10 +14,12 @@ import android.view.SurfaceView;
 public class PacmanView extends GLSurfaceView {
 	
 	private static AssetManager assetManager;
+	private static StoreManager storeManager;
 	
 	public PacmanView(Context context) {
         super(context);
         assetManager = context.getAssets();
+        storeManager = new StoreManager(context);
         setEGLContextClientVersion(2);
         
         setRenderer(new PacmanRenderer());
@@ -50,7 +52,7 @@ public class PacmanView extends GLSurfaceView {
 	    }
 
 	    public void onSurfaceChanged(GL10 unused, int width, int height) {
-	    	PacmanLib.init(width, height, new PngManager(assetManager), assetManager);
+	    	PacmanLib.init(width, height, new PngManager(assetManager), assetManager, storeManager);
 	    }
 	}
 }

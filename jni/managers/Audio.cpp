@@ -7,6 +7,8 @@
 
 #include "Audio.h"
 
+const char* Audio::STORE_BG_MUSIC_STATE = "ShouldPlayBGMusic";
+
 SLObjectItf Audio::engineObj;
 SLEngineItf Audio::engine;
 SLObjectItf Audio::outputMixObj;
@@ -17,7 +19,7 @@ bool Audio::shouldPlayBackgroundMusic = true;
 
 void Audio::init(){
 	LOGI("Audio::init");
-	shouldPlayBackgroundMusic = true; //TODO: save/load it
+	shouldPlayBackgroundMusic = Store::loadBool(STORE_BG_MUSIC_STATE, BG_MUSIC_DEFAULT);
 	free();
 
 	 SLresult result;

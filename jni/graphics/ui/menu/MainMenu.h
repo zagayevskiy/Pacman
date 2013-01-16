@@ -13,6 +13,8 @@
 #include "graphics/ui/controls/Label.h"
 #include "graphics/ui/controls/RectButton.h"
 
+#include "managers/Audio.h"
+
 
 class MainMenu: public Menu {
 public:
@@ -37,7 +39,7 @@ public:
 		Label* label = new Label(0.05, 0.05, "Pacman", vHandle, tHandle, 0.09);
 		controls.pushTail(label);
 
-		CheckBox* musicOnOff = new CheckBox(indentX, maxY - indentX - size/2, size/2, size/2);
+		CheckBox* musicOnOff = new CheckBox(indentX, maxY - indentX - size/2, size/2, size/2, Audio::isBackgroundMusicOn());
 		musicOnOff->initGraphics(
 				Art::getTexture(Art::TEXTURE_BUTTONS),
 				Art::TEX_COORDS_BUTTON_MUSIC_ON,

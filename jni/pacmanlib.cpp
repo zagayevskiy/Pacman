@@ -25,6 +25,7 @@
 #include "logic/Engine.h"
 #include "managers/Art.h"
 #include "managers/Audio.h"
+#include "managers/Store.h"
 
 #define MAX_ELAPSED_TIME 100.0f
 
@@ -43,11 +44,12 @@ Engine* engine;
 
 extern "C" {
 
-	JNIEXPORT void JNICALL Java_com_zagayevskiy_pacman_PacmanLib_init(JNIEnv* env, jobject obj, jint width, jint height, jobject pngManager, jobject assetManager){
+	JNIEXPORT void JNICALL Java_com_zagayevskiy_pacman_PacmanLib_init(JNIEnv* env, jobject obj, jint width, jint height, jobject pngManager, jobject assetManager, jobject storeManager){
 		srand48(time(NULL));
 		lastTime = getTime();
 		up2Second = 0;
 		framesCount = 0;
+		Store::init(env, storeManager);
 		Art::init(env, pngManager, assetManager);
 		Audio::init();
 		Audio::playBackgroungMusic();
@@ -103,6 +105,7 @@ extern "C" {
 		delete engine;
 		Audio::free();
 		Art::free(env);
+		LOGI("native free OK");
 	}
 
 }

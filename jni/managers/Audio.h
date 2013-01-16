@@ -14,10 +14,15 @@
 #include <SLES/OpenSLES_Android.h>
 
 #include "managers/Art.h"
+#include "managers/Store.h"
 #include "log.h"
 
 class Audio {
 public:
+
+	static const char* STORE_BG_MUSIC_STATE;
+	static const bool BG_MUSIC_DEFAULT = true;
+
 	static void init();
 
 	static void initBackgroundMusic();
@@ -25,8 +30,18 @@ public:
 	static void pauseBackgroundMusic();
 	static void stopBackgroundMusic();
 
-	static inline void backgroundMusicOn(){shouldPlayBackgroundMusic = true; playBackgroungMusic();};
-	static inline void backgroundMusicOff(){shouldPlayBackgroundMusic = false; pauseBackgroundMusic();};
+	static inline void backgroundMusicOn(){
+		shouldPlayBackgroundMusic = true;
+		playBackgroungMusic();
+		Store::saveBool(STORE_BG_MUSIC_STATE, true);
+	};
+	static inline void backgroundMusicOff(){
+		shouldPlayBackgroundMusic = false;
+		pauseBackgroundMusic();
+		Store::saveBool(STORE_BG_MUSIC_STATE, false);
+	};
+
+	static inline bool isBackgroundMusicOn() {return shouldPlayBackgroundMusic;};
 
 	static void free();
 
