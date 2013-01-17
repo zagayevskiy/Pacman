@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 public class StoreManager {
 	
-	public static final String PACMAN_PREFERENCES = "PacmanStore";
+	public static final String PACMAN_PREFERENCES = "com_zagayevskiy_pacman_store";
 	
 	private Context context;
 	
