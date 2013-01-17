@@ -138,7 +138,7 @@ void Pacman::step(double elapsedTime){
 			exists = monsters.getNext(monster);
 		}
 
-		if(score == game->getMaxLevelScore()){
+		if(eatenFoodCount == game->getLevelFoodCount()){
 			state = PACMAN_WIN;
 		}
 	}
@@ -151,6 +151,7 @@ void Pacman::step(double elapsedTime){
 	if(game->getMapAt(iCurrentX, iCurrentY) == Game::TILE_FOOD){
 		game->setMapAt(iCurrentX, iCurrentY, Game::TILE_FREE);
 		++score;
+		++eatenFoodCount;
 	}
 
 

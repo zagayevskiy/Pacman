@@ -230,7 +230,7 @@ void Game::step(double elapsedTime){
 
 			if(pacman->getLifes() != prevPacmanLifesCount){
 				prevPacmanLifesCount = pacman->getLifes();
-				char buffer[8];
+				char buffer[32];
 				sprintf(buffer, "x%d", pacman->getLifes());
 				lifeLabel->setText(buffer);
 			}
@@ -340,7 +340,7 @@ void Game::loadLevel(const Texture* level){
 	tileSize = maxX / ((float) mapWidth);
 	isMapChanged = false;
 	lastChangedX = lastChangedY = -1;
-	maxLevelScore = 0;
+	levelFoodCount = 0;
 	map = new int[mapWidth * mapHeight];
 	char r, g, b;
 	for(int i = 0; i < mapHeight; ++i){
@@ -358,7 +358,7 @@ void Game::loadLevel(const Texture* level){
 
 			if(g > 0 && g <= MAX_FOOD_G){
 				map[i*mapWidth + j/4] = TILE_FOOD;
-				++maxLevelScore;
+				++levelFoodCount;
 				continue;
 			}
 

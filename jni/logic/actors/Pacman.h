@@ -33,7 +33,7 @@ public:
 		averageStepLength = 0.0f;
 		diedTime = 0.0f;
 		lifes = MAX_LIFES_COUNT;
-		score = 0;
+		eatenFoodCount = score = 0;
 		animationOffsets = NULL;
 		initGraphics(_shiftProgram);
 	}
@@ -55,6 +55,7 @@ public:
 		}
 	};
 	int getScore() const {return score;};
+	inline int getEatenFoodCount() const {return eatenFoodCount;};
 
 	virtual ~Pacman();
 
@@ -83,6 +84,7 @@ private:
 	float diedTime;
 	int lifes;
 	int score;
+	int eatenFoodCount;
 
 	float initialX, initialY;
 
