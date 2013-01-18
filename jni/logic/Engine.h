@@ -64,7 +64,7 @@ private:
 
 	Menu* currentMenu;
 	MainMenu* mainMenu;
-	GameMenu* gameMenu;
+	SwipeGameMenu* gameMenu;
 	GameOverMenu* gameOverMenu;
 	PauseMenu* pauseMenu;
 	WinMenu* winMenu;

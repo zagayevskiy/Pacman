@@ -47,9 +47,10 @@ void Engine::step(double elapsedTime){
 		case STATE_MAIN_MENU:
 			if(lastEvent == EVENT_PLAY){
 				lastEvent = EVENT_NONE;
-				currentMenu = gameMenu;
 				levelToLoadNumber = mainMenu->getLevelToLoadNumber();
 				game->loadLevel(Art::getLevel(levelToLoadNumber));
+				currentMenu = gameMenu;
+				gameMenu->assignPacman(game->getPacman());
 				setState(STATE_PLAY);
 				LOGI("State: STATE_PLAY");
 			}
@@ -138,9 +139,10 @@ void Engine::step(double elapsedTime){
 
 				case EVENT_NEXT_LEVEL:
 					lastEvent = EVENT_NONE;
-					currentMenu = gameMenu;
 					levelToLoadNumber = (levelToLoadNumber + 1) % Art::getLevelsCount();
 					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					gameMenu->assignPacman(game->getPacman());
+					currentMenu = gameMenu;
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -335,7 +337,7 @@ bool Engine::setupGraphics(int w, int h) {
 
     mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
     gameMenu = new SwipeGameMenu();
-    gameMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+    gameMenu->initGraphics(maxX, maxY, shiftProgram, vertexHandle, textureHandle);
     gameOverMenu = new GameOverMenu();
     gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
     pauseMenu = new PauseMenu();

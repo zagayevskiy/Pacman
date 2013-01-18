@@ -118,69 +118,16 @@ void Game::createBuffers(){
 
 	delete[] verticesData;
 	delete[] indicesData;
-/*
-	//Lifes Texture Coords
-	GLfloat ltc[] = {
-		0.0, 0.0,
-		0.5, 0.0,
-		0.5, 0.5,
-		0.0, 0.5
-	};
 
-	verticesData = new GLfloat[Pacman::MAX_LIFES_COUNT*16];
-	indicesData = new GLshort[Pacman::MAX_LIFES_COUNT*6];
-
-
-	for(int i = 0; i < Pacman::MAX_LIFES_COUNT; ++i){
-		GLfloat squareData[16] = {
-				i*tileSize, mapHeight*tileSize, ltc[0], ltc[1],
-				(i + 1)*tileSize, mapHeight*tileSize, ltc[2], ltc[3],
-				(i + 1)*tileSize, (mapHeight + 1)*tileSize, ltc[4], ltc[5],
-				i*tileSize, (mapHeight + 1)*tileSize, ltc[6], ltc[7]
-		};
-		memcpy(&(verticesData[16*i]), squareData, 16*sizeof(GLfloat));
-		for(int j = 0; j < 6; ++j){
-			indicesData[i*6 + j] = indicesNumbers[j] + i*4;
-		}
-	}
-
-	glGenBuffers(1, &lifesVerticesBufferId);
-	checkGlError("glGenBuffers(1, &lifesVerticesBufferId);");
-	LOGI("Game::lifesVerticesBufferId: %d", lifesVerticesBufferId);
-
-	glGenBuffers(1, &lifesIndicesBufferId);
-	checkGlError("glGenBuffers(1, &lifesIndicesBufferId);");
-	LOGI("Game::lifesIndicesBufferId: %d", lifesIndicesBufferId);
-
-	glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
-	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);");
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
-	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);");
-
-	glBufferData(GL_ARRAY_BUFFER, Pacman::MAX_LIFES_COUNT*16*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);
-	checkGlError("glBufferData(GL_ARRAY_BUFFER, verticesDataLength*sizeof(GLfloat), verticesData, GL_STATIC_DRAW);");
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Pacman::MAX_LIFES_COUNT*6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);
-	checkGlError("glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(GLshort), indicesData, GL_STATIC_DRAW);");
-
-	delete[] verticesData;
-	delete[] indicesData;
-
-*/
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ARRAY_BUFFER, 0);");
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	checkGlError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);");
-
-	lifeImage = new Animation(shiftProgram, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0f, shiftY, shiftY);
-	lifeLabel = new Label(shiftY *1.1f, 0.0f, "x3", stableVertexHandle, stableTextureHandle, shiftY);
-
 }
 
 void Game::freeBuffers(){
 	glDeleteBuffers(1, &verticesBufferId);
 	glDeleteBuffers(1, &indicesBufferId);
-	/*glDeleteBuffers(1, &lifesVerticesBufferId);
-	glDeleteBuffers(1, &lifesIndicesBufferId);*/
 }
 
 void Game::event(EngineEvent e){
@@ -226,13 +173,6 @@ void Game::step(double elapsedTime){
 				if(pacman->isWin()){
 					state = WIN;
 				}
-			}
-
-			if(pacman->getLifes() != prevPacmanLifesCount){
-				prevPacmanLifesCount = pacman->getLifes();
-				char buffer[32];
-				sprintf(buffer, "x%d", pacman->getLifes());
-				lifeLabel->setText(buffer);
 			}
 
 		break;
@@ -327,9 +267,6 @@ void Game::render(double elapsedTime){
 		exists = objectsToRender.getNext(obj);
 	}
 
-	lifeImage->render(elapsedTime, 0.0, 0.0);
-	lifeLabel->render(elapsedTime);
-
 }
 
 void Game::loadLevel(const Texture* level){
@@ -396,7 +333,6 @@ void Game::loadLevel(const Texture* level){
 	}
 	createBuffers();
 	state = PACMAN_ALIVE;
-	prevPacmanLifesCount = pacman->getLifes();
 }
 
 void Game::clear(){

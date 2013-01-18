@@ -59,6 +59,7 @@ public:
 	void setMapAt(int x, int y, int value);
 	inline List<Monster*>& getMonsters(){return monsters;};
 	void getPacmanMapPos(int& x, int& y) const;
+	inline Pacman* getPacman() const {return pacman;};
 	inline int getLevelFoodCount() const {return levelFoodCount;};
 
 	inline float getTileSize() const {return tileSize;}
@@ -93,7 +94,6 @@ private:
 	List<Bonus*> bonuses;
 	List<IRenderable*> objectsToRender;
 	EngineEvent lastEvent;
-	int prevPacmanLifesCount;
 
 	float shiftX, shiftY;
 
@@ -107,10 +107,6 @@ private:
 	GLuint shiftHandle;
 
 	GLuint verticesBufferId, indicesBufferId;
-	//GLuint lifesVerticesBufferId, lifesIndicesBufferId;
-
-	Animation* lifeImage;
-	Label* lifeLabel;
 
 	void createBuffers();
 	void freeBuffers();
