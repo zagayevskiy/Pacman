@@ -29,10 +29,28 @@ struct Texture{
 	int width;
 	int height;
 	Texture(): pixels(NULL), width(0), height(0){}
-	Texture(char* p, int w, int h): pixels(p), width(w), height(h){}
+	Texture(char* p, int w, int h): pixels(p), width(w), height(h){};
 	~Texture(){
 		if(pixels){
 			delete[] pixels;
+			pixels = NULL;
+		}
+	}
+};
+
+struct Level{
+	Texture* map;
+	char* name;
+	Level(): name(NULL), map(NULL){};
+	Level(char* _name, Texture* _map):name(_name), map(_map){};
+	~Level(){
+		if(name){
+			delete[] name;
+			name = NULL;
+		}
+		if(map){
+			delete map;
+			map = NULL;
 		}
 	}
 };
@@ -105,7 +123,7 @@ public:
 	static char* getShaderSource(int id);
 
 	static int getLevelsCount() {return levelsCount;};
-	static Texture* getLevel(int number);
+	static Level* getLevel(int number);
 	static GLfloat* getLevelTexCoords(int number);
 
 	static void free(JNIEnv* env);
@@ -128,7 +146,7 @@ private:
 
 	static char** shadersSources;
 
-	static Texture** levels;
+	static Level** levels;
 	static int levelsCount;
 	static GLfloat** levelsTexCoords;
 

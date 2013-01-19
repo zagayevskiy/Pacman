@@ -26,7 +26,7 @@ GLuint* Art::textures = NULL;
 
 char** Art::shadersSources = NULL;
 
-Texture** Art::levels = NULL;
+Level** Art::levels = NULL;
 GLfloat** Art::levelsTexCoords = NULL;
 int Art::levelsCount = 0;
 
@@ -85,7 +85,7 @@ char* Art::getShaderSource(int id){
 	return (0 <= id && id < SHADERS_COUNT) ? shadersSources[id] : NULL;
 }
 
-Texture* Art::getLevel(int number){
+Level* Art::getLevel(int number){
 	return (number >= 0 && number < levelsCount) ? levels[number] : NULL;
 }
 
@@ -260,15 +260,13 @@ void Art::loadLevels(){
 	levelsCount = files.getLength();
 	char buffer[MAX_PATH];
 	if(!files.isEmpty()){
-		levels = new Texture*[levelsCount];
+		levels = new Level*[levelsCount];
 		char* file;
 		bool exists = files.getHead(file);
 		int i = 0;
 		while(exists){
 			sprintf(buffer, "%s/%s", LEVELS_PATH, file);
-			levels[i] = loadPng(buffer);
-			++i;
-			delete[] file;
+			levels[i++] = new Level(file, loadPng(buffer));
 			exists = files.getNext(file);
 		}
 		files.clear();
@@ -305,7 +303,7 @@ Texture* Art::makeTextureFromLevels(){
 				posX*MAX_LEVEL_SIZE*4 +
 				posY*MAX_LEVEL_SIZE*MAX_LEVEL_SIZE*LEVELS_ON_SIDE_COUNT*4;
 
-		Texture* currentLevel = levels[k];
+		Texture* currentLevel = levels[k]->map;
 		int iLevelWidth = currentLevel->width < MAX_LEVEL_SIZE ? currentLevel->width : MAX_LEVEL_SIZE;
 		int iLevelHeight = currentLevel->height < MAX_LEVEL_SIZE ? currentLevel->height : MAX_LEVEL_SIZE;
 

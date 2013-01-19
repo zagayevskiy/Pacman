@@ -20,7 +20,10 @@
 #include "graphics/animation/Animation.h"
 
 #include "templates/list.h"
+
 #include "managers/Art.h"
+#include "managers/Store.h"
+
 #include "actions_events.h"
 #include "log.h"
 
@@ -44,7 +47,7 @@ public:
 	static const char MIN_LIFE_BONUS_G = 200;
 	static const char MIN_LIFE_BONUS_B = 200;
 
-	void loadLevel(const Texture* level);
+	void loadLevel(const Level* level);
 	void initGraphics(float maxX, float maxY, GLuint stableProgram, GLuint shiftProgram);
 
 	void event(EngineEvent e);
@@ -84,6 +87,7 @@ private:
 
 	GameState state;
 	int* map;
+	char* levelName;
 	int mapWidth, mapHeight;
 	int levelFoodCount;
 	int lastChangedX, lastChangedY;

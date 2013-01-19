@@ -136,6 +136,7 @@ void Game::event(EngineEvent e){
 
 void Game::step(double elapsedTime){
 	bool exists;
+	int score;
 	switch(state){
 		case PACMAN_ALIVE:
 			if(lastEvent != EVENT_NONE){
@@ -193,6 +194,11 @@ void Game::step(double elapsedTime){
 		break;
 
 		case WIN:
+			score = pacman->getScore();
+			if(score > Store::loadInt(levelName, 0)){
+				LOGI("New record on level %s: %d", levelName, score);
+				Store::saveInt(levelName, score);
+			}
 		break;
 
 		default: break;
@@ -269,11 +275,13 @@ void Game::render(double elapsedTime){
 
 }
 
-void Game::loadLevel(const Texture* level){
+void Game::loadLevel(const Level* level){
 	clear();
-	LOGI("Game::loadLevel %dx%d", level->width, level->height);
-	mapWidth = level->width;
-	mapHeight = level->height;
+	Texture* texMap = level->map;
+	levelName = level->name;
+	LOGI("Game::loadLevel %dx%d, %s", texMap->width, texMap->height, levelName);
+	mapWidth = texMap->width;
+	mapHeight = texMap->height;
 	tileSize = maxX / ((float) mapWidth);
 	isMapChanged = false;
 	lastChangedX = lastChangedY = -1;
@@ -284,9 +292,9 @@ void Game::loadLevel(const Texture* level){
 		int offset = i*mapWidth*4;
 		for(int j = 0; j < mapWidth*4; j += 4){
 			map[i*mapWidth + j/4] = TILE_FREE;
-			r = level->pixels[offset + j + 0];
-			g = level->pixels[offset + j + 1];
-			b = level->pixels[offset + j + 2];
+			r = texMap->pixels[offset + j + 0];
+			g = texMap->pixels[offset + j + 1];
+			b = texMap->pixels[offset + j + 2];
 
 			if(r > 0 && r <= MAX_WALL_R){
 				map[i*mapWidth + j/4] = TILE_WALL;

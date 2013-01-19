@@ -88,8 +88,9 @@ void Engine::step(double elapsedTime){
 			switch(lastEvent){
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
-					currentMenu = gameMenu;
 					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					gameMenu->assignPacman(game->getPacman());
+					currentMenu = gameMenu;
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -117,8 +118,9 @@ void Engine::step(double elapsedTime){
 
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
-					currentMenu = gameMenu;
 					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					currentMenu = gameMenu;
+					gameMenu->assignPacman(game->getPacman());
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -149,8 +151,9 @@ void Engine::step(double elapsedTime){
 
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
-					currentMenu = gameMenu;
 					game->loadLevel(Art::getLevel(levelToLoadNumber));
+					currentMenu = gameMenu;
+					gameMenu->assignPacman(game->getPacman());
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
