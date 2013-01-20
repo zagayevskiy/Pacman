@@ -22,6 +22,7 @@
 
 #include "managers/Art.h"
 #include "managers/Audio.h"
+#include "managers/Statistics.h"
 
 
 class Engine: public StateMachine, public IRenderable {

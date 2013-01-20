@@ -12,20 +12,27 @@ Statistics::StatisticsState Statistics::state = IDLE;
 
 char* Statistics::levelName = NULL;
 char* Statistics::levelToEnterName = NULL;
+
+int Statistics::levelRecord = 0;
+int Statistics::score = 0;
 int Statistics::lifesCount = 0;
 int Statistics::eatedFoodCount = 0;
 int Statistics::lifesToChangeCount = 0;
 
-bool Statistics::eatenFoodCountChanged = false;
-bool Statistics::lifesCountChanged = false;
+bool Statistics::scoreChanged = true;
+bool Statistics::eatenFoodCountChanged = true;
+bool Statistics::lifesCountChanged = true;
 
 void Statistics::event(StatisticsEvent e){
+	LOGI("Statistics::event(%d)", e);
 	switch(state){
 		case IDLE:
 			if(e == ENTER_LEVEL){
 				levelName = levelToEnterName;
-				eatedFoodCount = 0;
+				score = eatedFoodCount = 0;
 				lifesCount = Pacman::DEFAULT_LIFES_COUNT;
+				scoreChanged = lifesCountChanged = eatenFoodCountChanged = true;
+				levelRecord = Store::loadInt(levelName, 0);
 				state = LEVEL_ENTERED;
 				LOGI("Statistics::state=LEVEL_ENTERED");
 			}
@@ -39,20 +46,30 @@ void Statistics::event(StatisticsEvent e){
 				break;
 
 				case LEAVE_LEVEL:
-					state = LEVEL_FINISHED;
-					LOGI("Statistics::state=LEVEL_FINISHED");
+					state = IDLE;
+					LOGI("Statistics::state=IDLE");
+				break;
+
+				case WIN_LEVEL:
+					state=IDLE;
+					score += lifesCount*100;
+					scoreChanged = true;
+					if(score > Store::loadInt(levelName, 0)){
+						LOGI("Statistics: New Record! Level:%s, Score:%d", levelName, score);
+						Store::saveInt(levelName, score);
+					}
+					LOGI("Statistics::state=IDLE");
 				break;
 
 				case PACMAN_EAT_FOOD:
 					++eatedFoodCount;
-					eatenFoodCountChanged = true;
-					LOGI("Statistics::eatedFoodCount=%d", eatedFoodCount);
+					score += 10;
+					scoreChanged = eatenFoodCountChanged = true;
 				break;
 
 				case PACMAN_LIFES_COUNT_CHANGED:
 					lifesCount += lifesToChangeCount;
 					lifesCountChanged = true;
-					LOGI("Statistics::lifesCount=%d", lifesCount);
 				break;
 
 				default: break;
@@ -67,16 +84,12 @@ void Statistics::event(StatisticsEvent e){
 				break;
 
 				case LEAVE_LEVEL:
-					state = LEVEL_FINISHED;
-					LOGI("Statistics::state=LEVEL_FINISHED");
+					state = IDLE;
+					LOGI("Statistics::state=IDLE");
 				break;
 
 				default: break;
 			}
-		break;
-
-		case LEVEL_FINISHED:
-
 		break;
 
 		default:
@@ -95,4 +108,6 @@ void Statistics::enterLevel(const char* name){
 		levelToEnterName = new char[strlen(name) + 1];
 		strcpy(levelToEnterName, name);
 	}
+
+	event(ENTER_LEVEL);
 }

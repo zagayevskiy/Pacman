@@ -10,16 +10,15 @@
 
 #include "GameMenu.h"
 
-#include "logic/actors/Pacman.h"
-
 #include "graphics/ui/controls/Label.h"
 #include "graphics/animation/Animation.h"
+
+#include "managers/Statistics.h"
 
 class SwipeGameMenu: public GameMenu {
 public:
 	SwipeGameMenu();
 	bool action(Action act, float x, float y);
-	void assignPacman(Pacman* _pacman);
 	void initGraphics(float maxX, float maxY, GLuint shiftProgram, GLuint vertexHandle, GLuint textureHandle);
 	inline EngineEvent getEvent() const {return event;};
 	void render(double elapsedTime);
@@ -31,9 +30,6 @@ private:
 
 	float lastX, lastY;
 	EngineEvent event;
-	Pacman* pacman;
-	int lastPacmanLifesCount;
-	int lastPacmanScore;
 
 	Animation* lifeImage;
 	Label* labelInfo;

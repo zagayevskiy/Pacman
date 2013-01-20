@@ -13,6 +13,8 @@
 
 #include "logic/Game.h"
 
+#include "managers/Statistics.h"
+
 class Pacman: public Actor {
 public:
 
@@ -49,11 +51,11 @@ public:
 	inline bool isGameOver() const {return state == PACMAN_GAME_OVER;};
 	inline bool isWin() const {return state == PACMAN_WIN;};
 	inline int getLifes() const {return lifes;};
-	inline void setLifes(int count){
-		if(count >= 0){
-			lifes = count;
-		}
-	};
+	inline void incLifes(){
+		++lifes;
+		Statistics::incLifes();
+	}
+
 	int getScore() const {return score;};
 	inline int getEatenFoodCount() const {return eatenFoodCount;};
 

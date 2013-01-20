@@ -18,7 +18,7 @@ LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_gam
 }
 
 bool LifeBonus::apply(Pacman* pacman){
-	pacman->setLifes(pacman->getLifes() + 1);
+	pacman->incLifes();
 	return true;
 }
 

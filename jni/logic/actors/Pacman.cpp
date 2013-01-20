@@ -133,6 +133,7 @@ void Pacman::step(double elapsedTime){
 				diedTime = 0.0f;
 				state = PACMAN_DIED;
 				--lifes;
+				Statistics::decLifes();
 				return;
 			}
 			exists = monsters.getNext(monster);
@@ -152,6 +153,7 @@ void Pacman::step(double elapsedTime){
 		game->setMapAt(iCurrentX, iCurrentY, Game::TILE_FREE);
 		++score;
 		++eatenFoodCount;
+		Statistics::eatFood();
 	}
 
 

@@ -93,7 +93,7 @@ bool Store::loadBool(const char* name, bool defValue){
 }
 
 void Store::saveInt(const char* name, int value){
-	LOGI("Store::saveINt(%s, %d)", name, value);
+	LOGI("Store::saveInt(%s, %d)", name, value);
 	JNIEnv* env = getJNIEnv(javaVM);
 
 	if(!env){
