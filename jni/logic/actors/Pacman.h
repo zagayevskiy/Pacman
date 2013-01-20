@@ -17,7 +17,7 @@ class Pacman: public Actor {
 public:
 
 	static const float MAX_DIED_TIME = 300.0f;
-	static const int MAX_LIFES_COUNT = 3;
+	static const int DEFAULT_LIFES_COUNT = 3;
 
 	Pacman(Game* _game, float _x, float _y, GLuint _shiftProgram): game(_game){
 		radius = 0.5f;
@@ -32,7 +32,7 @@ public:
 		totalStepsCount = 0.0f;
 		averageStepLength = 0.0f;
 		diedTime = 0.0f;
-		lifes = MAX_LIFES_COUNT;
+		lifes = DEFAULT_LIFES_COUNT;
 		eatenFoodCount = score = 0;
 		animationOffsets = NULL;
 		initGraphics(_shiftProgram);
