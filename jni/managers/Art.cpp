@@ -10,6 +10,10 @@
 ResourseDescriptor Art::bgMusicDescriptor = {-1, 0, 0};
 
 const char* Art::LEVELS_PATH = "levels";
+const char* Art::TEXTURES_SMALL_PATH = "textures/small/%s";
+const char* Art::TEXTURES_MEDIUM_PATH = "textures/medium/%s";
+const char* Art::TEXTURES_LARGE_PATH = "textures/large/%s";
+const char* Art::texturesPath = Art::TEXTURES_SMALL_PATH; //Default textures are small
 
 AAssetManager* Art::assetManager;
 jobject Art::pngManager = NULL;
@@ -30,7 +34,7 @@ Level** Art::levels = NULL;
 GLfloat** Art::levelsTexCoords = NULL;
 int Art::levelsCount = 0;
 
-void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
+void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager){
 	LOGI("Art::init");
 	free(env);
 	pngManager = env->NewGlobalRef(_pngManager);
@@ -49,17 +53,17 @@ void Art::init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager){
 	bgMusicDescriptor.decriptor = AAsset_openFileDescriptor(asset, &bgMusicDescriptor.start, &bgMusicDescriptor.length);
 	AAsset_close(asset);
 
+	if(screenWidth <= 480){
+		texturesPath = TEXTURES_SMALL_PATH;
+	}else if(screenWidth <= 600){
+		texturesPath = TEXTURES_MEDIUM_PATH;
+	}else{
+		texturesPath = TEXTURES_LARGE_PATH;
+	}
+
 	loadLevels();
 
-	texturesSources = new Texture*[TEXTURES_COUNT];
-	texturesSources[TEXTURE_TILES] = loadPng("textures/tiles.png");
-	texturesSources[TEXTURE_MONSTER] = loadPng("textures/monster.png");
-	texturesSources[TEXTURE_BUTTONS] = loadPng("textures/buttons.png");
-	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng("textures/pacmans.png");
-	texturesSources[TEXTURE_MONSTER_ANIMATION] = loadPng("textures/monster_ani.png");
-	texturesSources[TEXTURE_HEART] = loadPng("textures/hearts.png");
-	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
-	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
+	loadTextures();
 
 	shadersSources = new char*[SHADERS_COUNT];
 	shadersSources[SHADER_VERTEX_0] = loadTextFile("shaders/shader.vrt");
@@ -271,6 +275,26 @@ void Art::loadLevels(){
 		}
 		files.clear();
 	}
+}
+
+void Art::loadTextures(){
+	char buffer[MAX_PATH];
+	texturesSources = new Texture*[TEXTURES_COUNT];
+	sprintf(buffer, texturesPath, "tiles.png");
+	LOGI(buffer);
+	texturesSources[TEXTURE_TILES] = loadPng(buffer);
+	sprintf(buffer, texturesPath, "monster_ani.png");
+	texturesSources[TEXTURE_MONSTER] = loadPng(buffer);
+	sprintf(buffer, texturesPath, "buttons.png");
+	texturesSources[TEXTURE_BUTTONS] = loadPng(buffer);
+	sprintf(buffer, texturesPath, "pacmans.png");
+	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng(buffer);
+	sprintf(buffer, texturesPath, "monster_ani.png");
+	texturesSources[TEXTURE_MONSTER_ANIMATION] = loadPng(buffer);
+	sprintf(buffer, texturesPath, "hearts.png");
+	texturesSources[TEXTURE_HEART] = loadPng(buffer);
+	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
+	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 }
 
 /*

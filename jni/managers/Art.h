@@ -73,6 +73,10 @@ public:
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
 	static const int MAX_LEVEL_SIZE = 32;
 
+	static const char* TEXTURES_SMALL_PATH;
+	static const char* TEXTURES_MEDIUM_PATH;
+	static const char* TEXTURES_LARGE_PATH;
+
 	static const int TEXTURE_NONE = INT_MAX;
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
 	static const int TEXTURE_BUTTONS = 1;
@@ -115,7 +119,7 @@ public:
 	static GLfloat TEX_COORDS_TILE_FREE[8];
 	static GLfloat TEX_COORDS_TILE_FOOD[8];
 
-	static void init(JNIEnv* env, jobject _pngManager, jobject javaAssetManager);
+	static void init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager);
 
 	static void generateTextures();
 	static GLuint getTexture(int id);
@@ -141,6 +145,7 @@ private:
 	static jmethodID pmGetHeightId;
 	static jmethodID pmGetPixelsId;
 
+	static const char* texturesPath;
 	static Texture** texturesSources;
 	static GLuint* textures;
 
@@ -156,6 +161,7 @@ private:
 	static List<char*> loadFilesList(const char* path);
 	static char* loadTextFile(const char* filename);
 	static void loadLevels();
+	static void loadTextures();
 	static Texture* makeTextureFromLevels();
 
 };

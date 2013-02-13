@@ -50,7 +50,7 @@ extern "C" {
 		up2Second = 0;
 		framesCount = 0;
 		Store::init(env, storeManager);
-		Art::init(env, pngManager, assetManager);
+		Art::init(env, width, height, pngManager, assetManager);
 		Audio::init();
 		Audio::playBackgroungMusic();
 		engine = new Engine();
