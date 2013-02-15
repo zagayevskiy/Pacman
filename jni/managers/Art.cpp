@@ -7,13 +7,17 @@
 
 #include "Art.h"
 
-ResourseDescriptor Art::bgMusicDescriptor = {-1, 0, 0};
+List<ResourseDescriptor> Art::gameBackgroundMusicList;
+List<ResourseDescriptor> Art::menuBackgroundMusicList;
 
-const char* Art::LEVELS_PATH = "levels";
-const char* Art::TEXTURES_SMALL_PATH = "textures/small/%s";
-const char* Art::TEXTURES_MEDIUM_PATH = "textures/medium/%s";
-const char* Art::TEXTURES_LARGE_PATH = "textures/large/%s";
-const char* Art::texturesPath = Art::TEXTURES_SMALL_PATH; //Default textures are small
+const char* Art::PATH_LEVELS = "levels";
+const char* Art::PATH_TEXTURES_SMALL = "textures/small/%s";
+const char* Art::PATH_TEXTURES_MEDIUM = "textures/medium/%s";
+const char* Art::PATH_TEXTURES_LARGE = "textures/large/%s";
+const char* Art::PATH_GAME_BG_MUSIC = "audio/music/game";
+const char* Art::PATH_MENU_BG_MUSIC = "audio/music/menu";
+
+
 
 AAssetManager* Art::assetManager;
 jobject Art::pngManager = NULL;
@@ -24,6 +28,8 @@ jmethodID Art::pmCloseId;
 jmethodID Art::pmGetWidthId;
 jmethodID Art::pmGetHeightId;
 jmethodID Art::pmGetPixelsId;
+
+const char* Art::texturesPath = Art::PATH_TEXTURES_SMALL; //Default textures are small
 
 Texture** Art::texturesSources = NULL;
 GLuint* Art::textures = NULL;
@@ -49,21 +55,17 @@ void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngMan
 
 	assetManager = AAssetManager_fromJava(env, javaAssetManager);
 
-	AAsset* asset = AAssetManager_open(assetManager, "sounds/background0.mp3", AASSET_MODE_UNKNOWN);
-	bgMusicDescriptor.decriptor = AAsset_openFileDescriptor(asset, &bgMusicDescriptor.start, &bgMusicDescriptor.length);
-	AAsset_close(asset);
-
 	if(screenWidth <= 480){
-		texturesPath = TEXTURES_SMALL_PATH;
+		texturesPath = PATH_TEXTURES_SMALL;
 	}else if(screenWidth <= 600){
-		texturesPath = TEXTURES_MEDIUM_PATH;
+		texturesPath = PATH_TEXTURES_MEDIUM;
 	}else{
-		texturesPath = TEXTURES_LARGE_PATH;
+		texturesPath = PATH_TEXTURES_LARGE;
 	}
 
 	loadLevels();
-
 	loadTextures();
+	loadMusic();
 
 	shadersSources = new char*[SHADERS_COUNT];
 	shadersSources[SHADER_VERTEX_0] = loadTextFile("shaders/shader.vrt");
@@ -97,6 +99,14 @@ GLfloat* Art::getLevelTexCoords(int number){
 	return (number >= 0 && number < levelsCount) ? levelsTexCoords[number] : NULL;
 }
 
+ResourseDescriptor Art::getGameBackgroundMusicDescriptor(unsigned int number){
+	return gameBackgroundMusicList.getLength() > 0 ? gameBackgroundMusicList[number % gameBackgroundMusicList.getLength()] : EMPTY_RESOURSE_DESCRIPTOR;
+}
+
+ResourseDescriptor Art::getMenuBackgroundMusicDescriptor(unsigned int number){
+	return menuBackgroundMusicList.getLength() > 0 ? menuBackgroundMusicList[number % menuBackgroundMusicList.getLength()] : EMPTY_RESOURSE_DESCRIPTOR;
+}
+
 void Art::free(JNIEnv* env){
 	LOGI("Art::free");
 
@@ -104,6 +114,8 @@ void Art::free(JNIEnv* env){
 		env->DeleteGlobalRef(pngManager);
 		pngManager = NULL;
 	}
+
+	gameBackgroundMusicList.clear();
 
 	if(textures){
 		glDeleteTextures(TEXTURES_COUNT, textures);
@@ -183,11 +195,8 @@ Texture* Art::loadPng(const char* filename){
 }
 
 GLuint Art::createTexture(Texture* texture){
-	LOGI("Art::createTexture");
-
 	GLuint textureId;
 	glGenTextures(1, &textureId);
-	LOGI("Generated texture id = %i", textureId);
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
@@ -250,7 +259,6 @@ List<char*> Art::loadFilesList(const char* path){
 	while(((c = AAssetDir_getNextFileName(assetDir)) != NULL)){
 		char * buffer = new char[MAX_PATH];
 		sprintf(buffer, "%s", c);
-		LOGI("file:%s", buffer);
 		result.pushTail(buffer);
 	}
 
@@ -259,8 +267,33 @@ List<char*> Art::loadFilesList(const char* path){
 	return result;
 }
 
+List<ResourseDescriptor> Art::loadFilesDescriptorsList(const char* path){
+	List<ResourseDescriptor> result;
+	char buffer[MAX_PATH];
+	List<char*> files = loadFilesList(path);
+
+	LOGI("loadFilesDescriptors from %s, count: %i", path, files.getLength());
+
+	char* fileName = NULL;
+	bool exists = files.getHead(fileName);
+	while(exists){
+		sprintf(buffer, "%s/%s", path, fileName);
+		AAsset* asset = AAssetManager_open(assetManager, buffer, AASSET_MODE_UNKNOWN);
+		ResourseDescriptor resourceDescriptor;
+		resourceDescriptor.decriptor = AAsset_openFileDescriptor(asset, &resourceDescriptor.start, &resourceDescriptor.length);
+		result.pushTail(resourceDescriptor);
+		AAsset_close(asset);
+
+		LOGI("File descriptor loaded: %s", buffer);
+
+		exists = files.getNext(fileName);
+	}
+	files.clear();
+	return result;
+}
+
 void Art::loadLevels(){
-	List<char*> files = loadFilesList(LEVELS_PATH);
+	List<char*> files = loadFilesList(PATH_LEVELS);
 	levelsCount = files.getLength();
 	char buffer[MAX_PATH];
 	if(!files.isEmpty()){
@@ -269,7 +302,7 @@ void Art::loadLevels(){
 		bool exists = files.getHead(file);
 		int i = 0;
 		while(exists){
-			sprintf(buffer, "%s/%s", LEVELS_PATH, file);
+			sprintf(buffer, "%s/%s", PATH_LEVELS, file);
 			levels[i++] = new Level(file, loadPng(buffer));
 			exists = files.getNext(file);
 		}
@@ -295,6 +328,11 @@ void Art::loadTextures(){
 	texturesSources[TEXTURE_HEART] = loadPng(buffer);
 	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
+}
+
+void Art::loadMusic(){
+	gameBackgroundMusicList = loadFilesDescriptorsList(PATH_GAME_BG_MUSIC);
+	menuBackgroundMusicList = loadFilesDescriptorsList(PATH_MENU_BG_MUSIC);
 }
 
 /*

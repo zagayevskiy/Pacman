@@ -61,21 +61,23 @@ struct ResourseDescriptor{
 	off_t length;
 };
 
+const ResourseDescriptor EMPTY_RESOURSE_DESCRIPTOR = {-1, 0, 0};
+
 class Art {
 
 public:
 
-	static ResourseDescriptor bgMusicDescriptor;
+	static const int MAX_PATH = 256;
+	static const char* PATH_LEVELS;
+	static const char* PATH_TEXTURES_SMALL;
+	static const char* PATH_TEXTURES_MEDIUM;
+	static const char* PATH_TEXTURES_LARGE;
+	static const char* PATH_GAME_BG_MUSIC;
+	static const char* PATH_MENU_BG_MUSIC;
 
-	static const int MAX_PATH = 32;
-	static const char* LEVELS_PATH;
 	static const int LEVELS_ON_SIDE_COUNT = 4;
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
 	static const int MAX_LEVEL_SIZE = 32;
-
-	static const char* TEXTURES_SMALL_PATH;
-	static const char* TEXTURES_MEDIUM_PATH;
-	static const char* TEXTURES_LARGE_PATH;
 
 	static const int TEXTURE_NONE = INT_MAX;
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
@@ -130,6 +132,11 @@ public:
 	static Level* getLevel(int number);
 	static GLfloat* getLevelTexCoords(int number);
 
+	static int getGameBackgroundMusicCount(){return gameBackgroundMusicList.getLength();};
+	static ResourseDescriptor getGameBackgroundMusicDescriptor(unsigned int number);
+	static int getMenuBackgroundMusicCount(){return menuBackgroundMusicList.getLength();};
+	static ResourseDescriptor getMenuBackgroundMusicDescriptor(unsigned int number);
+
 	static void free(JNIEnv* env);
 
 
@@ -145,6 +152,9 @@ private:
 	static jmethodID pmGetHeightId;
 	static jmethodID pmGetPixelsId;
 
+	static List<ResourseDescriptor> gameBackgroundMusicList;
+	static List<ResourseDescriptor> menuBackgroundMusicList;
+
 	static const char* texturesPath;
 	static Texture** texturesSources;
 	static GLuint* textures;
@@ -159,9 +169,11 @@ private:
 	static Texture* loadPng(const char* filename);
 	static GLuint createTexture(Texture* texture);
 	static List<char*> loadFilesList(const char* path);
+	static List<ResourseDescriptor> loadFilesDescriptorsList(const char* path);
 	static char* loadTextFile(const char* filename);
 	static void loadLevels();
 	static void loadTextures();
+	static void loadMusic();
 	static Texture* makeTextureFromLevels();
 
 };

@@ -73,9 +73,12 @@ void Audio::initBackgroundMusic(){
 	LOGI("Audio::initBackgroungMusic");
 	SLDataLocator_AndroidFD lDataLocatorIn;
 	lDataLocatorIn.locatorType = SL_DATALOCATOR_ANDROIDFD;
-	lDataLocatorIn.fd = Art::bgMusicDescriptor.decriptor;
-	lDataLocatorIn.offset = Art::bgMusicDescriptor.start;
-	lDataLocatorIn.length = Art::bgMusicDescriptor.length;
+
+	ResourseDescriptor bgMusicDescriptor = Art::getGameBackgroundMusicDescriptor(Art::getGameBackgroundMusicCount() - 1);
+
+	lDataLocatorIn.fd = bgMusicDescriptor.decriptor;
+	lDataLocatorIn.offset = bgMusicDescriptor.start;
+	lDataLocatorIn.length = bgMusicDescriptor.length;
 
 	SLDataFormat_MIME lDataFormat;
 	lDataFormat.formatType = SL_DATAFORMAT_MIME;
