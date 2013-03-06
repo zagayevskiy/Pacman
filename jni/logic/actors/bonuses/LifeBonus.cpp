@@ -19,6 +19,7 @@ LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_gam
 
 bool LifeBonus::apply(Pacman* pacman){
 	pacman->incLifes();
+	Audio::playSound(Art::SOUND_LIFE);
 	return true;
 }
 

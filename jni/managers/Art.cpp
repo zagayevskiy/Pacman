@@ -35,6 +35,8 @@ Level** Art::levels = NULL;
 GLfloat** Art::levelsTexCoords = NULL;
 int Art::levelsCount = 0;
 
+SoundBuffer** Art::sounds = NULL;
+
 ResourseDescriptor Art::gameMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
 ResourseDescriptor Art::menuMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
 
@@ -105,6 +107,10 @@ ResourseDescriptor Art::getMenuBackgroundMusicDescriptor(){
 	return menuMusicDescriptor;
 }
 
+const SoundBuffer* Art::getSound(unsigned int id){
+	return (id < SOUNDS_COUNT) ? sounds[id] : &EMPTY_SOUND_BUFFER;
+}
+
 void Art::free(JNIEnv* env){
 	LOGI("Art::free");
 
@@ -157,6 +163,15 @@ void Art::free(JNIEnv* env){
 		}
 		delete[] levelsTexCoords;
 		levelsTexCoords = NULL;
+	}
+
+	if(sounds){
+		for(int i = 0; i < SOUNDS_COUNT; ++i){
+			if(sounds[i]){
+				delete sounds[i];
+			}
+		}
+		delete[] sounds;
 	}
 
 }
@@ -335,8 +350,24 @@ void Art::loadTextures(){
 }
 
 void Art::loadMusic(){
+
+	sounds = new SoundBuffer*[SOUNDS_COUNT];
+	sounds[SOUND_LIFE] = loadSoundFile("audio/sounds/life.wav");
+	sounds[SOUND_DEATH] = loadSoundFile("audio/sounds/death.wav");
+
 	gameMusicDescriptor = loadResourceDescriptor(PATH_GAME_BACKGROUND_MUSIC);
 	menuMusicDescriptor = loadResourceDescriptor(PATH_MENU_BACKGROUND_MUSIC);
+}
+
+SoundBuffer* Art::loadSoundFile(const char* filename){
+	SoundBuffer* result = new SoundBuffer();
+	AAsset* asset = AAssetManager_open(assetManager, filename, AASSET_MODE_UNKNOWN);
+	result->length = AAsset_getLength(asset);
+	result->buffer = new char[result->length + 1];
+	AAsset_read(asset, result->buffer, result->length);
+	result->buffer[result->length] = '\0';
+	AAsset_close(asset);
+	return result;
 }
 
 /*

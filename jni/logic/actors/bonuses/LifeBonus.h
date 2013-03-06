@@ -10,6 +10,7 @@
 
 #include "Bonus.h"
 #include "graphics/animation/Animation.h"
+#include "managers/Audio.h"
 #include "log.h"
 
 class LifeBonus: public Bonus {

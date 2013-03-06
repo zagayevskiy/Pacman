@@ -7,6 +7,7 @@
 
 #include "Pacman.h"
 #include "monsters/Monster.h"
+#include "managers/Audio.h"
 
 void Pacman::initGraphics(GLuint _shiftProgram){
 	shiftProgram = _shiftProgram;
@@ -212,6 +213,7 @@ void Pacman::step(double elapsedTime){
 		break;
 
 		case PACMAN_DIED:
+			Audio::playSound(Art::SOUND_DEATH);
 			if(diedTime > MAX_DIED_TIME){
 				if(lifes){
 					x = initialX;

@@ -8,23 +8,33 @@
 #include "Audio.h"
 
 const char* Audio::SHOULD_PLAY_BACKGROUND_MUSIC = "ShouldPlayBGMusic";
+const char* Audio::SHOULD_PLAY_SOUNDS = "ShouldPlaySounds";
 
 SLObjectItf Audio::engineObj = NULL;
 SLEngineItf Audio::engine = NULL;
 SLObjectItf Audio::outputMixObj = NULL;
+
 SLObjectItf Audio::gameBackgroundPlayerObj = NULL;
 SLPlayItf Audio::gameBackgroundPlayer = NULL;
 SLSeekItf Audio::gameBackgroundSeek = NULL;
+
 SLObjectItf Audio::menuBackgroundPlayerObj = NULL;
 SLPlayItf Audio::menuBackgroundPlayer = NULL;
 SLSeekItf Audio::menuBackgroundSeek = NULL;
+
 SLPlayItf Audio::currentBackgroundPlayer = NULL;
 
-bool Audio::isBackgroundOn = SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT;
+SLObjectItf Audio:: soundsPlayerObj = NULL;
+SLBufferQueueItf Audio::soundsBufferQueue = NULL;
+SLPlayItf Audio::soundsPlayer = NULL;
+
+bool Audio::shouldPlayBackgroundMusic = SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT;
+bool Audio::shouldPlaySounds = SHOULD_PLAY_SOUNDS_DEFAULT;
 
 void Audio::init(){
 	LOGI("Audio::init");
-	isBackgroundOn = Store::loadBool(SHOULD_PLAY_BACKGROUND_MUSIC, SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT);
+	shouldPlayBackgroundMusic = Store::loadBool(SHOULD_PLAY_BACKGROUND_MUSIC, SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT);
+	shouldPlaySounds = Store::loadBool(SHOULD_PLAY_SOUNDS, SHOULD_PLAY_SOUNDS_DEFAULT);
 	free();
 
 	 SLresult result;
@@ -73,14 +83,15 @@ void Audio::init(){
 
 	createAudioPlayer(gameBackgroundPlayerObj, gameBackgroundPlayer, gameBackgroundSeek, Art::getGameBackgroundMusicDescriptor());
 	createAudioPlayer(menuBackgroundPlayerObj, menuBackgroundPlayer, menuBackgroundSeek, Art::getMenuBackgroundMusicDescriptor());
-
 	currentBackgroundPlayer = menuBackgroundPlayer;
+
+	createBufferQueuePlayer(soundsPlayerObj, soundsPlayer, soundsBufferQueue);
 
 }
 
 void Audio::playMenuBackground(){
 	LOGI("Audio::playMenuBackground");
-	if(isBackgroundOn){
+	if(shouldPlayBackgroundMusic){
 		(*gameBackgroundPlayer)->SetPlayState(gameBackgroundPlayer, SL_PLAYSTATE_STOPPED);
 		(*menuBackgroundPlayer)->SetPlayState(menuBackgroundPlayer, SL_PLAYSTATE_PLAYING);
 	}
@@ -89,7 +100,7 @@ void Audio::playMenuBackground(){
 
 void Audio::playGameBackground(){
 	LOGI("Audio::playGameBackground");
-	if(isBackgroundOn){
+	if(shouldPlayBackgroundMusic){
 		(*menuBackgroundPlayer)->SetPlayState(menuBackgroundPlayer, SL_PLAYSTATE_STOPPED);
 		(*gameBackgroundPlayer)->SetPlayState(gameBackgroundPlayer, SL_PLAYSTATE_PLAYING);
 	}
@@ -170,15 +181,83 @@ void Audio::destroyAudioPlayer(SLObjectItf& playerObj, SLPlayItf& player, SLSeek
 	if(player){
 		(*player)->SetPlayState(player, SL_PLAYSTATE_STOPPED);
 		player = NULL;
+		seek = NULL;
 	}
 	destroyAndNull(playerObj);
 };
+
+SLuint32 Audio::createBufferQueuePlayer(SLObjectItf& playerObj, SLPlayItf& player, SLBufferQueueItf& bufferQueue){
+	 SLresult result;
+
+	// configure audio source
+	SLDataLocator_AndroidSimpleBufferQueue locatorBufferQueue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
+	SLDataFormat_PCM formatPCM = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
+		SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+		SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+	SLDataSource audioSrc = {&locatorBufferQueue, &formatPCM};
+
+	// configure audio sink
+	SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObj};
+	SLDataSink audioSnk = {&loc_outmix, NULL};
+
+	// create audio player
+	const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND,
+			/*SL_IID_MUTESOLO,*/ SL_IID_VOLUME};
+	const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
+			/*SL_BOOLEAN_TRUE,*/ SL_BOOLEAN_TRUE};
+	result = (*engine)->CreateAudioPlayer(engine, &playerObj, &audioSrc, &audioSnk, 3, ids, req);
+
+	// realize the player
+	result = (*playerObj)->Realize(playerObj, SL_BOOLEAN_FALSE);
+
+	// get the play interface
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_PLAY, &player);
+
+	// get the buffer queue interface
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_BUFFERQUEUE, &bufferQueue);
+
+	/*
+	// register callback on the buffer queue
+	result = (*bufferQueue)->RegisterCallback(bufferQueue, bqPlayerCallback, NULL);
+	assert(SL_RESULT_SUCCESS == result);
+
+	// get the effect send interface
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_EFFECTSEND,
+			&bqPlayerEffectSend);
+	assert(SL_RESULT_SUCCESS == result);
+#if 0   // mute/solo is not supported for sources that are known to be mono, as this is
+	// get the mute/solo interface
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_MUTESOLO, &bqPlayerMuteSolo);
+	assert(SL_RESULT_SUCCESS == result);
+#endif
+
+	// get the volume interface
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_VOLUME, &bqPlayerVolume);
+	assert(SL_RESULT_SUCCESS == result);
+*/
+	// set the player's state to playing
+	result = (*player)->SetPlayState(player, SL_PLAYSTATE_PLAYING);
+
+	return result;
+}
+
+void Audio::destroyBufferQueuePlayer(SLObjectItf& playerObj, SLPlayItf& player, SLBufferQueueItf& bufferQueue){
+	if(player){
+		(*player)->SetPlayState(player, SL_PLAYSTATE_STOPPED);
+		player = NULL;
+		bufferQueue = NULL;
+	}
+	destroyAndNull(playerObj);
+}
 
 void Audio::free(){
 	LOGI("Audio::free");
 
 	destroyAudioPlayer(gameBackgroundPlayerObj, gameBackgroundPlayer, gameBackgroundSeek);
 	destroyAudioPlayer(menuBackgroundPlayerObj, menuBackgroundPlayer, menuBackgroundSeek);
+
+	destroyBufferQueuePlayer(soundsPlayerObj, soundsPlayer, soundsBufferQueue);
+
 	destroyAndNull(outputMixObj);
 	destroyAndNull(engineObj);
 	engine = NULL;

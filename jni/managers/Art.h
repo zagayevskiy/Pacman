@@ -60,8 +60,20 @@ struct ResourseDescriptor{
 	off_t start;
 	off_t length;
 };
-
 const ResourseDescriptor EMPTY_RESOURSE_DESCRIPTOR = {-1, 0, 0};
+
+struct SoundBuffer{
+	char* buffer;
+	int length;
+	~SoundBuffer(){
+		if(buffer){
+			delete[] buffer;
+			buffer = NULL;
+		}
+	}
+};
+
+const SoundBuffer EMPTY_SOUND_BUFFER = {NULL, 0};
 
 class Art {
 
@@ -94,6 +106,10 @@ public:
 	static const int SHADER_FRAGMENT_0 = 1;
 	static const int SHADER_VERTEX_SHIFT = 2;
 	static const int SHADERS_COUNT = 3;
+
+	static const int SOUND_LIFE = 0;
+	static const int SOUND_DEATH = 1;
+	static const int SOUNDS_COUNT = 2;
 
 	static GLfloat TEX_COORDS_BUTTON_LEFT[12];
 	static GLfloat TEX_COORDS_BUTTON_LEFT_PRESSED[12];
@@ -135,6 +151,8 @@ public:
 	static ResourseDescriptor getGameBackgroundMusicDescriptor();
 	static ResourseDescriptor getMenuBackgroundMusicDescriptor();
 
+	static const SoundBuffer* getSound(unsigned int id);
+
 	static void free(JNIEnv* env);
 
 
@@ -160,6 +178,8 @@ private:
 	static int levelsCount;
 	static GLfloat** levelsTexCoords;
 
+	static SoundBuffer** sounds;
+
 	static ResourseDescriptor gameMusicDescriptor;
 	static ResourseDescriptor menuMusicDescriptor;
 
@@ -173,6 +193,7 @@ private:
 	static void loadLevels();
 	static void loadTextures();
 	static void loadMusic();
+	static SoundBuffer* loadSoundFile(const char* filename);
 	static Texture* makeTextureFromLevels();
 
 };
