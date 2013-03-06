@@ -25,16 +25,6 @@ void Engine::init(int w, int h){
 }
 
 void Engine::step(double elapsedTime){
-
-	if(lastEvent == EVENT_MUSIC_ON){
-		Audio::backgroundMusicOn();
-		lastEvent = EVENT_NONE;
-	}
-	if(lastEvent == EVENT_MUSIC_OFF){
-		Audio::backgroundMusicOff();
-		lastEvent = EVENT_NONE;
-	}
-
 	Level* level = NULL;
 
 	switch(state){
@@ -188,6 +178,14 @@ void Engine::step(double elapsedTime){
 }
 
 void Engine::setState(EngineState nextState){
+	if(nextState == STATE_MAIN_MENU){
+		Audio::playMenuBackground();
+	}else{
+		if(nextState == STATE_PLAY){
+			Audio::playGameBackground();
+		}
+	}
+	LOGI("Engine::state = ", nextState);
 	exitOnStop = nextState != STATE_PLAY;
 	state = nextState;
 }
@@ -195,6 +193,14 @@ void Engine::setState(EngineState nextState){
 void Engine::performAction(Action act, float x, float y){
 	if(currentMenu->action(act, x / screenPixelWidth * maxX, y / screenPixelHeight * maxY)){
 		lastEvent = currentMenu->getEvent();
+		if(lastEvent == EVENT_MUSIC_ON){
+			Audio::backgroundMusicOn();
+			lastEvent = EVENT_NONE;
+		}
+		if(lastEvent == EVENT_MUSIC_OFF){
+			Audio::backgroundMusicOff();
+			lastEvent = EVENT_NONE;
+		}
 	}
 }
 
@@ -252,18 +258,6 @@ bool Engine::setupGraphics(int w, int h) {
 	float left = 0.0, right = 1.0f / (float) h * (float) w, bottom = 1.0, top = 0.0;
 	maxX = right;
 	maxY = bottom;
-
-	/*const mat4 OrthoProjection(float left, float right,
-	        float bottom, float top, float zNear, float zFar)
-	{
-	        const float tx = - (right + left) / (right - left),
-	                    ty = - (top + bottom) / (top - bottom),
-	                    tz = - (zFar + zNear) / (zFar - zNear);
-
-	        return mat4(2 / (right - left), 0, 					0, 						tx,
-	                    0, 					2 / (top - bottom), 0, 						ty,
-	                    0, 					0, 					-2 / (zFar - zNear), 	tz,
-	                    0, 					0, 					0, 						1);*/
 
 	matrix = new GLfloat[16];
 

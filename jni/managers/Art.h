@@ -72,8 +72,8 @@ public:
 	static const char* PATH_TEXTURES_SMALL;
 	static const char* PATH_TEXTURES_MEDIUM;
 	static const char* PATH_TEXTURES_LARGE;
-	static const char* PATH_GAME_BG_MUSIC;
-	static const char* PATH_MENU_BG_MUSIC;
+	static const char* PATH_GAME_BACKGROUND_MUSIC;
+	static const char* PATH_MENU_BACKGROUND_MUSIC;
 
 	static const int LEVELS_ON_SIDE_COUNT = 4;
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
@@ -132,10 +132,8 @@ public:
 	static Level* getLevel(int number);
 	static GLfloat* getLevelTexCoords(int number);
 
-	static int getGameBackgroundMusicCount(){return gameBackgroundMusicList.getLength();};
-	static ResourseDescriptor getGameBackgroundMusicDescriptor(unsigned int number);
-	static int getMenuBackgroundMusicCount(){return menuBackgroundMusicList.getLength();};
-	static ResourseDescriptor getMenuBackgroundMusicDescriptor(unsigned int number);
+	static ResourseDescriptor getGameBackgroundMusicDescriptor();
+	static ResourseDescriptor getMenuBackgroundMusicDescriptor();
 
 	static void free(JNIEnv* env);
 
@@ -152,9 +150,6 @@ private:
 	static jmethodID pmGetHeightId;
 	static jmethodID pmGetPixelsId;
 
-	static List<ResourseDescriptor> gameBackgroundMusicList;
-	static List<ResourseDescriptor> menuBackgroundMusicList;
-
 	static const char* texturesPath;
 	static Texture** texturesSources;
 	static GLuint* textures;
@@ -165,11 +160,15 @@ private:
 	static int levelsCount;
 	static GLfloat** levelsTexCoords;
 
+	static ResourseDescriptor gameMusicDescriptor;
+	static ResourseDescriptor menuMusicDescriptor;
+
 	static char* argb2rgba(unsigned int* src, int width, int weight);
 	static Texture* loadPng(const char* filename);
 	static GLuint createTexture(Texture* texture);
 	static List<char*> loadFilesList(const char* path);
 	static List<ResourseDescriptor> loadFilesDescriptorsList(const char* path);
+	static ResourseDescriptor loadResourceDescriptor(const char* path);
 	static char* loadTextFile(const char* filename);
 	static void loadLevels();
 	static void loadTextures();

@@ -20,40 +20,47 @@
 class Audio {
 public:
 
-	static const char* STORE_BG_MUSIC_STATE;
-	static const bool BG_MUSIC_DEFAULT = true;
+	static const char* SHOULD_PLAY_BACKGROUND_MUSIC;
+	static const bool SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT = true;
 
 	static void init();
 
-	static void initBackgroundMusic();
-	static void playBackgroungMusic();
-	static void pauseBackgroundMusic();
-	static void stopBackgroundMusic();
+	static void playGameBackground();
+	static void playMenuBackground();
+
+	static inline void stopBackgroundMusic(){
+		(*currentBackgroundPlayer)->SetPlayState(currentBackgroundPlayer, SL_PLAYSTATE_STOPPED);
+	}
 
 	static inline void backgroundMusicOn(){
-		shouldPlayBackgroundMusic = true;
-		playBackgroungMusic();
-		Store::saveBool(STORE_BG_MUSIC_STATE, true);
+		LOGI("Audio::backgroundMusicOn");
+		isBackgroundOn = true;
+		(*currentBackgroundPlayer)->SetPlayState(currentBackgroundPlayer, SL_PLAYSTATE_PLAYING);
+		Store::saveBool(SHOULD_PLAY_BACKGROUND_MUSIC, true);
 	};
 	static inline void backgroundMusicOff(){
-		shouldPlayBackgroundMusic = false;
-		pauseBackgroundMusic();
-		Store::saveBool(STORE_BG_MUSIC_STATE, false);
+		LOGI("Audio::backgroundMusicOff");
+		isBackgroundOn = false;
+		(*currentBackgroundPlayer)->SetPlayState(currentBackgroundPlayer, SL_PLAYSTATE_STOPPED);
+		Store::saveBool(SHOULD_PLAY_BACKGROUND_MUSIC, false);
 	};
 
-	static inline bool isBackgroundMusicOn() {return shouldPlayBackgroundMusic;};
+	static inline bool isBackgroundMusicOn() {return isBackgroundOn;};
 
 	static void free();
 
 private:
 	static SLObjectItf engineObj, outputMixObj;
 	static SLEngineItf engine;
-	static SLObjectItf bgmPlayerObj;
-	static SLPlayItf bgmPlayer;
-	static SLSeekItf bgmPlayerSeek;
 
-	static bool shouldPlayBackgroundMusic;
+	static SLObjectItf gameBackgroundPlayerObj, menuBackgroundPlayerObj;
+	static SLPlayItf gameBackgroundPlayer, menuBackgroundPlayer, currentBackgroundPlayer;
+	static SLSeekItf gameBackgroundSeek, menuBackgroundSeek;
 
+	static bool isBackgroundOn;
+
+	static SLuint32 createAudioPlayer(SLObjectItf& playerObj, SLPlayItf& player, SLSeekItf& seek, ResourseDescriptor resourseDescriptor);
+	static void destroyAudioPlayer(SLObjectItf& playerObj, SLPlayItf& player, SLSeekItf& seek);
 	static void destroyAndNull(SLObjectItf& obj);
 
 };

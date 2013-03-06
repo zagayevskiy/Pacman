@@ -7,19 +7,24 @@
 
 #include "Audio.h"
 
-const char* Audio::STORE_BG_MUSIC_STATE = "ShouldPlayBGMusic";
+const char* Audio::SHOULD_PLAY_BACKGROUND_MUSIC = "ShouldPlayBGMusic";
 
-SLObjectItf Audio::engineObj;
-SLEngineItf Audio::engine;
-SLObjectItf Audio::outputMixObj;
-SLObjectItf Audio::bgmPlayerObj;
-SLPlayItf Audio::bgmPlayer;
-SLSeekItf Audio::bgmPlayerSeek;
-bool Audio::shouldPlayBackgroundMusic = true;
+SLObjectItf Audio::engineObj = NULL;
+SLEngineItf Audio::engine = NULL;
+SLObjectItf Audio::outputMixObj = NULL;
+SLObjectItf Audio::gameBackgroundPlayerObj = NULL;
+SLPlayItf Audio::gameBackgroundPlayer = NULL;
+SLSeekItf Audio::gameBackgroundSeek = NULL;
+SLObjectItf Audio::menuBackgroundPlayerObj = NULL;
+SLPlayItf Audio::menuBackgroundPlayer = NULL;
+SLSeekItf Audio::menuBackgroundSeek = NULL;
+SLPlayItf Audio::currentBackgroundPlayer = NULL;
+
+bool Audio::isBackgroundOn = SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT;
 
 void Audio::init(){
 	LOGI("Audio::init");
-	shouldPlayBackgroundMusic = Store::loadBool(STORE_BG_MUSIC_STATE, BG_MUSIC_DEFAULT);
+	isBackgroundOn = Store::loadBool(SHOULD_PLAY_BACKGROUND_MUSIC, SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT);
 	free();
 
 	 SLresult result;
@@ -66,19 +71,38 @@ void Audio::init(){
 		return;
 	}
 
-	initBackgroundMusic();
+	createAudioPlayer(gameBackgroundPlayerObj, gameBackgroundPlayer, gameBackgroundSeek, Art::getGameBackgroundMusicDescriptor());
+	createAudioPlayer(menuBackgroundPlayerObj, menuBackgroundPlayer, menuBackgroundSeek, Art::getMenuBackgroundMusicDescriptor());
+
+	currentBackgroundPlayer = menuBackgroundPlayer;
+
 }
 
-void Audio::initBackgroundMusic(){
-	LOGI("Audio::initBackgroungMusic");
+void Audio::playMenuBackground(){
+	LOGI("Audio::playMenuBackground");
+	if(isBackgroundOn){
+		(*gameBackgroundPlayer)->SetPlayState(gameBackgroundPlayer, SL_PLAYSTATE_STOPPED);
+		(*menuBackgroundPlayer)->SetPlayState(menuBackgroundPlayer, SL_PLAYSTATE_PLAYING);
+	}
+	currentBackgroundPlayer = menuBackgroundPlayer;
+};
+
+void Audio::playGameBackground(){
+	LOGI("Audio::playGameBackground");
+	if(isBackgroundOn){
+		(*menuBackgroundPlayer)->SetPlayState(menuBackgroundPlayer, SL_PLAYSTATE_STOPPED);
+		(*gameBackgroundPlayer)->SetPlayState(gameBackgroundPlayer, SL_PLAYSTATE_PLAYING);
+	}
+	currentBackgroundPlayer = gameBackgroundPlayer;
+};
+
+SLuint32 Audio::createAudioPlayer(SLObjectItf& playerObj, SLPlayItf& player, SLSeekItf& seek, ResourseDescriptor resourseDescriptor){
 	SLDataLocator_AndroidFD lDataLocatorIn;
 	lDataLocatorIn.locatorType = SL_DATALOCATOR_ANDROIDFD;
 
-	ResourseDescriptor bgMusicDescriptor = Art::getGameBackgroundMusicDescriptor(Art::getGameBackgroundMusicCount() - 1);
-
-	lDataLocatorIn.fd = bgMusicDescriptor.decriptor;
-	lDataLocatorIn.offset = bgMusicDescriptor.start;
-	lDataLocatorIn.length = bgMusicDescriptor.length;
+	lDataLocatorIn.fd = resourseDescriptor.decriptor;
+	lDataLocatorIn.offset = resourseDescriptor.start;
+	lDataLocatorIn.length = resourseDescriptor.length;
 
 	SLDataFormat_MIME lDataFormat;
 	lDataFormat.formatType = SL_DATAFORMAT_MIME;
@@ -103,7 +127,7 @@ void Audio::initBackgroundMusic(){
 
 	SLresult result = (*engine)->CreateAudioPlayer(
 			engine,
-			&bgmPlayerObj,
+			&playerObj,
 			&lDataSource,
 			&lDataSink,
 			lBGMPlayerIIDCount,
@@ -112,114 +136,49 @@ void Audio::initBackgroundMusic(){
 	);
 
 	if(result != SL_RESULT_SUCCESS){
-		LOGE("Can not CreateAudioPlayer");
-		return;
+		LOGE("Can not CreateAudioPlayer %d", result);
+		playerObj = NULL;
+		return result;
 	}
 
-	result = (*bgmPlayerObj)->Realize(bgmPlayerObj, SL_BOOLEAN_FALSE);
+	result = (*playerObj)->Realize(playerObj, SL_BOOLEAN_FALSE);
 	if(result != SL_RESULT_SUCCESS){
-		LOGE("Can not Realize bgmPlayerObj");
-		return;
+		LOGE("Can not Realize playerObj");
+		playerObj = NULL;
+		return result;
 	}
 
-	result = (*bgmPlayerObj)->GetInterface(bgmPlayerObj, SL_IID_PLAY, &bgmPlayer);
-
-	if(result != SL_RESULT_SUCCESS){
-		LOGE("Can not GetInterface bgmPlayer");
-		return;
-	}
-
-	result = (*bgmPlayerObj)->GetInterface(bgmPlayerObj, SL_IID_SEEK, &bgmPlayerSeek);
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_PLAY, &player);
 
 	if(result != SL_RESULT_SUCCESS){
-		LOGE("Can not GetInterface bgmPlayerSeek");
-		return;
+		LOGE("Can not GetInterface player");
+		destroyAndNull(playerObj);
+		player = NULL;
+		return result;
 	}
 
-	result = (*bgmPlayerSeek)->SetLoop(bgmPlayerSeek, SL_BOOLEAN_TRUE, 0, SL_TIME_UNKNOWN);
+	result = (*playerObj)->GetInterface(playerObj, SL_IID_SEEK, &seek);
 
-	if(result != SL_RESULT_SUCCESS){
-		LOGE("Can not SetLoop infinity");
-		return;
-	}
+	(*seek)->SetLoop(seek, SL_BOOLEAN_TRUE, 0, SL_TIME_UNKNOWN);
+	(*player)->SetPlayState(player, SL_PLAYSTATE_STOPPED);
 
-	LOGI("Background music inited");
+	return SL_RESULT_SUCCESS;
 
 }
 
-void Audio::playBackgroungMusic(){
-	LOGI("Audio::playBackgroungMusic");
-	if(!shouldPlayBackgroundMusic){
-		return;
+void Audio::destroyAudioPlayer(SLObjectItf& playerObj, SLPlayItf& player, SLSeekItf& seek){
+	if(player){
+		(*player)->SetPlayState(player, SL_PLAYSTATE_STOPPED);
+		player = NULL;
 	}
-
-	if(bgmPlayer){
-		SLuint32 state;
-		(*bgmPlayerObj)->GetState(bgmPlayerObj, &state);
-		if(state != SL_OBJECT_STATE_REALIZED){
-			LOGE("bgmPlayerObj not Realized");
-			return;
-		}
-
-		if((*bgmPlayer)->SetPlayState(bgmPlayer, SL_PLAYSTATE_PLAYING) != SL_RESULT_SUCCESS){
-			LOGE("Can not SetPlayState PLAYING");
-			return;
-		}
-
-		LOGI("Background music play now");
-	}
-
-};
-
-void Audio::pauseBackgroundMusic(){
-	LOGI("Audio::pauseBackgroundMusic");
-	if(bgmPlayer){
-		SLuint32 state;
-		(*bgmPlayerObj)->GetState(bgmPlayerObj, &state);
-		if(state != SL_OBJECT_STATE_REALIZED){
-			LOGE("bgmPlayerObj not Realized");
-			return;
-		}
-
-		if((*bgmPlayer)->SetPlayState(bgmPlayer, SL_PLAYSTATE_PAUSED) != SL_RESULT_SUCCESS){
-			LOGE("Can not SetPlayState PAUSED");
-			return;
-		}
-
-		LOGI("Background music paused");
-	}
-}
-
-void Audio::stopBackgroundMusic(){
-	LOGI("Audio::stopBackgroundMusic");
-	if(bgmPlayer){
-		SLuint32 state;
-		(*bgmPlayerObj)->GetState(bgmPlayerObj, &state);
-		if(state == SL_OBJECT_STATE_REALIZED){
-			(*bgmPlayer)->SetPlayState(bgmPlayer, SL_PLAYSTATE_PAUSED);
-			(*bgmPlayerObj)->Destroy(bgmPlayerObj);
-			bgmPlayerObj = NULL;
-			bgmPlayer = NULL;
-			bgmPlayerSeek = NULL;
-		}
-
-		LOGI("Background music stopped");
-	}
+	destroyAndNull(playerObj);
 };
 
 void Audio::free(){
 	LOGI("Audio::free");
 
-	if(bgmPlayer){
-		SLuint32 state;
-		(*bgmPlayerObj)->GetState(bgmPlayerObj, &state);
-		if(state == SL_OBJECT_STATE_REALIZED){
-			(*bgmPlayer)->SetPlayState(bgmPlayer, SL_PLAYSTATE_STOPPED);
-			destroyAndNull(bgmPlayerObj);
-			bgmPlayer = NULL;
-			bgmPlayerSeek = NULL;
-		}
-	}
+	destroyAudioPlayer(gameBackgroundPlayerObj, gameBackgroundPlayer, gameBackgroundSeek);
+	destroyAudioPlayer(menuBackgroundPlayerObj, menuBackgroundPlayer, menuBackgroundSeek);
 	destroyAndNull(outputMixObj);
 	destroyAndNull(engineObj);
 	engine = NULL;

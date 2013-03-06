@@ -7,17 +7,12 @@
 
 #include "Art.h"
 
-List<ResourseDescriptor> Art::gameBackgroundMusicList;
-List<ResourseDescriptor> Art::menuBackgroundMusicList;
-
 const char* Art::PATH_LEVELS = "levels";
 const char* Art::PATH_TEXTURES_SMALL = "textures/small/%s";
 const char* Art::PATH_TEXTURES_MEDIUM = "textures/medium/%s";
 const char* Art::PATH_TEXTURES_LARGE = "textures/large/%s";
-const char* Art::PATH_GAME_BG_MUSIC = "audio/music/game";
-const char* Art::PATH_MENU_BG_MUSIC = "audio/music/menu";
-
-
+const char* Art::PATH_GAME_BACKGROUND_MUSIC = "audio/music/game.ogg";
+const char* Art::PATH_MENU_BACKGROUND_MUSIC = "audio/music/menu.ogg";
 
 AAssetManager* Art::assetManager;
 jobject Art::pngManager = NULL;
@@ -39,6 +34,9 @@ char** Art::shadersSources = NULL;
 Level** Art::levels = NULL;
 GLfloat** Art::levelsTexCoords = NULL;
 int Art::levelsCount = 0;
+
+ResourseDescriptor Art::gameMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
+ResourseDescriptor Art::menuMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
 
 void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager){
 	LOGI("Art::init");
@@ -99,12 +97,12 @@ GLfloat* Art::getLevelTexCoords(int number){
 	return (number >= 0 && number < levelsCount) ? levelsTexCoords[number] : NULL;
 }
 
-ResourseDescriptor Art::getGameBackgroundMusicDescriptor(unsigned int number){
-	return gameBackgroundMusicList.getLength() > 0 ? gameBackgroundMusicList[number % gameBackgroundMusicList.getLength()] : EMPTY_RESOURSE_DESCRIPTOR;
+ResourseDescriptor Art::getGameBackgroundMusicDescriptor(){
+	return gameMusicDescriptor;
 }
 
-ResourseDescriptor Art::getMenuBackgroundMusicDescriptor(unsigned int number){
-	return menuBackgroundMusicList.getLength() > 0 ? menuBackgroundMusicList[number % menuBackgroundMusicList.getLength()] : EMPTY_RESOURSE_DESCRIPTOR;
+ResourseDescriptor Art::getMenuBackgroundMusicDescriptor(){
+	return menuMusicDescriptor;
 }
 
 void Art::free(JNIEnv* env){
@@ -114,8 +112,6 @@ void Art::free(JNIEnv* env){
 		env->DeleteGlobalRef(pngManager);
 		pngManager = NULL;
 	}
-
-	gameBackgroundMusicList.clear();
 
 	if(textures){
 		glDeleteTextures(TEXTURES_COUNT, textures);
@@ -292,6 +288,14 @@ List<ResourseDescriptor> Art::loadFilesDescriptorsList(const char* path){
 	return result;
 }
 
+ResourseDescriptor Art::loadResourceDescriptor(const char* path){
+	AAsset* asset = AAssetManager_open(assetManager, path, AASSET_MODE_UNKNOWN);
+	ResourseDescriptor resourceDescriptor;
+	resourceDescriptor.decriptor = AAsset_openFileDescriptor(asset, &resourceDescriptor.start, &resourceDescriptor.length);
+	AAsset_close(asset);
+	return resourceDescriptor;
+}
+
 void Art::loadLevels(){
 	List<char*> files = loadFilesList(PATH_LEVELS);
 	levelsCount = files.getLength();
@@ -331,8 +335,8 @@ void Art::loadTextures(){
 }
 
 void Art::loadMusic(){
-	gameBackgroundMusicList = loadFilesDescriptorsList(PATH_GAME_BG_MUSIC);
-	menuBackgroundMusicList = loadFilesDescriptorsList(PATH_MENU_BG_MUSIC);
+	gameMusicDescriptor = loadResourceDescriptor(PATH_GAME_BACKGROUND_MUSIC);
+	menuMusicDescriptor = loadResourceDescriptor(PATH_MENU_BACKGROUND_MUSIC);
 }
 
 /*

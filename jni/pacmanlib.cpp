@@ -52,7 +52,6 @@ extern "C" {
 		Store::init(env, storeManager);
 		Art::init(env, width, height, pngManager, assetManager);
 		Audio::init();
-		Audio::playBackgroungMusic();
 		engine = new Engine();
 		engine->init(width, height);
 	}
@@ -66,6 +65,7 @@ extern "C" {
 			LOGE("Critical elapsed time: %f", elapsedTime);
 			elapsedTime = MAX_ELAPSED_TIME;
 		}
+
 		engine->step(elapsedTime);
 		engine->render(elapsedTime);
 
@@ -93,7 +93,7 @@ extern "C" {
 
 	JNIEXPORT jboolean JNICALL Java_com_zagayevskiy_pacman_PacmanLib_stop(JNIEnv* env, jobject obj){
 		if(engine->stop()){
-			Audio::pauseBackgroundMusic();
+			Audio::stopBackgroundMusic();
 			return true;
 		}
 		return false;
