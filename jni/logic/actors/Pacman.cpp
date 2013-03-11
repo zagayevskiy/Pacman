@@ -135,12 +135,14 @@ void Pacman::step(double elapsedTime){
 				state = PACMAN_DIED;
 				--lifes;
 				Statistics::decLifes();
+				Audio::playSound(Art::SOUND_DEATH);
 				return;
 			}
 			exists = monsters.getNext(monster);
 		}
 
 		if(eatenFoodCount == game->getLevelFoodCount()){
+			Audio::playSound(Art::SOUND_WIN);
 			state = PACMAN_WIN;
 		}
 	}
@@ -213,7 +215,6 @@ void Pacman::step(double elapsedTime){
 		break;
 
 		case PACMAN_DIED:
-			Audio::playSound(Art::SOUND_DEATH);
 			if(diedTime > MAX_DIED_TIME){
 				if(lifes){
 					x = initialX;
@@ -223,6 +224,7 @@ void Pacman::step(double elapsedTime){
 					state = initialState;
 				}else{
 					state = PACMAN_GAME_OVER;
+					Audio::playSound(Art::SOUND_GAMEOVER);
 				}
 			}else{
 				diedTime += elapsedTime;

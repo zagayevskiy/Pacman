@@ -23,7 +23,7 @@ public:
 	static const char* SHOULD_PLAY_BACKGROUND_MUSIC;
 	static const char* SHOULD_PLAY_SOUNDS;
 	static const bool SHOULD_PLAY_BACKGROUND_MUSIC_DEFAULT = true;
-	static const bool SHOULD_PLAY_SOUNDS_DEFAULT = false;
+	static const bool SHOULD_PLAY_SOUNDS_DEFAULT = true;
 
 	static void init();
 
@@ -51,6 +51,7 @@ public:
 	static inline bool isBackgroundMusicOn() {return shouldPlayBackgroundMusic;};
 
 	static inline void playSound(unsigned int id){
+		LOGE("playSound(%d)", id);
 		if(shouldPlaySounds){
 			const SoundBuffer* sound = Art::getSound(id);
 			(*soundsBufferQueue)->Clear(soundsBufferQueue);

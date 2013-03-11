@@ -185,7 +185,7 @@ void Engine::setState(EngineState nextState){
 			Audio::playGameBackground();
 		}
 	}
-	LOGI("Engine::state = ", nextState);
+	LOGI("Engine::state = %d", nextState);
 	exitOnStop = nextState != STATE_PLAY;
 	state = nextState;
 }

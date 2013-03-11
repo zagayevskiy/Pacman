@@ -191,7 +191,7 @@ SLuint32 Audio::createBufferQueuePlayer(SLObjectItf& playerObj, SLPlayItf& playe
 
 	// configure audio source
 	SLDataLocator_AndroidSimpleBufferQueue locatorBufferQueue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-	SLDataFormat_PCM formatPCM = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
+	SLDataFormat_PCM formatPCM = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_44_1,
 		SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
 		SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
 	SLDataSource audioSrc = {&locatorBufferQueue, &formatPCM};

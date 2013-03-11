@@ -354,6 +354,9 @@ void Art::loadMusic(){
 	sounds = new SoundBuffer*[SOUNDS_COUNT];
 	sounds[SOUND_LIFE] = loadSoundFile("audio/sounds/life.wav");
 	sounds[SOUND_DEATH] = loadSoundFile("audio/sounds/death.wav");
+	sounds[SOUND_WIN] = loadSoundFile("audio/sounds/win.wav");
+	sounds[SOUND_GAMEOVER] = loadSoundFile("audio/sounds/gameOver.wav");
+	sounds[SOUND_CLICK] = loadSoundFile("audio/sounds/click.wav");
 
 	gameMusicDescriptor = loadResourceDescriptor(PATH_GAME_BACKGROUND_MUSIC);
 	menuMusicDescriptor = loadResourceDescriptor(PATH_MENU_BACKGROUND_MUSIC);
@@ -362,8 +365,11 @@ void Art::loadMusic(){
 SoundBuffer* Art::loadSoundFile(const char* filename){
 	SoundBuffer* result = new SoundBuffer();
 	AAsset* asset = AAssetManager_open(assetManager, filename, AASSET_MODE_UNKNOWN);
-	result->length = AAsset_getLength(asset);
+	off_t length = AAsset_getLength(asset);
+	result->length = length - sizeof(WAVHeader);
+	result->header = new WAVHeader();
 	result->buffer = new char[result->length + 1];
+	AAsset_read(asset, result->header, sizeof(WAVHeader));
 	AAsset_read(asset, result->buffer, result->length);
 	result->buffer[result->length] = '\0';
 	AAsset_close(asset);
