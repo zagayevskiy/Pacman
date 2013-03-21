@@ -210,8 +210,8 @@ bool Engine::stop(){
 }
 
 void Engine::render(double elapsedTime){
-
-	glClearColor(0.0, 0.17, 0.0, 1.0f);
+	glClearColor(0.0, 0.5, 0.0, 1.0f);
+	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	checkGlError("glClearColor");
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	checkGlError("glClear");
@@ -225,7 +225,6 @@ void Engine::render(double elapsedTime){
 	}
 	glUseProgram(stableProgram);
 	currentMenu->render(elapsedTime);
-
 }
 
 Engine::~Engine() {

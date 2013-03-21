@@ -99,6 +99,7 @@ private:
 	int animationStepNumber;
 	double animationStepTime, animationElapsedTime;
 	GLuint offsetGoLeft, offsetGoRight, offsetGoDown, offsetGoUp;
+
 };
 
 #endif /* PACMAN_H_ */

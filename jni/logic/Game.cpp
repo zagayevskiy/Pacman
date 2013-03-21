@@ -21,10 +21,10 @@ void Game::initGraphics(float _maxX, float _maxY, GLuint _stableProgram, GLuint 
 	shiftProgram = _shiftProgram;
 
 	stableVertexHandle = glGetAttribLocation(stableProgram, "aPosition");
-	checkGlError("glGetAttribLocation");
+	checkGlError("Game -> glGetAttribLocation(aPosition)");
 
 	stableTextureHandle = glGetAttribLocation(stableProgram, "aTexture");
-	checkGlError("glGetAttribLocation");
+	checkGlError("Game -> glGetAttribLocation(aTexture)");
 
 	stableMapHandle = glGetUniformLocation(stableProgram, "uMap");
 	checkGlError("glGetUniformLocation");

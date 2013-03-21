@@ -123,7 +123,6 @@ void Pacman::event(EngineEvent e){
 }
 
 void Pacman::step(double elapsedTime){
-
 	if(state != PACMAN_DIED){
 		List<Monster*>& monsters = game->getMonsters();
 		Monster* monster;
@@ -373,41 +372,6 @@ void Pacman::render(double elapsedTime){
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	/*GLfloat texCoords[] = {
-		0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-		1.0, 1.0, 0.0, 1.0, 0.0, 0.0
-	};
-
-	GLfloat tileSize = game->getTileSize();
-
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_PACMAN));
-
-	GLfloat shiftX = (x - radius)*tileSize;
-	GLfloat shiftY = (y - radius)*tileSize;
-	glUniform2f(shiftHandle, shiftX, shiftY);
-	//LOGI("(%f, %f)", shiftX, shiftY);
-
-
-	GLfloat pacmanCoords[] = {
-		0.0, 0.0, tileSize, 0.0, tileSize, tileSize,
-		tileSize, tileSize, 0.0, tileSize, 0.0, 0.0
-	};
-
-	glVertexAttribPointer(shiftVertexHandle, 2, GL_FLOAT, GL_FALSE, 0, pacmanCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftVertexHandle);
-	checkGlError("glEnableVertexAttribArray");
-
-	glVertexAttribPointer(shiftTextureHandle, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
-	checkGlError("glVertexAttribPointer");
-	glEnableVertexAttribArray(shiftTextureHandle);
-	checkGlError("glEnableVertexAttribArray");
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	checkGlError("glDrawArrays");
-
-	glDisableVertexAttribArray(shiftTextureHandle);
-	glDisableVertexAttribArray(shiftVertexHandle);*/
 
 }
 

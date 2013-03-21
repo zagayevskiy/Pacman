@@ -24,6 +24,8 @@ jmethodID Art::pmGetWidthId;
 jmethodID Art::pmGetHeightId;
 jmethodID Art::pmGetPixelsId;
 
+GLfloat Art::screenWidth = 0, Art::screenHeight = 0;
+
 const char* Art::texturesPath = Art::PATH_TEXTURES_SMALL; //Default textures are small
 
 Texture** Art::texturesSources = NULL;
@@ -40,9 +42,10 @@ SoundBuffer** Art::sounds = NULL;
 ResourseDescriptor Art::gameMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
 ResourseDescriptor Art::menuMusicDescriptor = EMPTY_RESOURSE_DESCRIPTOR;
 
-void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager){
+void Art::init(JNIEnv* env, jint _screenWidth, jint _screenHeight, jobject _pngManager, jobject javaAssetManager){
 	LOGI("Art::init");
 	free(env);
+
 	pngManager = env->NewGlobalRef(_pngManager);
 	pmEnv = env;
 
@@ -55,9 +58,12 @@ void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngMan
 
 	assetManager = AAssetManager_fromJava(env, javaAssetManager);
 
-	if(screenWidth <= 480){
+	screenWidth = _screenWidth;
+	screenHeight = _screenHeight;
+
+	if(_screenWidth <= 480){
 		texturesPath = PATH_TEXTURES_SMALL;
-	}else if(screenWidth <= 600){
+	}else if(_screenWidth <= 600){
 		texturesPath = PATH_TEXTURES_MEDIUM;
 	}else{
 		texturesPath = PATH_TEXTURES_LARGE;
@@ -71,6 +77,8 @@ void Art::init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngMan
 	shadersSources[SHADER_VERTEX_0] = loadTextFile("shaders/shader.vrt");
 	shadersSources[SHADER_FRAGMENT_0] = loadTextFile("shaders/shader.frg");
 	shadersSources[SHADER_VERTEX_SHIFT] = loadTextFile("shaders/shiftShader.vrt");
+	shadersSources[SHADER_VERTEX_BRUSHES] = loadTextFile("shaders/brushes.vrt");
+	shadersSources[SHADER_FRAGMENT_BRUSHES] = loadTextFile("shaders/brushes.frg");
 
 }
 
@@ -81,6 +89,7 @@ void Art::generateTextures(){
 	for(int i = 0; i < TEXTURES_COUNT; ++i){
 		textures[i] = texturesSources[i] ? createTexture(texturesSources[i]) : TEXTURE_NONE;
 	}
+	textures[TEXTURE_BRUSHES] = generateBrushesTexture();
 }
 
 GLuint Art::getTexture(int id){
@@ -169,9 +178,11 @@ void Art::free(JNIEnv* env){
 		for(int i = 0; i < SOUNDS_COUNT; ++i){
 			if(sounds[i]){
 				delete sounds[i];
+				sounds[i] = NULL;
 			}
 		}
 		delete[] sounds;
+		sounds = NULL;
 	}
 
 }
@@ -218,6 +229,70 @@ GLuint Art::createTexture(Texture* texture){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->pixels);
+
+	return textureId;
+}
+
+GLuint Art::generateBrushesTexture(){
+	GLuint textureId;
+	GLuint program = ShadersManager::createProgram(Art::getShaderSource(Art::SHADER_VERTEX_BRUSHES), Art::getShaderSource(Art::SHADER_FRAGMENT_BRUSHES));
+			//ShadersManager::createProgram(Art::getShaderSource(Art::SHADER_VERTEX_BRUSHES), Art::getShaderSource(Art::SHADER_FRAGMENT_BRUSHES));
+	if(!program){
+		return 0;
+	}
+
+	glUseProgram(program);
+
+	GLuint positionHandle = glGetAttribLocation(program, "aPosition");
+	checkGlError("getAttribLocation0");
+
+	glViewport(0, 0, 1024, 1024);
+
+	GLint oldFrameBufferId;
+
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFrameBufferId);
+
+	GLuint frameBufferId;
+	glGenFramebuffers(1, &frameBufferId);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	GLfloat quad[] = {
+		-1.0, -1.0, 1.0, -1.0, 1.0, 1.0,
+		1.0, 1.0, -1.0, 1.0, -1.0, -1.0
+	};
+
+	glVertexAttribPointer(positionHandle, 2, GL_FLOAT, GL_FALSE, 0, quad);
+	checkGlError("glVertexAttribPointer1");
+	glEnableVertexAttribArray(positionHandle);
+	checkGlError("glEnableVertexAttribArray2");
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	checkGlError("glDrawArrays3");
+
+	glDisableVertexAttribArray(positionHandle);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, oldFrameBufferId);
+	glDeleteFramebuffers(1, &frameBufferId);
+
+	glDeleteProgram(program);
+
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);\
+
+	glViewport(0, 0, screenWidth, screenHeight);
 
 	return textureId;
 }
@@ -312,6 +387,7 @@ ResourseDescriptor Art::loadResourceDescriptor(const char* path){
 }
 
 void Art::loadLevels(){
+	LOGI("Art::loafLevels");
 	List<char*> files = loadFilesList(PATH_LEVELS);
 	levelsCount = files.getLength();
 	char buffer[MAX_PATH];
@@ -330,6 +406,7 @@ void Art::loadLevels(){
 }
 
 void Art::loadTextures(){
+	LOGI("Art:loadTextures");
 	char buffer[MAX_PATH];
 	texturesSources = new Texture*[TEXTURES_COUNT];
 	sprintf(buffer, texturesPath, "tiles.png");
@@ -347,9 +424,11 @@ void Art::loadTextures(){
 	texturesSources[TEXTURE_HEART] = loadPng(buffer);
 	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
+	texturesSources[TEXTURE_BRUSHES] = NULL;
 }
 
 void Art::loadMusic(){
+	LOGI("Art::loadMusic");
 
 	sounds = new SoundBuffer*[SOUNDS_COUNT];
 	sounds[SOUND_LIFE] = loadSoundFile("audio/sounds/life.wav");
