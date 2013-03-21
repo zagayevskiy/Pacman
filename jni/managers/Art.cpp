@@ -26,6 +26,8 @@ jmethodID Art::pmGetPixelsId;
 
 GLfloat Art::screenWidth = 0, Art::screenHeight = 0;
 
+GLfloat* Art::MVPMatrix = NULL;
+
 const char* Art::texturesPath = Art::PATH_TEXTURES_SMALL; //Default textures are small
 
 Texture** Art::texturesSources = NULL;
@@ -80,6 +82,7 @@ void Art::init(JNIEnv* env, jint _screenWidth, jint _screenHeight, jobject _pngM
 	shadersSources[SHADER_VERTEX_BRUSHES] = loadTextFile("shaders/brushes.vrt");
 	shadersSources[SHADER_FRAGMENT_BRUSHES] = loadTextFile("shaders/brushes.frg");
 
+	MVPMatrix = generateMVPMatrix(_screenWidth, _screenHeight);
 }
 
 void Art::generateTextures(){
@@ -90,6 +93,10 @@ void Art::generateTextures(){
 		textures[i] = texturesSources[i] ? createTexture(texturesSources[i]) : TEXTURE_NONE;
 	}
 	textures[TEXTURE_BRUSHES] = generateBrushesTexture();
+}
+
+GLfloat* Art::getMVPMatrix(){
+	return MVPMatrix;
 }
 
 GLuint Art::getTexture(int id){
@@ -126,6 +133,11 @@ void Art::free(JNIEnv* env){
 	if(pngManager){
 		env->DeleteGlobalRef(pngManager);
 		pngManager = NULL;
+	}
+
+	if(MVPMatrix){
+		delete[] MVPMatrix;
+		MVPMatrix = NULL;
 	}
 
 	if(textures){
@@ -295,6 +307,38 @@ GLuint Art::generateBrushesTexture(){
 	glViewport(0, 0, screenWidth, screenHeight);
 
 	return textureId;
+}
+
+GLfloat* Art::generateMVPMatrix(int w, int h){
+	float near = 1.0, far = -1.0;
+	float left = 0.0, right = 1.0f / (float) h * (float) w, bottom = 1.0, top = 0.0;
+	GLfloat* matrix = new GLfloat[16];
+
+	// First Column
+	matrix[0] = 2.0 / (right - left);
+	matrix[1] = 0.0;
+	matrix[2] = 0.0;
+	matrix[3] = 0.0;
+
+	// Second Column
+	matrix[4] = 0.0;
+	matrix[5] = 2.0 / (top - bottom);
+	matrix[6] = 0.0;
+	matrix[7] = 0.0;
+
+	// Third Column
+	matrix[8] = 0.0;
+	matrix[9] = 0.0;
+	matrix[10] = -2.0 / (far - near);
+	matrix[11] = 0.0;
+
+	// Fourth Column
+	matrix[12] = -(right + left) / (right - left);
+	matrix[13] = -(top + bottom) / (top - bottom);
+	matrix[14] = -(far + near) / (far - near);
+	matrix[15] = 1;
+
+	return matrix;
 }
 
 char* Art::loadTextFile(const char* filename){

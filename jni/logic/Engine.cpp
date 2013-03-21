@@ -229,9 +229,7 @@ void Engine::render(double elapsedTime){
 
 Engine::~Engine() {
 	LOGI("Engine::~Engine");
-	if(matrix){
-		delete[] matrix;
-	}
+
 	if(gameMenu){
 		delete gameMenu;
 	}
@@ -253,36 +251,11 @@ Engine::~Engine() {
 bool Engine::setupGraphics(int w, int h) {
     LOGI("Engine::setupGraphics(%d, %d)", w, h);
 
-	float near = 1.0, far = -1.0;
-	float left = 0.0, right = 1.0f / (float) h * (float) w, bottom = 1.0, top = 0.0;
+	float right = 1.0f / (float) h * (float) w, bottom = 1.0;
 	maxX = right;
 	maxY = bottom;
 
-	matrix = new GLfloat[16];
-
-	// First Column
-	matrix[0] = 2.0 / (right - left);
-	matrix[1] = 0.0;
-	matrix[2] = 0.0;
-	matrix[3] = 0.0;
-
-	// Second Column
-	matrix[4] = 0.0;
-	matrix[5] = 2.0 / (top - bottom);
-	matrix[6] = 0.0;
-	matrix[7] = 0.0;
-
-	// Third Column
-	matrix[8] = 0.0;
-	matrix[9] = 0.0;
-	matrix[10] = -2.0 / (far - near);
-	matrix[11] = 0.0;
-
-	// Fourth Column
-	matrix[12] = -(right + left) / (right - left);
-	matrix[13] = -(top + bottom) / (top - bottom);
-	matrix[14] = -(far + near) / (far - near);
-	matrix[15] = 1;
+	GLfloat* matrix = Art::getMVPMatrix();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

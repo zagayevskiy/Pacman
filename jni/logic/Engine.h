@@ -58,7 +58,6 @@ private:
 
 	GLuint stableProgram, vertexHandle, textureHandle, matrixHandle, mapHandle;
 	GLuint shiftProgram, shiftMapHandle, shiftMatrixHandle;
-	GLfloat* matrix;
 
 	float screenPixelWidth, screenPixelHeight;
 	float maxX, maxY;

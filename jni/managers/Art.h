@@ -167,6 +167,9 @@ public:
 	static void init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager);
 
 	static void generateTextures();
+
+	static GLfloat* getMVPMatrix();
+
 	static GLuint getTexture(int id);
 
 	static char* getShaderSource(int id);
@@ -196,6 +199,8 @@ private:
 
 	static GLfloat screenWidth, screenHeight;
 
+	static GLfloat* MVPMatrix;
+
 	static const char* texturesPath;
 	static Texture** texturesSources;
 	static GLuint* textures;
@@ -224,6 +229,7 @@ private:
 	static SoundBuffer* loadSoundFile(const char* filename);
 	static Texture* makeTextureFromLevels();
 	static GLuint generateBrushesTexture();
+	static GLfloat* generateMVPMatrix(int width, int height);
 
 };
 
