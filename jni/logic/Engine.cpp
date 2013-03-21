@@ -193,13 +193,28 @@ void Engine::setState(EngineState nextState){
 void Engine::performAction(Action act, float x, float y){
 	if(currentMenu->action(act, x / screenPixelWidth * maxX, y / screenPixelHeight * maxY)){
 		lastEvent = currentMenu->getEvent();
-		if(lastEvent == EVENT_MUSIC_ON){
-			Audio::backgroundMusicOn();
-			lastEvent = EVENT_NONE;
-		}
-		if(lastEvent == EVENT_MUSIC_OFF){
-			Audio::backgroundMusicOff();
-			lastEvent = EVENT_NONE;
+		switch (lastEvent) {
+			case EVENT_MUSIC_ON:
+				Audio::backgroundMusicOn();
+				lastEvent = EVENT_NONE;
+			break;
+
+			case EVENT_MUSIC_OFF:
+				Audio::backgroundMusicOff();
+				lastEvent = EVENT_NONE;
+			break;
+
+			case EVENT_SOUNDS_ON:
+				Audio::soundsOn();
+				lastEvent = EVENT_NONE;
+			break;
+
+			case EVENT_SOUNDS_OFF:
+				Audio::soundsOff();
+				lastEvent = EVENT_NONE;
+			break;
+
+			default: break;
 		}
 	}
 }

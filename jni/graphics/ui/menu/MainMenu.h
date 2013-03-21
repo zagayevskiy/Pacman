@@ -49,6 +49,16 @@ public:
 		musicOnOff->setEvents(EVENT_MUSIC_ON, EVENT_MUSIC_OFF);
 		controls.pushTail(musicOnOff);
 
+		CheckBox* soundsOnOff = new CheckBox(maxX/2, maxY - indentX - size/2, size/2, size/2, Audio::isSoundsOn());
+		soundsOnOff->initGraphics(
+				Art::getTexture(Art::TEXTURE_BUTTONS),
+				Art::TEX_COORDS_BUTTON_SOUNDS_ON,
+				Art::TEX_COORDS_BUTTON_SOUNDS_OFF,
+				vHandle, tHandle
+		);
+		soundsOnOff->setEvents(EVENT_SOUNDS_ON, EVENT_SOUNDS_OFF);
+		controls.pushTail(soundsOnOff);
+
 	}
 
 	int getLevelToLoadNumber() const {return lastActingControlNumber != LAST_CONTROL_NONE ? lastActingControlNumber : 0;};
