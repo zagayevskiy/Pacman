@@ -65,7 +65,7 @@ void Label::setFontHeight(GLfloat height){
 
 void Label::updateFontSize(GLfloat height){
 	fontHeight = height;
-	fontWidth = height / 15.0f * 7.0f;
+	fontWidth = height / Art::FONT_CONSOLAS_COLS_COUNT * Art::FONT_CONSOLAS_ROWS_COUNT;
 }
 
 void Label::updateVerticesArray(){
@@ -106,16 +106,16 @@ void Label::updateTexCoordsArray(){
 	if(text){
 		texCoords = new GLfloat[textLength*12];	 //for each char: 2 triangles. each vertex of 2 tex coords
 
-		GLfloat texFontWidth = 1.0f / 15.0f;
-		GLfloat texFontHeight = 1.0f / 7.0f;
+		GLfloat texFontWidth = 1.0f / Art::FONT_CONSOLAS_COLS_COUNT;
+		GLfloat texFontHeight = 1.0f / Art::FONT_CONSOLAS_ROWS_COUNT;
 
 		// 0 ---- 1
 		// |      |
 		// |      |
 		// 3 ---- 2
 		for(int i = 0; i < textLength; ++i){
-			int row = (text[i] - ' ') / 15;
-			int col = (text[i] - ' ') % 15;
+			int row = (text[i] - ' ') / Art::FONT_CONSOLAS_COLS_COUNT;
+			int col = (text[i] - ' ') % Art::FONT_CONSOLAS_COLS_COUNT;
 
 			GLfloat tmp[12] = {
 				//1st triangle

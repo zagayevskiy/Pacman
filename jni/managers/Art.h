@@ -111,6 +111,9 @@ public:
 	static const int LEVELS_ON_SIDE_COUNT = 4;
 	static const int MAX_LEVELS_COUNT = LEVELS_ON_SIDE_COUNT*LEVELS_ON_SIDE_COUNT;
 	static const int MAX_LEVEL_SIZE = 32;
+	static const int FONT_CONSOLAS_ROWS_COUNT = 8;
+	static const int FONT_CONSOLAS_COLS_COUNT = 16;
+
 
 	static const int TEXTURE_NONE = INT_MAX;
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
