@@ -127,6 +127,11 @@ public:
 	static const int TEXTURE_BRUSHES = 8;
 	static const int TEXTURES_COUNT = 9;
 
+	static const GLuint SHADER_PROGRAM_NONE = 0;
+	static const int SHADER_PROGRAM_0 = 0;
+	static const int SHADER_PROGRAM_SHIFT = 1;
+	static const int SHADER_PROGRAMS_COUNT = 2;
+
 	static const int SHADER_VERTEX_0 = 0;
 	static const int SHADER_FRAGMENT_0 = 1;
 	static const int SHADER_VERTEX_SHIFT = 2;
@@ -170,13 +175,14 @@ public:
 
 	static void init(JNIEnv* env, jint screenWidth, jint screenHeight, jobject _pngManager, jobject javaAssetManager);
 
-	static void generateTextures();
+	static void initOpenGL();
 
 	static GLfloat* getMVPMatrix();
 
 	static GLuint getTexture(int id);
 
 	static char* getShaderSource(int id);
+	static GLuint getShaderProgram(int id);
 
 	static int getLevelsCount() {return levelsCount;};
 	static Level* getLevel(int number);
@@ -210,6 +216,7 @@ private:
 	static GLuint* textures;
 
 	static char** shadersSources;
+	static GLuint* shaderPrograms;
 
 	static Level** levels;
 	static int levelsCount;
@@ -222,7 +229,9 @@ private:
 
 	static char* argb2rgba(unsigned int* src, int width, int weight);
 	static Texture* loadPng(const char* filename);
+	static void generateTextures();
 	static GLuint createTexture(Texture* texture);
+	static void compilePrograms();
 	static List<char*> loadFilesList(const char* path);
 	static List<ResourseDescriptor> loadFilesDescriptorsList(const char* path);
 	static ResourseDescriptor loadResourceDescriptor(const char* path);

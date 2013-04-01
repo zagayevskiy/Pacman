@@ -225,7 +225,7 @@ bool Engine::stop(){
 }
 
 void Engine::render(double elapsedTime){
-	glClearColor(0.0, 0.5, 0.0, 1.0f);
+	glClearColor(0.0, 0.0, 0.0, 1.0f);
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	checkGlError("glClearColor");
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -266,6 +266,8 @@ Engine::~Engine() {
 bool Engine::setupGraphics(int w, int h) {
     LOGI("Engine::setupGraphics(%d, %d)", w, h);
 
+    Art::initOpenGL();
+
 	float right = 1.0f / (float) h * (float) w, bottom = 1.0;
 	maxX = right;
 	maxY = bottom;
@@ -275,9 +277,9 @@ bool Engine::setupGraphics(int w, int h) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    stableProgram = ShadersManager::createProgram(Art::getShaderSource(Art::SHADER_VERTEX_0), Art::getShaderSource(Art::SHADER_FRAGMENT_0));
-    if (!stableProgram) {
-        LOGE("Could not create program.");
+    stableProgram = Art::getShaderProgram(Art::SHADER_PROGRAM_0);
+    if (stableProgram == Art::SHADER_PROGRAM_NONE) {
+        LOGE("Art could not create program.");
         return false;
     }
 
@@ -297,9 +299,11 @@ bool Engine::setupGraphics(int w, int h) {
 	checkGlError("glGetUniformLocation");
 	LOGI("glGetAttribLocation(\"uMatrix\") = %d\n", matrixHandle);
 
-	shiftProgram = ShadersManager::createProgram(Art::getShaderSource(Art::SHADER_VERTEX_SHIFT), Art::getShaderSource(Art::SHADER_FRAGMENT_0));
-	if(!shiftProgram){
-		LOGE("Could not create shift program");
+
+
+	shiftProgram = Art::getShaderProgram(Art::SHADER_PROGRAM_SHIFT);
+	if(shiftProgram == Art::SHADER_PROGRAM_NONE){
+		LOGE("Art could not create shift program");
 		return false;
 	}
 
@@ -329,8 +333,6 @@ bool Engine::setupGraphics(int w, int h) {
 
 	glUniformMatrix4fv(shiftMatrixHandle, 1, GL_FALSE, matrix);
 	checkGlError("glUniformMatrix4fv");
-
-    Art::generateTextures();
 
     mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
     gameMenu = new SwipeGameMenu();

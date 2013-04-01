@@ -34,6 +34,7 @@ Texture** Art::texturesSources = NULL;
 GLuint* Art::textures = NULL;
 
 char** Art::shadersSources = NULL;
+GLuint* Art::shaderPrograms = NULL;
 
 Level** Art::levels = NULL;
 GLfloat** Art::levelsTexCoords = NULL;
@@ -85,14 +86,9 @@ void Art::init(JNIEnv* env, jint _screenWidth, jint _screenHeight, jobject _pngM
 	MVPMatrix = generateMVPMatrix(_screenWidth, _screenHeight);
 }
 
-void Art::generateTextures(){
-	LOGI("Art::generateTextures");
-
-	textures = new GLuint[TEXTURES_COUNT];
-	for(int i = 0; i < TEXTURES_COUNT; ++i){
-		textures[i] = texturesSources[i] ? createTexture(texturesSources[i]) : TEXTURE_NONE;
-	}
-	textures[TEXTURE_BRUSHES] = generateBrushesTexture();
+void Art::initOpenGL(){
+	compilePrograms();
+	generateTextures();
 }
 
 GLfloat* Art::getMVPMatrix(){
@@ -105,6 +101,10 @@ GLuint Art::getTexture(int id){
 
 char* Art::getShaderSource(int id){
 	return (0 <= id && id < SHADERS_COUNT) ? shadersSources[id] : NULL;
+}
+
+GLuint Art::getShaderProgram(int id){
+	return (0 <= id && id < SHADER_PROGRAMS_COUNT) ? shaderPrograms[id] : SHADER_PROGRAM_NONE;
 }
 
 Level* Art::getLevel(int number){
@@ -164,6 +164,14 @@ void Art::free(JNIEnv* env){
 		}
 		delete[] shadersSources;
 		shadersSources = NULL;
+	}
+
+	if(shaderPrograms){
+		for(int i = 0; i < SHADER_PROGRAMS_COUNT; ++i){
+			glDeleteProgram(shaderPrograms[i]);
+		}
+		delete[] shaderPrograms;
+		shaderPrograms = NULL;
 	}
 
 	if(levels){
@@ -226,6 +234,25 @@ Texture* Art::loadPng(const char* filename){
 	pmEnv->CallVoidMethod(pngManager, pmCloseId, png);
 
 	return result;
+}
+
+void Art::compilePrograms(){
+	shaderPrograms = new GLuint[SHADER_PROGRAMS_COUNT];
+	shaderPrograms[SHADER_PROGRAM_0] = ShadersManager::createProgram(shadersSources[SHADER_VERTEX_0], shadersSources[SHADER_FRAGMENT_0]);
+	shaderPrograms[SHADER_PROGRAM_SHIFT] = ShadersManager::createProgram(
+			shadersSources[SHADER_VERTEX_SHIFT],
+			shadersSources[SHADER_FRAGMENT_0]
+	);
+}
+
+void Art::generateTextures(){
+	LOGI("Art::generateTextures");
+
+	textures = new GLuint[TEXTURES_COUNT];
+	for(int i = 0; i < TEXTURES_COUNT; ++i){
+		textures[i] = texturesSources[i] ? createTexture(texturesSources[i]) : TEXTURE_NONE;
+	}
+	textures[TEXTURE_BRUSHES] = generateBrushesTexture();
 }
 
 GLuint Art::createTexture(Texture* texture){
