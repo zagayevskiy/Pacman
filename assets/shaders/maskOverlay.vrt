@@ -1,9 +1,15 @@
 attribute vec4 aPosition;
 attribute vec2 aTexture;
+attribute vec2 aMaskCoords;
 uniform mat4 uMatrix;
 uniform vec2 uShift;
+uniform vec2 uTexShift;
+uniform float uAlpha;
 varying vec2 vTexture;
+varying vec2 vMaskCoords;
 void main() {
-	vTexture = aTexture;
+	
+	vTexture = vec2(aTexture.x + uShift.x + uTexShift.x, aTexture.y + uShift.y + uTexShift.y);
+	vMaskCoords = aMaskCoords; 
 	gl_Position = uMatrix * vec4(aPosition.x + uShift.x, aPosition.y + uShift.y, 0.5, aPosition.w);
 };

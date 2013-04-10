@@ -157,18 +157,24 @@ void Monster::switchDirection(bool verticalDirectionNow){
 }
 
 void Monster::initGraphics(GLuint _shiftProgram){
-	animation = new Animation(_shiftProgram, Art::getTexture(Art::TEXTURE_MONSTER_ANIMATION), 2, 2, 2, 500.0, game->getTileSize(), game->getTileSize());
+	//animation = new Animation(_shiftProgram, Art::getTexture(Art::TEXTURE_MONSTER_ANIMATION), 2, 2, 2, 500.0, game->getTileSize(), game->getTileSize());
+	plume = new Plume(game->getTileSize(), Art::getTexture(Art::TEXTURE_WATER), 1, 1.0f);
 }
 
 void Monster::render(double elapsedTime){
 	GLfloat tileSize = game->getTileSize();
-	animation->render(elapsedTime, (x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY());
+	//animation->render(elapsedTime, (x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY());
+	plume->pushPoint((x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY());
+	plume->render(elapsedTime);
 
 }
 
 Monster::~Monster() {
-	if(animation){
-		delete animation;
+	//if(animation){
+	//	delete animation;
+	//}
+	if(plume){
+		delete plume;
 	}
 }
 

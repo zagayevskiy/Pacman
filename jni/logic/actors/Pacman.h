@@ -14,6 +14,7 @@
 #include "logic/Game.h"
 
 #include "managers/Statistics.h"
+#include "graphics/animation/Plume.h"
 
 class Pacman: public Actor {
 public:
@@ -99,6 +100,8 @@ private:
 	int animationStepNumber;
 	double animationStepTime, animationElapsedTime;
 	GLuint offsetGoLeft, offsetGoRight, offsetGoDown, offsetGoUp;
+
+	Plume* plume;
 
 };
 

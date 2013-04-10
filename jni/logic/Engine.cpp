@@ -346,5 +346,7 @@ bool Engine::setupGraphics(int w, int h) {
     game = new Game();
     game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 
+    glActiveTexture(GL_TEXTURE0);
+
     return true;
 }

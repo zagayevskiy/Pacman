@@ -107,6 +107,8 @@ void Pacman::initGraphics(GLuint _shiftProgram){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	delete[] verticesData;
+
+	plume = new Plume(game->getTileSize()*2, Art::getTexture(Art::TEXTURE_FIRE), 4, 0.4f);
 }
 
 void Pacman::freeGraphics(){
@@ -317,6 +319,11 @@ void Pacman::switchDirection(bool verticalDirectionNow){
 }
 
 void Pacman::render(double elapsedTime){
+	GLfloat tileSize = game->getTileSize();
+	GLfloat shiftX = (x - radius)*tileSize + game->getShiftX();
+	GLfloat shiftY = (y - radius)*tileSize + game->getShiftY();
+	plume->pushPoint(shiftX - tileSize/2.0,  shiftY - tileSize/2.0);
+	plume->render(elapsedTime);
 
 	animationElapsedTime += elapsedTime;
 	if(animationElapsedTime >= animationStepTime){
@@ -324,9 +331,7 @@ void Pacman::render(double elapsedTime){
 		animationElapsedTime = 0.0;
 	}
 
-	GLfloat tileSize = game->getTileSize();
-	GLfloat shiftX = (x - radius)*tileSize;
-	GLfloat shiftY = (y - radius)*tileSize;
+
 	GLuint vertexOffset, textureOffset;
 	switch(state){
 		case PACMAN_GO_RIGHT:
@@ -349,7 +354,7 @@ void Pacman::render(double elapsedTime){
 
 	glUseProgram(shiftProgram);
 
-	glUniform2f(shiftHandle, shiftX + game->getShiftX(), shiftY + game->getShiftY());
+	glUniform2f(shiftHandle, shiftX, shiftY);
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 

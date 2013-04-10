@@ -125,19 +125,24 @@ public:
 	static const int TEXTURE_HEART = 6;
 	static const int TEXTURE_FONT_CONSOLAS = 7;
 	static const int TEXTURE_BRUSHES = 8;
-	static const int TEXTURES_COUNT = 9;
+	static const int TEXTURE_FIRE = 9;
+	static const int TEXTURE_WATER = 10;
+	static const int TEXTURES_COUNT = 11;
 
 	static const GLuint SHADER_PROGRAM_NONE = 0;
 	static const int SHADER_PROGRAM_0 = 0;
 	static const int SHADER_PROGRAM_SHIFT = 1;
-	static const int SHADER_PROGRAMS_COUNT = 2;
+	static const int SHADER_PROGRAM_MASK_OVERLAY = 2;
+	static const int SHADER_PROGRAMS_COUNT = 3;
 
 	static const int SHADER_VERTEX_0 = 0;
 	static const int SHADER_FRAGMENT_0 = 1;
 	static const int SHADER_VERTEX_SHIFT = 2;
 	static const int SHADER_VERTEX_BRUSHES = 3;
 	static const int SHADER_FRAGMENT_BRUSHES = 4;
-	static const int SHADERS_COUNT = 5;
+	static const int SHADER_VERTEX_MASK_OVERLAY = 5;
+	static const int SHADER_FRAGMENT_MASK_OVERLAY = 6;
+	static const int SHADERS_COUNT = 7;
 
 	static const int SOUND_LIFE = 0;
 	static const int SOUND_DEATH = 1;

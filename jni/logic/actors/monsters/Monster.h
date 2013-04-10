@@ -11,6 +11,7 @@
 #include "logic/actors/Actor.h"
 #include "logic/Game.h"
 #include "graphics/animation/Animation.h"
+#include "graphics/animation/Plume.h"
 #include "log.h"
 
 class Monster: public Actor {
@@ -49,7 +50,8 @@ protected:
 	GLuint shiftVertexHandle, shiftTextureHandle;
 	GLuint shiftHandle;
 
-	Animation* animation;
+	//Animation* animation;
+	Plume* plume;
 
 };
 

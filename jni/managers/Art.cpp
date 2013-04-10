@@ -82,6 +82,8 @@ void Art::init(JNIEnv* env, jint _screenWidth, jint _screenHeight, jobject _pngM
 	shadersSources[SHADER_VERTEX_SHIFT] = loadTextFile("shaders/shiftShader.vrt");
 	shadersSources[SHADER_VERTEX_BRUSHES] = loadTextFile("shaders/brushes.vrt");
 	shadersSources[SHADER_FRAGMENT_BRUSHES] = loadTextFile("shaders/brushes.frg");
+	shadersSources[SHADER_VERTEX_MASK_OVERLAY] = loadTextFile("shaders/maskOverlay.vrt");
+	shadersSources[SHADER_FRAGMENT_MASK_OVERLAY] = loadTextFile("shaders/maskOverlay.frg");
 
 	MVPMatrix = generateMVPMatrix(_screenWidth, _screenHeight);
 }
@@ -242,6 +244,10 @@ void Art::compilePrograms(){
 	shaderPrograms[SHADER_PROGRAM_SHIFT] = ShadersManager::createProgram(
 			shadersSources[SHADER_VERTEX_SHIFT],
 			shadersSources[SHADER_FRAGMENT_0]
+	);
+	shaderPrograms[SHADER_PROGRAM_MASK_OVERLAY] = ShadersManager::createProgram(
+			shadersSources[SHADER_VERTEX_MASK_OVERLAY],
+			shadersSources[SHADER_FRAGMENT_MASK_OVERLAY]
 	);
 }
 
@@ -458,7 +464,7 @@ ResourseDescriptor Art::loadResourceDescriptor(const char* path){
 }
 
 void Art::loadLevels(){
-	LOGI("Art::loafLevels");
+	LOGI("Art::loadLevels");
 	List<char*> files = loadFilesList(PATH_LEVELS);
 	levelsCount = files.getLength();
 	char buffer[MAX_PATH];
@@ -496,6 +502,8 @@ void Art::loadTextures(){
 	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 	texturesSources[TEXTURE_BRUSHES] = NULL;
+	texturesSources[TEXTURE_FIRE] = loadPng("textures/fire.png");
+	texturesSources[TEXTURE_WATER] = loadPng("textures/water.png");
 }
 
 void Art::loadMusic(){

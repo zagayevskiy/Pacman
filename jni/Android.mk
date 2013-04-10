@@ -20,6 +20,7 @@ LOCAL_SRC_FILES := \
 	graphics/ui/menu/PauseMenu.cpp \
 	graphics/ui/menu/WinMenu.cpp \
 	graphics/animation/Animation.cpp \
+	graphics/animation/Plume.cpp \
 	managers/Art.cpp \
 	managers/Audio.cpp \
 	managers/Statistics.cpp \
