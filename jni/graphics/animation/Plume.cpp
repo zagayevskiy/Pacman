@@ -7,28 +7,20 @@
 
 #include "Plume.h"
 
-Plume::Plume(float size, GLuint texture, int stepDistance, GLfloat alpha) {
-	maxLength = 16;
-	cursor = 0;
-	length = 0;
+Plume::Plume(float _size, GLuint _texture, double _frameDuration, GLfloat _alpha):
+	maxLength(16), cursor(0), length(0), size(_size), frameElapsedTime(0.0), frameDuration(_frameDuration), texture(_texture),
+	fi(0.0f), fiDelta(FI_DELTA), alpha(_alpha)
+{
 	points = new Point[maxLength];
-	this->size = size;
-	stepNumber = 0;
-	fi = 0;
-	fiDelta = FI_DELTA;
-	this->texture = texture;
-	this->stepDistance = stepDistance;
-	this->alpha = alpha;
 	initGraphics();
 
 }
 
 void Plume::pushPoint(GLfloat x, GLfloat y){
-	++stepNumber;
-	if(stepNumber < stepDistance){
+	if(frameElapsedTime < frameDuration){
 		return;
 	}
-	stepNumber = 0;
+	frameElapsedTime = frameElapsedTime - frameDuration;
 	points[cursor] = Point(x, y);
 	cursor = (cursor + 1) % maxLength;
 	if(length < maxLength){
@@ -83,6 +75,7 @@ void Plume::initGraphics(){
 }
 
 void Plume::render(double elapsedTime){
+	frameElapsedTime += elapsedTime;
 	glUseProgram(program);
 	glBindTexture(GL_TEXTURE_2D, texture);
 

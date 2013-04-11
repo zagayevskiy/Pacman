@@ -108,7 +108,7 @@ void Pacman::initGraphics(GLuint _shiftProgram){
 
 	delete[] verticesData;
 
-	plume = new Plume(game->getTileSize()*2, Art::getTexture(Art::TEXTURE_FIRE), 4, 0.4f);
+	plume = new Plume(game->getTileSize()*2, Art::getTexture(Art::TEXTURE_FIRE), 60.0, 0.4f);
 }
 
 void Pacman::freeGraphics(){

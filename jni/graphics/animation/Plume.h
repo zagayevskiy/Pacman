@@ -14,7 +14,7 @@
 
 class Plume: public IRenderable {
 public:
-	Plume(float size, GLuint texture, int stepDistance, GLfloat alpha);
+	Plume(float _size, GLuint _texture, double _frameDuration, GLfloat _alpha);
 
 	void pushPoint(GLfloat x, GLfloat y);
 	void render(double elapsedTime);
@@ -34,15 +34,15 @@ private:
 		Point(float _x = 0.0f, float _y = 0.0f): x(_x), y(_y){}
 	};
 
+	double frameElapsedTime, frameDuration;
+
 	float size;
 	Point* points;
 	int cursor;
 	int length, maxLength;
-	int stepNumber;
 	GLfloat fi;
 	GLfloat fiDelta;
 	GLuint texture;
-	int stepDistance;
 	GLfloat alpha;
 
 	GLuint program;
