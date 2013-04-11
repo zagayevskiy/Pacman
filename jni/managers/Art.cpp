@@ -504,6 +504,7 @@ void Art::loadTextures(){
 	texturesSources[TEXTURE_BRUSHES] = NULL;
 	texturesSources[TEXTURE_FIRE] = loadPng("textures/fire.png");
 	texturesSources[TEXTURE_WATER] = loadPng("textures/water.png");
+	texturesSources[TEXTURE_GREEN_GOO] = loadPng("textures/green_goo.png");
 }
 
 void Art::loadMusic(){

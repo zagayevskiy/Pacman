@@ -9,7 +9,7 @@
 #define LIFEBONUS_H_
 
 #include "Bonus.h"
-#include "graphics/animation/Animation.h"
+#include "graphics/animation/Pulsation.h"
 #include "managers/Audio.h"
 #include "log.h"
 
@@ -24,8 +24,8 @@ public:
 
 private:
 	Game* game;
-	Animation* animation;
-	float renderX, renderY;
+	Pulsation* pulse;
+	//float renderX, renderY;
 };
 
 #endif /* LIFEBONUS_H_ */

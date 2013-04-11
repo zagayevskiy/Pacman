@@ -7,14 +7,15 @@
 
 #include "LifeBonus.h"
 
-LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_game), animation(NULL) {
+LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_game){
 	x = _x + 0.5f;
 	y = _y + 0.5f;
 	radius = 0.5f;
 	float tileSize = game->getTileSize();
-	animation = new Animation(program, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0, tileSize, tileSize);
-	renderX = (x - radius)*tileSize + game->getShiftX();
-	renderY = (y - radius)*tileSize + game->getShiftY();
+	pulse = new Pulsation((x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY(), tileSize,
+							Art::getTexture(Art::TEXTURE_GREEN_GOO), 1.0f);
+	//renderX = (x - radius)*tileSize + game->getShiftX();
+	//renderY = (y - radius)*tileSize + game->getShiftY();
 }
 
 bool LifeBonus::apply(Pacman* pacman){
@@ -24,12 +25,12 @@ bool LifeBonus::apply(Pacman* pacman){
 }
 
 void LifeBonus::render(double elapsedTime){
-	animation->render(elapsedTime, renderX, renderY);
+	pulse->render(elapsedTime);
 }
 
 LifeBonus::~LifeBonus() {
-	if(animation){
-		delete animation;
+	if(pulse){
+		delete pulse;
 	}
 }
 

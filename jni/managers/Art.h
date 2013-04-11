@@ -114,7 +114,6 @@ public:
 	static const int FONT_CONSOLAS_ROWS_COUNT = 8;
 	static const int FONT_CONSOLAS_COLS_COUNT = 16;
 
-
 	static const int TEXTURE_NONE = INT_MAX;
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
 	static const int TEXTURE_BUTTONS = 1;
@@ -127,7 +126,8 @@ public:
 	static const int TEXTURE_BRUSHES = 8;
 	static const int TEXTURE_FIRE = 9;
 	static const int TEXTURE_WATER = 10;
-	static const int TEXTURES_COUNT = 11;
+	static const int TEXTURE_GREEN_GOO = 11;
+	static const int TEXTURES_COUNT = 12;
 
 	static const GLuint SHADER_PROGRAM_NONE = 0;
 	static const int SHADER_PROGRAM_0 = 0;

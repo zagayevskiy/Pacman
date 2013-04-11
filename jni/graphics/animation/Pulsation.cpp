@@ -1,42 +1,21 @@
 /*
- * Plume.cpp
+ * Pulsation.cpp
  *
- *  Created on: 31.03.2013
+ *  Created on: 11.04.2013
  *      Author: Denis
  */
 
-#include "Plume.h"
+#include "Pulsation.h"
 
-Plume::Plume(float size, GLuint texture, int stepDistance, GLfloat alpha) {
-	maxLength = 16;
-	cursor = 0;
-	length = 0;
-	points = new Point[maxLength];
-	this->size = size;
-	stepNumber = 0;
-	fi = 0;
-	fiDelta = FI_DELTA;
-	this->texture = texture;
-	this->stepDistance = stepDistance;
-	this->alpha = alpha;
+
+Pulsation::Pulsation(GLfloat _x, GLfloat _y, float _size, GLuint _texture, GLfloat _alpha):
+	x(_x), y(_y), size(_size), texture(_texture), alpha(_alpha), cursor(0), fi(0.0f), fiDelta(FI_DELTA),
+	stepTime(0.0), cursorDelta(1), duration(DEFAULT_DURATION)
+{
 	initGraphics();
-
 }
 
-void Plume::pushPoint(GLfloat x, GLfloat y){
-	++stepNumber;
-	if(stepNumber < stepDistance){
-		return;
-	}
-	stepNumber = 0;
-	points[cursor] = Point(x, y);
-	cursor = (cursor + 1) % maxLength;
-	if(length < maxLength){
-		++length;
-	}
-}
-
-void Plume::initGraphics(){
+void Pulsation::initGraphics(){
 	program = Art::getShaderProgram(Art::SHADER_PROGRAM_MASK_OVERLAY);
 	vertexHandle = glGetAttribLocation(program, "aPosition");
 	textureHandle = glGetAttribLocation(program, "aTexture");
@@ -59,8 +38,7 @@ void Plume::initGraphics(){
 	GLint maskHandle = glGetUniformLocation(program, "uMask");
 	glUniform1i(maskHandle, 1);
 
-	//Hardcoded, brushs count = 4x4
-	maskTexCoords = new GLfloat*[maxLength];
+	maskTexCoords = new GLfloat*[BRUSHES_COUNT];
 	for(int i = 0; i < 4; ++i){
 		for(int j = 0; j < 4; ++j){
 			maskTexCoords[i*4 + j] = new GLfloat[12];
@@ -82,7 +60,21 @@ void Plume::initGraphics(){
 
 }
 
-void Plume::render(double elapsedTime){
+void Pulsation::render(double elapsedTime){
+
+	stepTime += elapsedTime;
+	if(stepTime > duration){
+		stepTime = 0.0;
+		cursor += cursorDelta;
+		if(cursor >= BRUSHES_COUNT){
+			cursor = BRUSHES_COUNT - 1;
+			cursorDelta = -1;
+		}else if(cursor <= 0){
+			cursor = 0;
+			cursorDelta = 1;
+		}
+	}
+
 	glUseProgram(program);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -106,34 +98,23 @@ void Plume::render(double elapsedTime){
 
 	glEnableVertexAttribArray(maskCoordsHandle);
 
-	int number = 0;
-	for(int i = cursor - 1; i > cursor - 1 - length; --i){
+	glVertexAttribPointer(maskCoordsHandle, 2, GL_FLOAT, GL_FALSE, 0, maskTexCoords[cursor]);
 
-		glVertexAttribPointer(maskCoordsHandle, 2, GL_FLOAT, GL_FALSE, 0, maskTexCoords[number + maxLength - length]);
-		++number;
+	glUniform2f(shiftHandle, x, y);
 
-		int k = i >= 0 ? i : maxLength + i;
-
-		glUniform2f(shiftHandle, points[k].x, points[k].y);
-
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	}
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(vertexHandle);
 	glDisableVertexAttribArray(textureHandle);
 	glDisableVertexAttribArray(maskCoordsHandle);
 }
 
-Plume::~Plume() {
-	if(points){
-		delete[] points;
-	}
+Pulsation::~Pulsation() {
 	if(trianglesVertices){
 		delete[] trianglesVertices;
 	}
-
 	if(maskTexCoords){
-		for(int i = 0; i < 16; ++i){
+		for(int i = 0; i < BRUSHES_COUNT; ++i){
 			if(maskTexCoords[i]){
 				delete[] maskTexCoords[i];
 			}
