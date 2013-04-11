@@ -12,7 +12,7 @@ LifeBonus::LifeBonus(Game* _game, float _x, float _y, GLuint program): game(_gam
 	y = _y + 0.5f;
 	radius = 0.5f;
 	float tileSize = game->getTileSize();
-	pulse = new Pulsation((x - radius)*tileSize + game->getShiftX(), (y - radius)*tileSize + game->getShiftY(), tileSize,
+	pulse = new Pulsation((x - radius + 0.1)*tileSize + game->getShiftX(), (y - radius + 0.1)*tileSize + game->getShiftY(), tileSize*0.8,
 							Art::getTexture(Art::TEXTURE_GREEN_GOO), 1.0f);
 	//renderX = (x - radius)*tileSize + game->getShiftX();
 	//renderY = (y - radius)*tileSize + game->getShiftY();
