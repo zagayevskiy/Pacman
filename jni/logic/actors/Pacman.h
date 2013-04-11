@@ -19,7 +19,8 @@
 class Pacman: public Actor {
 public:
 
-	static const float MAX_DIED_TIME = 300.0f;
+	static const double MAX_DIED_TIME = 300.0f;
+	static const double MAX_RESPAWN_TIME = 1000.0;
 	static const int DEFAULT_LIFES_COUNT = 3;
 
 	Pacman(Game* _game, float _x, float _y, GLuint _shiftProgram): game(_game){
@@ -34,7 +35,8 @@ public:
 		totalPathLength = 0.0f;
 		totalStepsCount = 0.0f;
 		averageStepLength = 0.0f;
-		diedTime = 0.0f;
+		diedTime = respawnTime = 0.0;
+		isRespawn = false;
 		lifes = DEFAULT_LIFES_COUNT;
 		eatenFoodCount = score = 0;
 		animationOffsets = NULL;
@@ -84,10 +86,13 @@ private:
 	float totalPathLength;
 	float totalStepsCount;
 	float averageStepLength;
-	float diedTime;
+	double diedTime;
 	int lifes;
 	int score;
 	int eatenFoodCount;
+
+	bool isRespawn;
+	double respawnTime;
 
 	float initialX, initialY;
 

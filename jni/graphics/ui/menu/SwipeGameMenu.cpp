@@ -65,7 +65,7 @@ bool SwipeGameMenu::action(Action act, float x, float y){
 
 void SwipeGameMenu::initGraphics(float maxX, float maxY, GLuint shiftProgram, GLuint vHandle, GLuint tHandle){
 	float shiftY = maxY*0.05f;
-	lifeImage = new Animation(shiftProgram, Art::getTexture(Art::TEXTURE_HEART), 4, 2, 2, 800.0f, shiftY, shiftY);
+	lifeImage = new Animation(shiftProgram, Art::getTexture(Art::TEXTURE_PACMAN_ANIMATION), 1, 2, 2, 100000.0f, shiftY, shiftY);
 	char buffer[16];
 	sprintf(buffer, INFO_STRING, 0, 0, 0);
 	labelInfo = new Label(shiftY, 0.0f, buffer, vHandle, tHandle, shiftY);

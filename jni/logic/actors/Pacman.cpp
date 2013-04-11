@@ -126,20 +126,29 @@ void Pacman::event(EngineEvent e){
 
 void Pacman::step(double elapsedTime){
 	if(state != PACMAN_DIED){
-		List<Monster*>& monsters = game->getMonsters();
-		Monster* monster;
-		bool exists = monsters.getHead(monster);
-
-		while(exists){
-			if(intersect(monster)){
-				diedTime = 0.0f;
-				state = PACMAN_DIED;
-				--lifes;
-				Statistics::decLifes();
-				Audio::playSound(Art::SOUND_DEATH);
-				return;
+		if(isRespawn){
+			if(respawnTime >= MAX_RESPAWN_TIME){
+				isRespawn = false;
+				respawnTime = 0.0;
+			}else{
+				respawnTime += elapsedTime;
 			}
-			exists = monsters.getNext(monster);
+		}else{
+			List<Monster*>& monsters = game->getMonsters();
+			Monster* monster;
+			bool exists = monsters.getHead(monster);
+
+			while(exists){
+				if(intersect(monster)){
+					diedTime = 0.0f;
+					state = PACMAN_DIED;
+					--lifes;
+					Statistics::decLifes();
+					Audio::playSound(Art::SOUND_DEATH);
+					return;
+				}
+				exists = monsters.getNext(monster);
+			}
 		}
 
 		if(eatenFoodCount == game->getLevelFoodCount()){
@@ -223,6 +232,8 @@ void Pacman::step(double elapsedTime){
 					speedX = speed;
 					speedY = 0;
 					state = initialState;
+					respawnTime = 0.0;
+					isRespawn = true;
 				}else{
 					state = PACMAN_GAME_OVER;
 					Audio::playSound(Art::SOUND_GAMEOVER);
