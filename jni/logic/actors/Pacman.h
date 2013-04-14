@@ -19,7 +19,7 @@
 class Pacman: public Actor {
 public:
 
-	static const double MAX_DIED_TIME = 300.0f;
+	static const double MAX_DIED_TIME = 300.0;
 	static const double MAX_RESPAWN_TIME = 1000.0;
 	static const int DEFAULT_LIFES_COUNT = 3;
 
