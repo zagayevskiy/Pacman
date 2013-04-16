@@ -489,16 +489,10 @@ void Art::loadTextures(){
 	sprintf(buffer, texturesPath, "tiles.png");
 	LOGI(buffer);
 	texturesSources[TEXTURE_TILES] = loadPng(buffer);
-	sprintf(buffer, texturesPath, "monster_ani.png");
-	texturesSources[TEXTURE_MONSTER] = loadPng(buffer);
 	sprintf(buffer, texturesPath, "buttons.png");
 	texturesSources[TEXTURE_BUTTONS] = loadPng(buffer);
 	sprintf(buffer, texturesPath, "pacmans.png");
 	texturesSources[TEXTURE_PACMAN_ANIMATION] = loadPng(buffer);
-	sprintf(buffer, texturesPath, "monster_ani.png");
-	texturesSources[TEXTURE_MONSTER_ANIMATION] = loadPng(buffer);
-	sprintf(buffer, texturesPath, "hearts.png");
-	texturesSources[TEXTURE_HEART] = loadPng(buffer);
 	texturesSources[TEXTURE_FONT_CONSOLAS] = loadPng("textures/font_consolas.png");
 	texturesSources[TEXTURE_ALL_LEVELS] = makeTextureFromLevels();
 	texturesSources[TEXTURE_BRUSHES] = NULL;

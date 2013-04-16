@@ -118,16 +118,13 @@ public:
 	static const int TEXTURE_PACMAN_ANIMATION = 0;
 	static const int TEXTURE_BUTTONS = 1;
 	static const int TEXTURE_TILES = 2;
-	static const int TEXTURE_MONSTER = 3;
-	static const int TEXTURE_ALL_LEVELS = 4;
-	static const int TEXTURE_MONSTER_ANIMATION = 5;
-	static const int TEXTURE_HEART = 6;
-	static const int TEXTURE_FONT_CONSOLAS = 7;
-	static const int TEXTURE_BRUSHES = 8;
-	static const int TEXTURE_FIRE = 9;
-	static const int TEXTURE_WATER = 10;
-	static const int TEXTURE_GREEN_GOO = 11;
-	static const int TEXTURES_COUNT = 12;
+	static const int TEXTURE_ALL_LEVELS = 3;
+	static const int TEXTURE_FONT_CONSOLAS = 4;
+	static const int TEXTURE_BRUSHES = 5;
+	static const int TEXTURE_FIRE = 6;
+	static const int TEXTURE_WATER = 7;
+	static const int TEXTURE_GREEN_GOO = 8;
+	static const int TEXTURES_COUNT = 9;
 
 	static const GLuint SHADER_PROGRAM_NONE = 0;
 	static const int SHADER_PROGRAM_0 = 0;
