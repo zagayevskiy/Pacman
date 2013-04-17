@@ -37,15 +37,18 @@ public:
 	static const int TILE_FREE = 1;
 	static const int TILE_WALL = 10;
 	static const int TILE_FOOD = 20;
-	static const char MAX_WALL_R = 200;
-	static const char MAX_FOOD_G = 200;
-	static const char MAX_STUPED_MONSTER_B = 200;
-	static const char MIN_CLEVER_MONSTER_R = 200;
-	static const char MIN_CLEVER_MONSTER_B = 200;
-	static const char MIN_PACMAN_R = 200;
-	static const char MIN_PACMAN_G = 200;
-	static const char MIN_LIFE_BONUS_G = 200;
-	static const char MIN_LIFE_BONUS_B = 200;
+
+	static const unsigned int R_OFFSET = 24;
+	static const unsigned int G_OFFSET = 16;
+	static const unsigned int B_OFFSET = 8;
+
+	static const unsigned int PACMAN_COLOR	= 255	<< R_OFFSET | 220	<< G_OFFSET | 0		<< B_OFFSET;
+	static const unsigned int WALL_COLOR	= 100	<< R_OFFSET | 75	<< G_OFFSET | 50	<< B_OFFSET;
+	static const unsigned int FOOD_COLOR	= 5		<< R_OFFSET | 150	<< G_OFFSET | 5		<< B_OFFSET;
+	static const unsigned int FREE_COLOR	= 0		<< R_OFFSET | 0		<< G_OFFSET | 0		<< B_OFFSET;
+	static const unsigned int STUPID_COLOR	= 0		<< R_OFFSET | 0		<< G_OFFSET | 175	<< B_OFFSET;
+	static const unsigned int CLEVER_COLOR	= 50	<< R_OFFSET | 175	<< G_OFFSET | 175	<< B_OFFSET;
+	static const unsigned int LIFE_COLOR	= 10	<< R_OFFSET | 210	<< G_OFFSET | 10	<< B_OFFSET;
 
 	void loadLevel(const Level* level);
 	void initGraphics(float maxX, float maxY, GLuint stableProgram, GLuint shiftProgram);

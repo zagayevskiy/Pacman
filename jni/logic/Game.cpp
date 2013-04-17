@@ -287,52 +287,53 @@ void Game::loadLevel(const Level* level){
 	lastChangedX = lastChangedY = -1;
 	levelFoodCount = 0;
 	map = new int[mapWidth * mapHeight];
-	char r, g, b;
+	unsigned int r, g, b;
 	for(int i = 0; i < mapHeight; ++i){
 		int offset = i*mapWidth*4;
 		for(int j = 0; j < mapWidth*4; j += 4){
+
 			map[i*mapWidth + j/4] = TILE_FREE;
-			r = texMap->pixels[offset + j + 0];
-			g = texMap->pixels[offset + j + 1];
-			b = texMap->pixels[offset + j + 2];
 
-			if(r > 0 && r <= MAX_WALL_R){
-				map[i*mapWidth + j/4] = TILE_WALL;
-				continue;
+			r = (unsigned int) (texMap->pixels[offset + j + 0]);
+			g = (unsigned int) (texMap->pixels[offset + j + 1]);
+			b = (unsigned int) (texMap->pixels[offset + j + 2]);
+
+			unsigned int color = r << R_OFFSET | g << G_OFFSET | b << B_OFFSET;
+			switch(color){
+				case PACMAN_COLOR: {
+					pacman = new Pacman(this, (float)(j/4), (float)i, shiftProgram);
+					objectsToRender.pushHead(pacman);
+				}break;
+
+				case WALL_COLOR: {
+					map[i*mapWidth + j/4] = TILE_WALL;
+				}break;
+
+				case FOOD_COLOR: {
+					map[i*mapWidth + j/4] = TILE_FOOD;
+					++levelFoodCount;
+				}break;
+
+				case STUPID_COLOR: {
+					StupidMonster* monster = new StupidMonster(this, (float)(j/4), (float)i, shiftProgram);
+					monsters.pushTail(monster);
+					objectsToRender.pushTail(monster);
+				}break;
+
+				case CLEVER_COLOR: {
+					CleverMonster* monster = new CleverMonster(this, (float)(j/4), (float)i, shiftProgram);
+					monsters.pushTail(monster);
+					objectsToRender.pushTail(monster);
+				}break;
+
+				case LIFE_COLOR: {
+					LifeBonus* bonus = new LifeBonus(this, (float)(j/4), (float)i, shiftProgram);
+					bonuses.pushTail(bonus);
+					objectsToRender.pushTail(bonus);
+				}break;
+
+				default: break;
 			}
-
-			if(g > 0 && g <= MAX_FOOD_G){
-				map[i*mapWidth + j/4] = TILE_FOOD;
-				++levelFoodCount;
-				continue;
-			}
-
-			if(b > 0 && b <= MAX_STUPED_MONSTER_B){
-				StupidMonster* monster = new StupidMonster(this, (float)(j/4), (float)i, shiftProgram);
-				monsters.pushTail(monster);
-				objectsToRender.pushTail(monster);
-				continue;
-			}
-
-			if(b > MIN_CLEVER_MONSTER_B && r > MIN_CLEVER_MONSTER_R){
-				CleverMonster* monster = new CleverMonster(this, (float)(j/4), (float)i, shiftProgram);
-				monsters.pushTail(monster);
-				objectsToRender.pushTail(monster);
-			}
-
-			if(r > MIN_PACMAN_R && g > MIN_PACMAN_G){
-				pacman = new Pacman(this, (float)(j/4), (float)i, shiftProgram);
-				objectsToRender.pushHead(pacman);
-				continue;
-			}
-
-			if(g > MIN_LIFE_BONUS_G && b > MIN_LIFE_BONUS_B){
-				LifeBonus* bonus = new LifeBonus(this, (float)(j/4), (float)i, shiftProgram);
-				bonuses.pushTail(bonus);
-				objectsToRender.pushTail(bonus);
-				continue;
-			}
-
 		}
 	}
 	if(!pacman){
