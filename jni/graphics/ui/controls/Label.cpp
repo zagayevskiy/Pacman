@@ -17,6 +17,7 @@ Label::Label(float _x, float _y, const char* _text, GLuint _vertexHandle, GLuint
 void Label::render(double elapsedTime){
 
 	if(text){
+		glUseProgram(Art::getShaderProgram(Art::SHADER_PROGRAM_0));
 		glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_FONT_CONSOLAS));
 
 		glVertexAttribPointer(vertexHandle, 2, GL_FLOAT, GL_FALSE, 0, vertices);

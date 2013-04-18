@@ -21,7 +21,7 @@ public:
 	MainMenu(float maxX, float maxY, GLuint vHandle, GLuint tHandle){
 		float indentX =  maxX / 30.0f;
 		float size = (maxX - indentX*(Art::LEVELS_ON_SIDE_COUNT + 1)) / Art::LEVELS_ON_SIDE_COUNT ;
-		float indentY = (maxY - size*Art::LEVELS_ON_SIDE_COUNT) / (Art::LEVELS_ON_SIDE_COUNT + 1);
+		float indentY = (maxY - size*Art::LEVELS_ON_SIDE_COUNT - size/2) / (Art::LEVELS_ON_SIDE_COUNT + 1);
 		RectButton* button;
 
 		for(int i = 0; i < Art::LEVELS_ON_SIDE_COUNT; ++i){
