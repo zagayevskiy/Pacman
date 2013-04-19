@@ -7,4 +7,5 @@ tmp
 bin/
 obj/
 libs/
+release/
 gen/
