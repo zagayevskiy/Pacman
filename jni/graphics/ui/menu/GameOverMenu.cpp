@@ -24,6 +24,11 @@ void GameOverMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLu
 	button->setActionEvent(ACTION_UP, EVENT_MAINMENU);
 	controls.pushTail(button);
 
+
+	const char* extinguished = "Extinguished!";
+	GLfloat extinguishedHeight = 0.08;
+	float extinguishedX = (maxX - Label::getWidthForHeight(extinguishedHeight)*strlen(extinguished)) / 2.0;
+	controls.pushTail(new Label(extinguishedX, 0.2, extinguished, vertexHandle, textureHandle, extinguishedHeight));
 }
 
 GameOverMenu::~GameOverMenu() {

@@ -14,6 +14,13 @@
 
 class Statistics {
 public:
+
+	static const int DEFAULT_LIFE_COST = 25;
+	static const int DEFAULT_FOOD_COST = 10;
+	static const int MIN_FOOD_COST = 1;
+	static const int FOOD_COST_DELTA = 1;
+	static const double FOOD_COST_CHANGE_TIME_DELTA = 15000.0;
+
 	static void enterLevel(const char* name);
 
 	inline static void pauseLevel(){event(PAUSE_LEVEL);}
@@ -51,13 +58,27 @@ public:
 		return lifesCountChanged;
 	};
 
+	inline static bool isFoodCostChanged(bool reset = true){
+		if(reset){
+			bool b = foodCostChanged;
+			foodCostChanged = false;
+			return b;
+		}
+		return foodCostChanged;
+	}
+
+	inline static bool isLevelPassedWithRecord(){return levelPassedWithRecord;};
+
 	inline static int getScore(){return score;};
 	inline static int getEatenFoodCount(){return eatedFoodCount;};
 	inline static int getLifesCount(){return lifesCount;};
+	inline static int getFoodCost(){return foodCost;};
 
 	static inline int getLevelRecord(){
 		return levelName ? levelRecord : 0;
 	}
+
+	static void step(double elapsedTime);
 
 private:
 
@@ -88,12 +109,17 @@ private:
 	static int eatedFoodCount;
 	static int lifesCount;
 	static int lifesToChangeCount;
+	static int foodCost;
 
 	static bool scoreChanged;
 	static bool lifesCountChanged;
 	static bool eatenFoodCountChanged;
+	static bool foodCostChanged;
+	static bool levelPassedWithRecord;
 
 	static void event(StatisticsEvent e);
+
+	static double elapsedTime;
 
 };
 

@@ -10,6 +10,7 @@
 
 #include "Menu.h"
 #include "graphics/ui/controls/RectButton.h"
+#include "graphics/ui/controls/Label.h"
 
 class GameOverMenu: public Menu {
 public:

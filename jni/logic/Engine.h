@@ -52,9 +52,6 @@ private:
 	EngineEvent lastEvent;
 	int levelToLoadNumber;
 	bool exitOnStop;
-	void setState(EngineState nextState);
-
-	bool setupGraphics(int width, int height);
 
 	GLuint stableProgram, vertexHandle, textureHandle, matrixHandle, mapHandle;
 	GLuint shiftProgram, shiftMapHandle, shiftMatrixHandle;
@@ -70,6 +67,14 @@ private:
 	WinMenu* winMenu;
 
 	Game* game;
+
+	void setState(EngineState nextState);
+	inline void setMenu(Menu* menu){
+		currentMenu = menu;
+		menu->onShow();
+	}
+
+	bool setupGraphics(int width, int height);
 };
 
 #endif /* ENGINE_H_ */

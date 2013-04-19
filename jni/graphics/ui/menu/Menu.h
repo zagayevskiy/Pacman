@@ -26,6 +26,7 @@ public:
 	virtual bool action(Action act, float x, float y);
 	virtual EngineEvent getEvent() const;
 	virtual void render(double elapsedTime);
+	virtual void onShow(){};
 	virtual void free();
 	virtual ~Menu();
 

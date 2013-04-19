@@ -66,7 +66,7 @@ void Label::setFontHeight(GLfloat height){
 
 void Label::updateFontSize(GLfloat height){
 	fontHeight = height;
-	fontWidth = height / Art::FONT_CONSOLAS_COLS_COUNT * Art::FONT_CONSOLAS_ROWS_COUNT;
+	fontWidth = getWidthForHeight(height);
 }
 
 void Label::updateVerticesArray(){

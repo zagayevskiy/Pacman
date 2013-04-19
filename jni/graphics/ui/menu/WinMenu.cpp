@@ -7,7 +7,9 @@
 
 #include "WinMenu.h"
 
-WinMenu::WinMenu() {
+const char* WinMenu::HIGH_SCORE_FORMAT_STRING = "New high score: %d!";
+
+WinMenu::WinMenu() :labelHighScore(NULL) {
 }
 
 void WinMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint textureHandle){
@@ -32,8 +34,26 @@ void WinMenu::initGraphics(float maxX, float maxY, GLuint vertexHandle, GLuint t
 	button->setActionEvent(ACTION_UP, EVENT_MAINMENU);
 	controls.pushTail(button);
 
-	controls.pushTail(new Label(0.05, 0.05, "You win!!!=)", vertexHandle, textureHandle, 0.09));
+	const char* excellent = "Excellent!";
+	GLfloat excellentHeight = 0.09;
+	float excellentX = (maxX  - Label::getWidthForHeight(excellentHeight)*strlen(excellent)) / 2.0;
+	controls.pushTail(new Label(excellentX, 0.2, excellent, vertexHandle, textureHandle, excellentHeight));
 
+	GLfloat highScoreHeight = 0.055;
+	float highScoreX = (maxX - Label::getWidthForHeight(highScoreHeight)*strlen(HIGH_SCORE_FORMAT_STRING)) / 2.0;
+	labelHighScore = new Label(highScoreX, 0.21 + excellentHeight, "", vertexHandle, textureHandle, highScoreHeight);
+	controls.pushTail(labelHighScore);
+
+}
+
+void WinMenu::onShow(){
+	char buffer[64];
+	if(Statistics::isLevelPassedWithRecord()){
+		sprintf(buffer, HIGH_SCORE_FORMAT_STRING, Statistics::getLevelRecord());
+		labelHighScore->setText(buffer);
+	}else{
+		labelHighScore->setText("");
+	}
 }
 
 WinMenu::~WinMenu() {

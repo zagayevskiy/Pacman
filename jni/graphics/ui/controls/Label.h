@@ -28,6 +28,10 @@ public:
 	int getTextLength() const {return textLength;};
 	void setFontHeight(GLfloat height);
 
+	static inline GLfloat getWidthForHeight(GLfloat height){
+		return height / Art::FONT_CONSOLAS_COLS_COUNT * Art::FONT_CONSOLAS_ROWS_COUNT;
+	}
+
 private:
 
 	float x, y;

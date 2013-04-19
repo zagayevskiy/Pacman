@@ -66,6 +66,7 @@ extern "C" {
 			elapsedTime = MAX_ELAPSED_TIME;
 		}
 
+		Statistics::step(elapsedTime);
 		engine->step(elapsedTime);
 		engine->render(elapsedTime);
 

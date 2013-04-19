@@ -31,7 +31,7 @@ void Engine::step(double elapsedTime){
 		case STATE_LOADING: break;
 
 		case STATE_AFTER_LOADING:
-			currentMenu = mainMenu;
+			setMenu(mainMenu);
 			setState(STATE_MAIN_MENU);
 			LOGI("State: STATE_MAIN_MENU");
 		break;
@@ -43,7 +43,7 @@ void Engine::step(double elapsedTime){
 				level = Art::getLevel(levelToLoadNumber);
 				game->loadLevel(level);
 				Statistics::enterLevel(level->name);
-				currentMenu = gameMenu;
+				setMenu(gameMenu);
 				setState(STATE_PLAY);
 				LOGI("State: STATE_PLAY");
 			}
@@ -55,7 +55,7 @@ void Engine::step(double elapsedTime){
 
 				case EVENT_STOP:
 					Statistics::pauseLevel();
-					currentMenu = pauseMenu;
+					setMenu(pauseMenu);
 					setState(STATE_PAUSE);
 					LOGI("State: STATE_PAUSE");
 				break;
@@ -68,13 +68,13 @@ void Engine::step(double elapsedTime){
 			game->step(elapsedTime);
 			if(game->isGameOver()){
 				Statistics::leaveLevel();
-				currentMenu = gameOverMenu;
+				setMenu(gameOverMenu);
 				setState(STATE_GAME_OVER);
 				LOGI("State: STATE_GAME_OVER");
 			}
 			if(game->isWin()){
 				Statistics::winLevel();
-				currentMenu = winMenu;
+				setMenu(winMenu);
 				setState(STATE_WIN);
 				LOGI("State: STATE_WIN");
 			}
@@ -87,14 +87,14 @@ void Engine::step(double elapsedTime){
 					level = Art::getLevel(levelToLoadNumber);
 					game->loadLevel(level);
 					Statistics::enterLevel(level->name);
-					currentMenu = gameMenu;
+					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
 
 				case EVENT_MAINMENU:
 					lastEvent = EVENT_NONE;
-					currentMenu = mainMenu;
+					setMenu(mainMenu);
 					setState(STATE_MAIN_MENU);
 					LOGI("State: STATE_MAIN_MENU");
 				break;
@@ -109,7 +109,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_PLAY:
 					lastEvent = EVENT_NONE;
 					Statistics::resumeLevel();
-					currentMenu = gameMenu;
+					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -120,7 +120,7 @@ void Engine::step(double elapsedTime){
 					game->loadLevel(level);
 					Statistics::leaveLevel();
 					Statistics::enterLevel(level->name);
-					currentMenu = gameMenu;
+					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -128,7 +128,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_MAINMENU:
 					lastEvent = EVENT_NONE;
 					Statistics::leaveLevel();
-					currentMenu = mainMenu;
+					setMenu(mainMenu);
 					setState(STATE_MAIN_MENU);
 					LOGI("State: STATE_MAIN_MENU");
 				break;
@@ -146,7 +146,7 @@ void Engine::step(double elapsedTime){
 					level = Art::getLevel(levelToLoadNumber);
 					game->loadLevel(level);
 					Statistics::enterLevel(level->name);
-					currentMenu = gameMenu;
+					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
@@ -156,14 +156,14 @@ void Engine::step(double elapsedTime){
 					level = Art::getLevel(levelToLoadNumber);
 					game->loadLevel(level);
 					Statistics::enterLevel(level->name);
-					currentMenu = gameMenu;
+					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
 				break;
 
 				case EVENT_MAINMENU:
 					lastEvent = EVENT_NONE;
-					currentMenu = mainMenu;
+					setMenu(mainMenu);
 					setState(STATE_MAIN_MENU);
 					LOGI("State: STATE_MAIN_MENU");
 				break;
