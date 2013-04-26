@@ -7,7 +7,7 @@
 
 #include "SwipeGameMenu.h"
 
-const char* SwipeGameMenu::INFO_STRING = "x%d  %d/%d Food cost:%d";
+const char* SwipeGameMenu::INFO_STRING = "x%d %d/%d Food cost:%d";
 
 SwipeGameMenu::SwipeGameMenu()
 	: lastX(-1.0f), lastY(-1.0f), event(EVENT_NONE), labelInfo(NULL), lifeImage(NULL){
