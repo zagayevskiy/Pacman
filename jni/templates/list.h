@@ -27,6 +27,9 @@ private:
 	int length;
 
 public:
+
+	static const int INDEX_UNKNOWN = -1;
+
 	List():head(NULL), tail(NULL), cursor(NULL), length(0){}
 
 	List(const List& other){
@@ -55,7 +58,7 @@ public:
 			temp = temp->next;
 			++index;
 		}
-		return -1;
+		return INDEX_UNKNOWN;
 	}
 
 	void pushHead(const T& data){
@@ -174,8 +177,7 @@ public:
 		return false;
 	}
 
-	int removeItem(const T& item){
-		int result = 0;
+	bool removeItem(const T& item){
 		cursor = head;
 		while(cursor){
 			if(cursor->data == item){
@@ -197,12 +199,12 @@ public:
 				delete cursor;
 				cursor = temp;
 				--length;
-				++result;
+				return true;
 			}
 			cursor = cursor->next;
 		}
 
-		return result;
+		return false;
 	}
 
 	T& operator[](int k) const{
