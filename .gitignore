@@ -4,6 +4,10 @@ tmp
 *.pyo
 *.log
 *.settings
+.project
+.cproject
+.classpath
+project.properties
 bin/
 obj/
 libs/
