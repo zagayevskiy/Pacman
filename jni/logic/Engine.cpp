@@ -14,13 +14,33 @@ GLfloat texCoords[] = {
 	1.0, 1.0, 0.0, 1.0, 0.0, 0.0
 };
 
-void Engine::init(int w, int h){
-	levelToLoadNumber = 0;
+void Engine::initGraphics(int w, int h){
+	LOGI("Engine::initGraphics");
+
 	setState(STATE_LOADING);
-	LOGI("Engine::init");
 	setupGraphics(w, h);
 	screenPixelWidth = w;
 	screenPixelHeight = h;
+
+}
+
+void Engine::initLogic(){
+	LOGI("Engine::initLogic");
+
+	levelToLoadNumber = 0;
+
+	mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
+	gameMenu = new SwipeGameMenu();
+	gameMenu->initGraphics(maxX, maxY, shiftProgram, vertexHandle, textureHandle);
+	gameOverMenu = new GameOverMenu();
+	gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+	pauseMenu = new PauseMenu();
+	pauseMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+	winMenu = new WinMenu();
+	winMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
+	game = new Game();
+	game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
+
 	setState(STATE_AFTER_LOADING);
 }
 
@@ -333,18 +353,6 @@ bool Engine::setupGraphics(int w, int h) {
 
 	glUniformMatrix4fv(shiftMatrixHandle, 1, GL_FALSE, matrix);
 	checkGlError("glUniformMatrix4fv");
-
-    mainMenu = new MainMenu(maxX, maxY, vertexHandle, textureHandle);
-    gameMenu = new SwipeGameMenu();
-    gameMenu->initGraphics(maxX, maxY, shiftProgram, vertexHandle, textureHandle);
-    gameOverMenu = new GameOverMenu();
-    gameOverMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
-    pauseMenu = new PauseMenu();
-    pauseMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
-    winMenu = new WinMenu();
-    winMenu->initGraphics(maxX, maxY, vertexHandle, textureHandle);
-    game = new Game();
-    game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 
     glActiveTexture(GL_TEXTURE0);
 

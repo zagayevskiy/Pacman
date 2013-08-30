@@ -53,7 +53,8 @@ extern "C" {
 		Art::init(env, width, height, pngManager, assetManager);
 		Audio::init();
 		engine = new Engine();
-		engine->init(width, height);
+		engine->initGraphics(width, height);
+		engine->initLogic();
 	}
 
 

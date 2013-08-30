@@ -28,7 +28,8 @@
 class Engine: public StateMachine, public IRenderable {
 public:
 
-	void init(int width, int height);
+	void initGraphics(int width, int height);
+	void initLogic();
 	void step(double elapsedTime);
 	bool stop();
 	void render(double elapsedTime);
