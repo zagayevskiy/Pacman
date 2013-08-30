@@ -1,16 +1,9 @@
 package com.zagayevskiy.pacman;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.widget.TextView;
 
 public class PacmanActivity extends Activity{
 	
@@ -25,26 +18,17 @@ public class PacmanActivity extends Activity{
        
     }
 
-	/*
-	 GL2JNIView mView;
-
-    @Override protected void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        mView = new GL2JNIView(getApplication());
-        setContentView(mView);
-    }
-	*/
     @Override
     protected void onPause() {
         super.onPause();
         PacmanLib.stop();
-        //pacmanView.onPause();
     }
     
 
     @Override
     protected void onResume() {
-        super.onResume();;
+        super.onResume();
+        Log.i(PacmanLib.tag, "Activity.onResume");
     }
     
     @Override
