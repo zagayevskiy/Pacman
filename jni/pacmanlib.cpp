@@ -103,7 +103,9 @@ extern "C" {
 
 	JNIEXPORT jboolean JNICALL Java_com_zagayevskiy_pacman_PacmanLib_free(JNIEnv* env, jobject obj){
 		LOGI("native free");
+		Store::saveString("SomeStringKey", "OK");
 		engine->stop();
+		engine->save();
 		delete engine;
 		Audio::free();
 		Art::free(env);

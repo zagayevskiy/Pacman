@@ -13,6 +13,45 @@
 
 #include "Game.h"
 
+const char* Game::NAME_STATE = "Game_state";
+const char* Game::NAME_LEVEL_NUMBER = "Game_level_number";
+//const char* Game::NAME_LEVEL_FOOD_COUNT = "Game_level_food_count";
+const char* Game::NAME_GAME_MAP = "Game_map";
+
+void Game::save(){
+	LOGI("Game::save");
+
+	Store::saveInt(NAME_STATE, state);
+	Store::saveInt(NAME_LEVEL_NUMBER, levelNumber);
+	//Store::saveInt(NAME_LEVEL_FOOD_COUNT, levelFoodCount);
+	Store::saveString(NAME_GAME_MAP, map);
+
+	if(isMapChanged){
+		LOGE("WARNING!!! Map has been changed!");
+	}
+
+
+}
+
+void Game::load(){
+	LOGI("Game::load");
+
+	state = (GameState)Store::loadInt(NAME_STATE, GAME_OVER);
+	levelNumber = Store::loadInt(NAME_LEVEL_NUMBER, 0);
+	//levelFoodCount = Store::loadInt(NAME_LEVEL_FOOD_COUNT, 0);
+
+	loadLevel(levelNumber);
+	char defValue = '\0';
+	char* tempMap = Store::loadString(NAME_GAME_MAP, &defValue);
+	if(tempMap != &defValue){
+		delete[] map;
+		map = tempMap;
+	}
+
+	createBuffers();
+
+}
+
 void Game::initGraphics(float _maxX, float _maxY, GLuint _stableProgram, GLuint _shiftProgram){
 	LOGI("Game::initGraphics");
 	maxX = _maxX;
@@ -193,13 +232,14 @@ void Game::step(double elapsedTime){
 		case GAME_OVER:
 		break;
 
-		case WIN:
+		case WIN:{
+			char* levelName = Art::getLevel(levelNumber)->name;
 			score = pacman->getScore();
 			if(score > Store::loadInt(levelName, 0)){
 				LOGI("New record on level %s: %d", levelName, score);
 				Store::saveInt(levelName, score);
 			}
-		break;
+		}break;
 
 		default: break;
 	}
@@ -275,18 +315,24 @@ void Game::render(double elapsedTime){
 
 }
 
-void Game::loadLevel(const Level* level){
+void Game::enterLevel(int number){
+	loadLevel(number);
+	createBuffers();
+}
+
+void Game::loadLevel(int number){
+	const Level* level = Art::getLevel(number);
+	levelNumber = number;
 	clear();
 	Texture* texMap = level->map;
-	levelName = level->name;
-	LOGI("Game::loadLevel %dx%d, %s", texMap->width, texMap->height, levelName);
+	LOGI("Game::loadLevel %dx%d, %s", texMap->width, texMap->height, level->name);
 	mapWidth = texMap->width;
 	mapHeight = texMap->height;
 	tileSize = maxX / ((float) mapWidth);
 	isMapChanged = false;
 	lastChangedX = lastChangedY = -1;
 	levelFoodCount = 0;
-	map = new int[mapWidth * mapHeight];
+	map = new char[mapWidth * mapHeight + 1];
 	unsigned int r, g, b;
 	for(int i = 0; i < mapHeight; ++i){
 		int offset = i*mapWidth*4;
@@ -340,7 +386,7 @@ void Game::loadLevel(const Level* level){
 		LOGE("LEVEL FORMAT ERROR: CAN NOT FIND PACMAN!");
 		return;
 	}
-	createBuffers();
+	map[mapWidth*mapHeight] = '\0';
 	state = PACMAN_ALIVE;
 }
 
@@ -386,11 +432,11 @@ void Game::clear(){
 	}
 }
 
-int Game::getMapAt(int _x, int _y) const{
+char Game::getMapAt(int _x, int _y) const{
 	return (_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight) ? map[_y*mapWidth + _x] : TILE_WALL;
 }
 
-void Game::setMapAt(int _x, int _y, int value){
+void Game::setMapAt(int _x, int _y, char value){
 	if(_x >= 0 && _x < mapWidth && _y >= 0 && _y < mapHeight){
 		map[_y*mapWidth + _x] = value;
 		lastChangedX = _x;

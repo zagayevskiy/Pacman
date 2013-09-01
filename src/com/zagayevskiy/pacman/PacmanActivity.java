@@ -28,19 +28,18 @@ public class PacmanActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(PacmanLib.tag, "Activity.onResume");
     }
     
     @Override
     protected void onStop() {
         super.onStop();
-        PacmanLib.stop();
+        Log.i(PacmanLib.tag, "onStop");
+        PacmanLib.free();
     }
     
     @Override
     protected void onDestroy(){	
     	super.onDestroy();
-    	PacmanLib.free();
     }
     
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -33,12 +33,19 @@ public:
 	void step(double elapsedTime);
 	bool stop();
 	void render(double elapsedTime);
+	void save();
+	void load();
 
 	void performAction(Action act, float x, float y);
 
 	virtual ~Engine();
 
 private:
+
+	static const char* NAME_STATE;
+	static const char* NAME_LEVEL_TO_LOAD_NUMBER;
+	static const char* NAME_SAVE_OK;
+
 	enum EngineState{
 		STATE_LOADING = 0,
 		STATE_AFTER_LOADING = 1,

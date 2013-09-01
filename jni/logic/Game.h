@@ -34,9 +34,9 @@ class Bonus;
 class Game: public StateMachine, public IRenderable {
 public:
 
-	static const int TILE_FREE = 1;
-	static const int TILE_WALL = 10;
-	static const int TILE_FOOD = 20;
+	static const int TILE_FREE = '_';
+	static const int TILE_WALL = 'W';
+	static const int TILE_FOOD = 'F';
 
 	static const unsigned int R_OFFSET = 24;
 	static const unsigned int G_OFFSET = 16;
@@ -50,19 +50,21 @@ public:
 	static const unsigned int CLEVER_COLOR	= 50	<< R_OFFSET | 175	<< G_OFFSET | 175	<< B_OFFSET;
 	static const unsigned int LIFE_COLOR	= 10	<< R_OFFSET | 210	<< G_OFFSET | 10	<< B_OFFSET;
 
-	void loadLevel(const Level* level);
+	void enterLevel(int number);
 	void initGraphics(float maxX, float maxY, GLuint stableProgram, GLuint shiftProgram);
 
 	void event(EngineEvent e);
 	void step(double elapsedTime);
 	void render(double elapsedTime);
 	void clear();
+	void save();
+	void load();
 
 	inline bool isGameOver() const {return state == GAME_OVER;};
 	inline bool isWin() const {return state == WIN;};
 
-	int getMapAt(int x, int y) const;
-	void setMapAt(int x, int y, int value);
+	char getMapAt(int x, int y) const;
+	void setMapAt(int x, int y, char value);
 	inline List<Monster*>& getMonsters(){return monsters;};
 	void getPacmanMapPos(int& x, int& y) const;
 	inline Pacman* getPacman() const {return pacman;};
@@ -81,6 +83,11 @@ public:
 
 private:
 
+	static const char* NAME_STATE;
+	static const char* NAME_LEVEL_NUMBER;
+	//static const char* NAME_LEVEL_FOOD_COUNT;
+	static const char* NAME_GAME_MAP;
+
 	enum GameState{
 		PACMAN_DEAD = 0,
 		PACMAN_ALIVE = 1,
@@ -89,8 +96,8 @@ private:
 	};
 
 	GameState state;
-	int* map;
-	char* levelName;
+	char* map;
+	int levelNumber;
 	int mapWidth, mapHeight;
 	int levelFoodCount;
 	int lastChangedX, lastChangedY;
@@ -115,6 +122,7 @@ private:
 
 	GLuint verticesBufferId, indicesBufferId;
 
+	void loadLevel(int number);
 	void createBuffers();
 	void freeBuffers();
 };

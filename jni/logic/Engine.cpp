@@ -7,6 +7,9 @@
 
 #include "Engine.h"
 
+const char* Engine::NAME_STATE = "Engine_state";
+const char* Engine::NAME_LEVEL_TO_LOAD_NUMBER = "Engine_level_to_load_number";
+const char* Engine::NAME_SAVE_OK = "Engine_saved";
 
 
 GLfloat texCoords[] = {
@@ -26,6 +29,7 @@ void Engine::initGraphics(int w, int h){
 
 void Engine::initLogic(){
 	LOGI("Engine::initLogic");
+	//LOGE("From Store String : [%s]", Store::loadString("SomeStringKey", "wtf"));
 
 	levelToLoadNumber = 0;
 
@@ -41,7 +45,68 @@ void Engine::initLogic(){
 	game = new Game();
 	game->initGraphics(maxX, maxY, stableProgram, shiftProgram);
 
-	setState(STATE_AFTER_LOADING);
+	if(Store::loadBool(NAME_SAVE_OK, false)){
+		load();
+	}else{
+		setState(STATE_AFTER_LOADING);
+	}
+
+	//setState(STATE_AFTER_LOADING);
+}
+
+void Engine::save(){
+	LOGI("Engine::save");
+	Store::saveInt(NAME_LEVEL_TO_LOAD_NUMBER, levelToLoadNumber);
+
+	switch(state){
+		case STATE_PLAY:
+			state = STATE_PAUSE;
+			game->save();
+		break;
+		case STATE_PAUSE:
+			game->save();
+		break;
+
+		default: break;
+	}
+	Store::saveInt(NAME_STATE, state);
+
+	Store::saveBool(NAME_SAVE_OK, true);
+
+}
+
+void Engine::load(){
+	LOGI("Engine::load");
+
+	state = static_cast<EngineState>(Store::loadInt(NAME_STATE, STATE_AFTER_LOADING));
+	LOGE("Loaded state: [%d]", state);
+	levelToLoadNumber = Store::loadInt(NAME_LEVEL_TO_LOAD_NUMBER, 0);
+
+	switch(state){
+		case STATE_MAIN_MENU:
+			currentMenu = mainMenu;
+		break;
+
+		case STATE_PLAY:
+		case STATE_PAUSE:
+			currentMenu = pauseMenu;
+			game->load();
+		break;
+
+		case STATE_GAME_OVER:
+			currentMenu = gameOverMenu;
+			game->load();
+		break;
+
+		case STATE_WIN:
+			currentMenu = winMenu;
+			game->load();
+		break;
+
+
+		default: break;
+	}
+
 }
 
 void Engine::step(double elapsedTime){
@@ -61,7 +126,7 @@ void Engine::step(double elapsedTime){
 				lastEvent = EVENT_NONE;
 				levelToLoadNumber = mainMenu->getLevelToLoadNumber();
 				level = Art::getLevel(levelToLoadNumber);
-				game->loadLevel(level);
+				game->enterLevel(levelToLoadNumber);
 				Statistics::enterLevel(level->name);
 				setMenu(gameMenu);
 				setState(STATE_PLAY);
@@ -105,7 +170,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
 					level = Art::getLevel(levelToLoadNumber);
-					game->loadLevel(level);
+					game->enterLevel(levelToLoadNumber);
 					Statistics::enterLevel(level->name);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
@@ -137,7 +202,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
 					level = Art::getLevel(levelToLoadNumber);
-					game->loadLevel(level);
+					game->enterLevel(levelToLoadNumber);
 					Statistics::leaveLevel();
 					Statistics::enterLevel(level->name);
 					setMenu(gameMenu);
@@ -164,7 +229,7 @@ void Engine::step(double elapsedTime){
 					lastEvent = EVENT_NONE;
 					levelToLoadNumber = (levelToLoadNumber + 1) % Art::getLevelsCount();
 					level = Art::getLevel(levelToLoadNumber);
-					game->loadLevel(level);
+					game->enterLevel(levelToLoadNumber);
 					Statistics::enterLevel(level->name);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
@@ -174,7 +239,7 @@ void Engine::step(double elapsedTime){
 				case EVENT_RETRY:
 					lastEvent = EVENT_NONE;
 					level = Art::getLevel(levelToLoadNumber);
-					game->loadLevel(level);
+					game->enterLevel(levelToLoadNumber);
 					Statistics::enterLevel(level->name);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);

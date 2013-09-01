@@ -22,6 +22,8 @@ public:
 	static bool loadBool(const char* name, bool defValue);
 	static void saveInt(const char* name, int value);
 	static int loadInt(const char* name, int defValue);
+	static void saveString(const char* name, const char* value);
+	static char* loadString(const char* name, char* defValue);
 
 private:
 	static JavaVM* javaVM;
@@ -31,6 +33,8 @@ private:
 	static jmethodID loadBoolId;
 	static jmethodID saveIntId;
 	static jmethodID loadIntId;
+	static jmethodID saveStringId;
+	static jmethodID loadStringId;
 
 	static JNIEnv* getJNIEnv(JavaVM* jvm);
 
