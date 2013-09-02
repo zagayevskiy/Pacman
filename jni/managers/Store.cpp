@@ -14,6 +14,8 @@ jmethodID Store::saveBoolId = NULL;
 jmethodID Store::loadBoolId = NULL;
 jmethodID Store::saveIntId = NULL;
 jmethodID Store::loadIntId = NULL;
+jmethodID Store::saveFloatId = NULL;
+jmethodID Store::loadFloatId = NULL;
 jmethodID Store::saveStringId = NULL;
 jmethodID Store::loadStringId = NULL;
 
@@ -56,6 +58,18 @@ void Store::init(JNIEnv* env, jobject _storeManager){
 	loadIntId = env->GetMethodID(storeManagerClass, "loadInt", "(Ljava/lang/String;I)I");
 	if(!loadIntId){
 		LOGE("Can not find method loadInt");
+		return;
+	}
+
+	saveFloatId = env->GetMethodID(storeManagerClass, "saveFloat", "(Ljava/lang/String;F)V");
+	if(!saveFloatId){
+		LOGE("Can not find method saveFloat");
+		return;
+	}
+
+	loadFloatId = env->GetMethodID(storeManagerClass, "loadFloat", "(Ljava/lang/String;F)F");
+	if(!loadFloatId){
+		LOGE("Can not find method loadFloat");
 		return;
 	}
 
@@ -138,6 +152,40 @@ int Store::loadInt(const char* name, int defValue){
 	}
 
 	return env->CallIntMethod(storeManager, loadIntId, key, defValue);
+}
+
+void Store::saveFloat(const char* name, float value){
+	LOGI("Store::saveFloat(%s, %f)", name, value);
+	JNIEnv* env = getJNIEnv(javaVM);
+
+	if(!env){
+		LOGE("Can not getJNIEnv");
+		return;
+	}
+
+	jstring key = env->NewStringUTF(name);
+	if(!key){
+		LOGE("Can not create NewStringUTF");
+	}
+
+	env->CallVoidMethod(storeManager, saveFloatId, key, value);
+}
+
+float Store::loadFloat(const char* name, float defValue){
+	LOGI("Store::loadFloat(%s, %f)", name, defValue);
+	JNIEnv* env = getJNIEnv(javaVM);
+
+	if(!env){
+		LOGE("Can not getJNIEnv");
+		return defValue;
+	}
+
+	jstring key = env->NewStringUTF(name);
+	if(!key){
+		LOGE("Can not create NewStringUTF");
+	}
+
+	return env->CallFloatMethod(storeManager, loadFloatId, key, defValue);
 }
 
 void Store::saveString(const char* name, const char* value){
