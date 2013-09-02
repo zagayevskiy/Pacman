@@ -27,6 +27,12 @@ public:
 	virtual float getX() const {return x;};
 	virtual float getY() const {return y;};
 	virtual ~Actor();
+
+	virtual void saveForChild(const char* childId) const;
+	virtual void save() = 0;
+	virtual void loadForChild(const char* childId);
+	virtual void load() = 0;
+
 protected:
 	float x, y;
 	float radius;
@@ -36,6 +42,15 @@ protected:
 	GLuint textureId;
 	GLfloat* vertices;
 	GLfloat* textureCoords;
+
+private:
+	static const char* ACTOR_X;
+	static const char* ACTOR_Y;
+	static const char* ACTOR_R;
+	static const char* ACTOR_SPEED;
+	static const char* ACTOR_SPEED_X;
+	static const char* ACTOR_SPEED_Y;
+
 };
 
 #endif /* ACTOR_H_ */

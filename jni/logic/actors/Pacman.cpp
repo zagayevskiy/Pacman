@@ -9,6 +9,42 @@
 #include "monsters/Monster.h"
 #include "managers/Audio.h"
 
+#define NAME_STATE "Pacman_state"
+#define NAME_LIFES "Pacman_lifes"
+#define NAME_SCORE "Pacman_score"
+#define NAME_EATEN_FOOD "Pacman_eaten_food"
+#define NAME_IS_RESPAWN "Pacman_is_respawn"
+
+void Pacman::save(){
+	LOGI("Pacman::save");
+	saveForChild("Pacman");
+	Store::saveInt(NAME_STATE, state);
+	Store::saveInt(NAME_LIFES, lifes);
+	Store::saveInt(NAME_SCORE, score);
+	Store::saveInt(NAME_EATEN_FOOD, eatenFoodCount);
+	Store::saveBool(NAME_IS_RESPAWN, isRespawn);
+
+	/**
+	 *This fields shouldn't be saved
+	 *initialState;
+	 *totalPathLength;
+	 *totalStepsCount;
+	 *averageStepLength;
+	 *diedTime //not critical
+	 */
+
+}
+
+void Pacman::load(){
+	LOGI("Pacman::load");
+	loadForChild("Pacman");
+	state = static_cast<PacmanState>(Store::loadInt(NAME_STATE, state));
+	lifes = Store::loadInt(NAME_LIFES, lifes);
+	score = Store::loadInt(NAME_SCORE, score);
+	eatenFoodCount = Store::loadInt(NAME_EATEN_FOOD, eatenFoodCount);
+	isRespawn = Store::loadBool(NAME_IS_RESPAWN, isRespawn);
+}
+
 void Pacman::initGraphics(GLuint _shiftProgram){
 	shiftProgram = _shiftProgram;
 	shiftHandle = glGetUniformLocation(shiftProgram, "uShift");

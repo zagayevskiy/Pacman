@@ -20,6 +20,12 @@ public:
 	 */
 	virtual bool apply(Pacman* pacman) = 0;
 	void step(double elapsedTime){};
+	void save(){
+
+	};
+	void load(){
+
+	};
 
 };
 

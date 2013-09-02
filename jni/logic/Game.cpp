@@ -25,6 +25,13 @@ void Game::save(){
 	Store::saveInt(NAME_LEVEL_NUMBER, levelNumber);
 	//Store::saveInt(NAME_LEVEL_FOOD_COUNT, levelFoodCount);
 	Store::saveString(NAME_GAME_MAP, map);
+	pacman->save();
+	Monster* monster;
+	bool exists = monsters.getHead(monster);
+	while(exists){
+		monster->save();
+		exists = monsters.getNext(monster);
+	}
 
 	if(isMapChanged){
 		LOGE("WARNING!!! Map has been changed!");
@@ -47,6 +54,15 @@ void Game::load(){
 		delete[] map;
 		map = tempMap;
 	}
+
+	pacman->load();
+	Monster* monster;
+	bool exists = monsters.getHead(monster);
+	while(exists){
+		monster->load();
+		exists = monsters.getNext(monster);
+	}
+
 
 	createBuffers();
 

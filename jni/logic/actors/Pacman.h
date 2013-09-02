@@ -61,6 +61,8 @@ public:
 
 	int getScore() const {return score;};
 	inline int getEatenFoodCount() const {return eatenFoodCount;};
+	void save();
+	void load();
 
 	virtual ~Pacman();
 

@@ -35,11 +35,13 @@ public class PacmanActivity extends Activity{
         super.onStop();
         Log.i(PacmanLib.tag, "onStop");
         PacmanLib.free();
+        finish();
     }
     
     @Override
     protected void onDestroy(){	
     	super.onDestroy();
+    	Log.w(PacmanLib.tag, "PacmanActivity.onDestroy");
     }
     
     public boolean onKeyDown(int keyCode, KeyEvent event) {
