@@ -7,13 +7,10 @@
 
 #include "CleverMonster.h"
 
-int CleverMonster::monstersCount = 0;
 int CleverMonster::mapsCountX = 0;
 int CleverMonster::mapsCountY = 0;
 int CleverMonster::mapSize = 0;
 int** CleverMonster::maps = NULL;
-
-
 
 void CleverMonster::newDirectionEvent(){
 	int minX = 0, minY = 0, min = mapSize + 1;
@@ -156,8 +153,7 @@ int* CleverMonster::buildMap(int targetX, int targetY){
 }
 
 CleverMonster::~CleverMonster() {
-	--monstersCount;
-	if(monstersCount == 0){
+	if(isLast()){
 		freeMaps();
 	}
 }

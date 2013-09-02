@@ -11,8 +11,9 @@
 #include "logic/Game.h"
 #include "Monster.h"
 #include "actions_events.h"
+#include "templates/Counter.h"
 
-class StupidMonster: public Monster {
+class StupidMonster: public Monster, protected Counter<StupidMonster> {
 public:
 	StupidMonster(Game* _game, float _x, float _y, GLuint _shiftProgram) {
 		game = _game;
@@ -30,6 +31,7 @@ public:
 		remainingTime = -1.0;
 		maxRemainingTime = 2000;
 		initGraphics(_shiftProgram);
+		LOGW("StupidMonster index %d, count %d", getIndex(), getCount());
 	}
 
 	virtual ~StupidMonster();

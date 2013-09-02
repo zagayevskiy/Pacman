@@ -11,8 +11,9 @@
 #include "logic/Game.h"
 #include "Monster.h"
 #include "actions_events.h"
+#include "templates/Counter.h"
 
-class CleverMonster: public Monster {
+class CleverMonster: public Monster, protected Counter<CleverMonster> {
 public:
 
 	CleverMonster(Game* _game, float _x, float _y, GLuint _shiftProgram){
@@ -31,10 +32,9 @@ public:
 		remainingTime = -1.0;
 		maxRemainingTime = 700.0;
 
-		if(monstersCount == 0){
+		if(isFirst()){
 			initMaps();
 		}
-		++monstersCount;
 
 		initGraphics(_shiftProgram);
 	}
@@ -43,7 +43,6 @@ public:
 
 private:
 
-	static int monstersCount;
 	static int mapsCountX;
 	static int mapsCountY;
 	static int mapSize;
