@@ -21,7 +21,10 @@ public:
 	static const int FOOD_COST_DELTA = 1;
 	static const double FOOD_COST_CHANGE_TIME_DELTA = 15000.0;
 
-	static void enterLevel(const char* name);
+	static void save();
+	static void load();
+
+	static void enterLevel(int number);
 
 	inline static void pauseLevel(){event(PAUSE_LEVEL);}
 	inline static void resumeLevel(){event(RESUME_LEVEL);};
@@ -101,7 +104,7 @@ private:
 
 	static StatisticsState state;
 
-	static char* levelToEnterName;
+	static int levelToEnterNumber;
 	static char* levelName;
 
 	static int levelRecord;

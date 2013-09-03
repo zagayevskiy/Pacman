@@ -11,7 +11,7 @@
 Statistics::StatisticsState Statistics::state = IDLE;
 
 char* Statistics::levelName = NULL;
-char* Statistics::levelToEnterName = NULL;
+int Statistics::levelToEnterNumber = 0;
 
 int Statistics::levelRecord = 0;
 int Statistics::score = 0;
@@ -27,6 +27,14 @@ bool Statistics::foodCostChanged = DEFAULT_FOOD_COST;
 bool Statistics::levelPassedWithRecord = false;
 
 double Statistics::elapsedTime = 0.0;
+
+void Statistics::save(){
+
+}
+
+void Statistics::load(){
+
+}
 
 void Statistics::step(double time){
 	if(foodCost > MIN_FOOD_COST && state == LEVEL_ENTERED){
@@ -47,7 +55,7 @@ void Statistics::event(StatisticsEvent e){
 	switch(state){
 		case IDLE:
 			if(e == ENTER_LEVEL){
-				levelName = levelToEnterName;
+				levelName = Art::getLevel(levelToEnterNumber)->name;
 				score = eatedFoodCount = 0;
 				lifesCount = Pacman::DEFAULT_LIFES_COUNT;
 				scoreChanged = lifesCountChanged = eatenFoodCountChanged = true;
@@ -123,15 +131,8 @@ void Statistics::event(StatisticsEvent e){
 }
 
 
-void Statistics::enterLevel(const char* name){
-	if(levelToEnterName){
-		delete[] levelToEnterName;
-		levelToEnterName = NULL;
-	}
-	if(name){
-		levelToEnterName = new char[strlen(name) + 1];
-		strcpy(levelToEnterName, name);
-	}
+void Statistics::enterLevel(int number){
+	levelToEnterNumber = number;
 
 	event(ENTER_LEVEL);
 }

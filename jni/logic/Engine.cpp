@@ -127,7 +127,7 @@ void Engine::step(double elapsedTime){
 				levelToLoadNumber = mainMenu->getLevelToLoadNumber();
 				level = Art::getLevel(levelToLoadNumber);
 				game->enterLevel(levelToLoadNumber);
-				Statistics::enterLevel(level->name);
+				Statistics::enterLevel(levelToLoadNumber);
 				setMenu(gameMenu);
 				setState(STATE_PLAY);
 				LOGI("State: STATE_PLAY");
@@ -171,7 +171,7 @@ void Engine::step(double elapsedTime){
 					lastEvent = EVENT_NONE;
 					level = Art::getLevel(levelToLoadNumber);
 					game->enterLevel(levelToLoadNumber);
-					Statistics::enterLevel(level->name);
+					Statistics::enterLevel(levelToLoadNumber);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
@@ -204,7 +204,7 @@ void Engine::step(double elapsedTime){
 					level = Art::getLevel(levelToLoadNumber);
 					game->enterLevel(levelToLoadNumber);
 					Statistics::leaveLevel();
-					Statistics::enterLevel(level->name);
+					Statistics::enterLevel(levelToLoadNumber);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
@@ -230,7 +230,7 @@ void Engine::step(double elapsedTime){
 					levelToLoadNumber = (levelToLoadNumber + 1) % Art::getLevelsCount();
 					level = Art::getLevel(levelToLoadNumber);
 					game->enterLevel(levelToLoadNumber);
-					Statistics::enterLevel(level->name);
+					Statistics::enterLevel(levelToLoadNumber);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
@@ -240,7 +240,7 @@ void Engine::step(double elapsedTime){
 					lastEvent = EVENT_NONE;
 					level = Art::getLevel(levelToLoadNumber);
 					game->enterLevel(levelToLoadNumber);
-					Statistics::enterLevel(level->name);
+					Statistics::enterLevel(levelToLoadNumber);
 					setMenu(gameMenu);
 					setState(STATE_PLAY);
 					LOGI("State: STATE_PLAY");
