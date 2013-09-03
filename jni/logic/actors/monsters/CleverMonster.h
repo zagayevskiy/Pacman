@@ -39,6 +39,9 @@ public:
 		initGraphics(_shiftProgram);
 	}
 
+	void save();
+	void load();
+
 	virtual ~CleverMonster();
 
 private:

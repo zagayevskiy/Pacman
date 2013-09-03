@@ -21,12 +21,6 @@ public:
 	void render(double elapsedTime);
 
 	virtual void initGraphics(GLuint shiftProgram);
-	void save(){
-
-	};
-	void load(){
-
-	};
 
 	virtual ~Monster();
 

@@ -31,8 +31,10 @@ public:
 		remainingTime = -1.0;
 		maxRemainingTime = 2000;
 		initGraphics(_shiftProgram);
-		LOGW("StupidMonster index %d, count %d", getIndex(), getCount());
 	}
+
+	void save();
+	void load();
 
 	virtual ~StupidMonster();
 

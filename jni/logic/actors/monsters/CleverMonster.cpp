@@ -7,10 +7,37 @@
 
 #include "CleverMonster.h"
 
+#define CLEVER_ID "Clever%d"
+#define NAME_STATE "Clever%d_state"
+
 int CleverMonster::mapsCountX = 0;
 int CleverMonster::mapsCountY = 0;
 int CleverMonster::mapSize = 0;
 int** CleverMonster::maps = NULL;
+
+void CleverMonster::save(){
+	char* buffer = new char[16];
+
+	sprintf(buffer, CLEVER_ID, getIndex());
+	saveForChild(buffer);
+
+	sprintf(buffer, NAME_STATE, getIndex());
+	Store::saveInt(buffer, state);
+
+	delete[] buffer;
+}
+
+void CleverMonster::load(){
+	char* buffer = new char[16];
+
+	sprintf(buffer, CLEVER_ID, getIndex());
+	loadForChild(buffer);
+
+	sprintf(buffer, NAME_STATE, getIndex());
+	state = static_cast<MonsterState>(Store::loadInt(buffer, state));
+
+	delete[] buffer;
+}
 
 void CleverMonster::newDirectionEvent(){
 	int minX = 0, minY = 0, min = mapSize + 1;
@@ -35,7 +62,6 @@ void CleverMonster::newDirectionEvent(){
 						minY = j;
 					}
 				}
-
 			}
 		}
 	}
