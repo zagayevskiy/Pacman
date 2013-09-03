@@ -2,6 +2,10 @@ Pacman: Test task from ZeptoLab. Android NDK(C++) + OpenGL ES 2.0 + OpenSL ES + 
 
 Available on Google Play: https://play.google.com/store/apps/details?id=com.zagayevskiy.pacman
 
+![Google play QR-code][1]
+
+[1]: https://raw.github.com/zagayevskiy/Pacman/master/GooglePlay.png
+
 The MIT License (MIT)
 
 Copyright (c) 2012 Denis Zagayevskiy
