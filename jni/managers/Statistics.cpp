@@ -10,7 +10,7 @@
 
 Statistics::StatisticsState Statistics::state = IDLE;
 
-char* Statistics::levelName = NULL;
+int Statistics::levelNumber = 0;
 int Statistics::levelToEnterNumber = 0;
 
 int Statistics::levelRecord = 0;
@@ -28,12 +28,49 @@ bool Statistics::levelPassedWithRecord = false;
 
 double Statistics::elapsedTime = 0.0;
 
+#define NAME_STATE "Stats_state"
+#define NAME_LEVEL_NUMBER "Stats_lvl_number"
+#define NAME_SCORE "Stats_score"
+#define NAME_LIFES_COUNT "Stats_lfs_cnt"
+#define NAME_EATED_FOOD_COUNT "Stats_eated_food_cnt"
+#define NAME_LIFES_TO_CHANGE_COUNT "Stats_lfs2chng_cnt"
+#define NAME_FOOD_COST "Stats_food_cost"
+
+#define NAME_LEVEL_PASSED_WITH_RECORD "Stats_lvl_pssd_rec"
+
+#define NAME_ELAPSED_TIME "Stats_etime"
+
 void Statistics::save(){
+	Store::saveInt(NAME_STATE, state);
+	Store::saveInt(NAME_LEVEL_NUMBER, levelNumber);
+	Store::saveInt(NAME_SCORE, score);
+	Store::saveInt(NAME_LIFES_COUNT, lifesCount);
+	Store::saveInt(NAME_EATED_FOOD_COUNT, eatedFoodCount);
+	Store::saveInt(NAME_LIFES_TO_CHANGE_COUNT, lifesToChangeCount);
+	Store::saveInt(NAME_FOOD_COST, foodCost);
+
+	Store::saveBool(NAME_LEVEL_PASSED_WITH_RECORD, levelPassedWithRecord);
+
+	Store::saveFloat(NAME_ELAPSED_TIME, static_cast<float>(elapsedTime));
 
 }
 
 void Statistics::load(){
+	state = static_cast<StatisticsState>(Store::loadInt(NAME_STATE, state));
+	levelNumber = Store::loadInt(NAME_LEVEL_NUMBER, levelNumber);
+	score = Store::loadInt(NAME_SCORE, score);
+	lifesCount = Store::loadInt(NAME_LIFES_COUNT, lifesCount);
+	eatedFoodCount = Store::loadInt(NAME_EATED_FOOD_COUNT, eatedFoodCount);
+	lifesToChangeCount = Store::loadInt(NAME_LIFES_TO_CHANGE_COUNT, lifesToChangeCount);
+	foodCost = Store::loadInt(NAME_FOOD_COST, foodCost);
 
+	scoreChanged = true;
+	eatenFoodCountChanged = true;
+	lifesCountChanged = true;
+	foodCostChanged = true;
+	levelPassedWithRecord = Store::loadBool(NAME_LEVEL_PASSED_WITH_RECORD, levelPassedWithRecord);
+
+	elapsedTime = static_cast<double>(Store::loadFloat(NAME_ELAPSED_TIME, elapsedTime));
 }
 
 void Statistics::step(double time){
@@ -53,9 +90,10 @@ void Statistics::step(double time){
 void Statistics::event(StatisticsEvent e){
 	LOGI("Statistics::event(%d)", e);
 	switch(state){
-		case IDLE:
+		case IDLE:{
 			if(e == ENTER_LEVEL){
-				levelName = Art::getLevel(levelToEnterNumber)->name;
+				levelNumber = levelToEnterNumber;
+				char* levelName = Art::getLevel(levelToEnterNumber)->name;
 				score = eatedFoodCount = 0;
 				lifesCount = Pacman::DEFAULT_LIFES_COUNT;
 				scoreChanged = lifesCountChanged = eatenFoodCountChanged = true;
@@ -64,7 +102,7 @@ void Statistics::event(StatisticsEvent e){
 				state = LEVEL_ENTERED;
 				LOGI("Statistics::state=LEVEL_ENTERED");
 			}
-		break;
+		}break;
 
 		case LEVEL_ENTERED:
 			switch(e){
@@ -78,10 +116,11 @@ void Statistics::event(StatisticsEvent e){
 					LOGI("Statistics::state=IDLE");
 				break;
 
-				case WIN_LEVEL:
+				case WIN_LEVEL:{
 					state = IDLE;
 					score += lifesCount*DEFAULT_LIFE_COST;
 					scoreChanged = true;
+					char* levelName = Art::getLevel(levelNumber)->name;
 					if(score > Store::loadInt(levelName, 0)){
 						LOGI("Statistics: New Record! Level:%s, Score:%d", levelName, score);
 						levelPassedWithRecord = true;
@@ -91,7 +130,7 @@ void Statistics::event(StatisticsEvent e){
 						levelPassedWithRecord = false;
 					}
 					LOGI("Statistics::state=IDLE");
-				break;
+				}break;
 
 				case PACMAN_EAT_FOOD:
 					++eatedFoodCount;

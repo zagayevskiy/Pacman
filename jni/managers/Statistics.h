@@ -78,7 +78,7 @@ public:
 	inline static int getFoodCost(){return foodCost;};
 
 	static inline int getLevelRecord(){
-		return levelName ? levelRecord : 0;
+		return levelRecord;
 	}
 
 	static void step(double elapsedTime);
@@ -105,7 +105,7 @@ private:
 	static StatisticsState state;
 
 	static int levelToEnterNumber;
-	static char* levelName;
+	static int levelNumber;
 
 	static int levelRecord;
 	static int score;

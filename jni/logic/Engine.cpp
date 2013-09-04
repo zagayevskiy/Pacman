@@ -63,12 +63,24 @@ void Engine::save(){
 			state = STATE_PAUSE;
 			game->save();
 		break;
+
 		case STATE_PAUSE:
+			game->save();
+		break;
+
+		case STATE_GAME_OVER:
+			game->save();
+		break;
+
+		case STATE_WIN:
 			game->save();
 		break;
 
 		default: break;
 	}
+
+	Statistics::save();
+
 	Store::saveInt(NAME_STATE, state);
 
 	Store::saveBool(NAME_SAVE_OK, true);
@@ -82,12 +94,18 @@ void Engine::load(){
 	LOGE("Loaded state: [%d]", state);
 	levelToLoadNumber = Store::loadInt(NAME_LEVEL_TO_LOAD_NUMBER, 0);
 
+	Statistics::load();
+
 	switch(state){
 		case STATE_MAIN_MENU:
 			currentMenu = mainMenu;
 		break;
 
 		case STATE_PLAY:
+			currentMenu = gameMenu;
+			game->load();
+		break;
+
 		case STATE_PAUSE:
 			currentMenu = pauseMenu;
 			game->load();
@@ -103,9 +121,10 @@ void Engine::load(){
 			game->load();
 		break;
 
-
 		default: break;
 	}
+	gameMenu->onShow();
+	currentMenu->onShow();
 
 }
 
