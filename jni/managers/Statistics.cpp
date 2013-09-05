@@ -64,6 +64,8 @@ void Statistics::load(){
 	lifesToChangeCount = Store::loadInt(NAME_LIFES_TO_CHANGE_COUNT, lifesToChangeCount);
 	foodCost = Store::loadInt(NAME_FOOD_COST, foodCost);
 
+	levelRecord = Store::loadInt(Art::getLevel(levelNumber)->name, 0);
+
 	scoreChanged = true;
 	eatenFoodCountChanged = true;
 	lifesCountChanged = true;

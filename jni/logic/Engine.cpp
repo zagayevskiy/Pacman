@@ -90,6 +90,8 @@ void Engine::save(){
 void Engine::load(){
 	LOGI("Engine::load");
 
+	Store::saveBool(NAME_SAVE_OK, false);
+
 	state = static_cast<EngineState>(Store::loadInt(NAME_STATE, STATE_AFTER_LOADING));
 	LOGE("Loaded state: [%d]", state);
 	levelToLoadNumber = Store::loadInt(NAME_LEVEL_TO_LOAD_NUMBER, 0);
