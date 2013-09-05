@@ -23,9 +23,10 @@ void Game::save(){
 
 	Store::saveInt(NAME_STATE, state);
 	Store::saveInt(NAME_LEVEL_NUMBER, levelNumber);
-	//Store::saveInt(NAME_LEVEL_FOOD_COUNT, levelFoodCount);
 	Store::saveString(NAME_GAME_MAP, map);
+
 	pacman->save();
+
 	Monster* monster;
 	bool exists = monsters.getHead(monster);
 	while(exists){
@@ -33,11 +34,16 @@ void Game::save(){
 		exists = monsters.getNext(monster);
 	}
 
+	Bonus* bonus;
+	exists = bonuses.getHead(bonus);
+	while(exists){
+		bonus->save();
+		exists = bonuses.getNext(bonus);
+	}
+
 	if(isMapChanged){
 		LOGE("WARNING!!! Map has been changed!");
 	}
-
-
 }
 
 void Game::load(){
@@ -56,6 +62,7 @@ void Game::load(){
 	}
 
 	pacman->load();
+
 	Monster* monster;
 	bool exists = monsters.getHead(monster);
 	while(exists){
@@ -63,6 +70,27 @@ void Game::load(){
 		exists = monsters.getNext(monster);
 	}
 
+	Bonus** bonusesToRemove = new Bonus*[bonuses.getLength()];
+	int count = 0;
+	Bonus* bonus;
+	exists = bonuses.getHead(bonus);
+	while(exists){
+		if(bonus->shouldBeRemovedAfterLoading()){
+			bonusesToRemove[count] = bonus;
+			++count;
+		}else{
+			bonus->onLevelStart();
+		}
+		exists = bonuses.getNext(bonus);
+	}
+
+	for(int i = 0; i < count; ++i){
+		Bonus* r = bonusesToRemove[i];
+		bonuses.removeItem(r);
+		objectsToRender.removeItem(r);
+		delete r;
+	}
+	delete[] bonusesToRemove;
 
 	createBuffers();
 
@@ -306,16 +334,6 @@ void Game::render(double elapsedTime){
 
 	glDrawElements(GL_TRIANGLES, 6*mapWidth*mapHeight, GL_UNSIGNED_SHORT, 0);
 
-	/*glBindBuffer(GL_ARRAY_BUFFER, lifesVerticesBufferId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lifesIndicesBufferId);
-
-	glBindTexture(GL_TEXTURE_2D, Art::getTexture(Art::TEXTURE_PACMAN_ANIMATION));
-
-	glVertexAttribPointer(stableVertexHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*)(0));
-	glVertexAttribPointer(stableTextureHandle, 2, GL_FLOAT, GL_FALSE, stride, (void*) (2*sizeof(GLfloat)));
-
-	glDrawElements(GL_TRIANGLES, 6*pacman->getLifes(), GL_UNSIGNED_SHORT, 0);*/
-
 	glDisableVertexAttribArray(stableTextureHandle);
 	glDisableVertexAttribArray(stableVertexHandle);
 
@@ -334,6 +352,14 @@ void Game::render(double elapsedTime){
 void Game::enterLevel(int number){
 	loadLevel(number);
 	createBuffers();
+
+	Bonus* bonus;
+	bool exists = bonuses.getHead(bonus);
+	while(exists){
+		bonus->onLevelStart();
+		exists = bonuses.getNext(bonus);
+	}
+
 }
 
 void Game::loadLevel(int number){

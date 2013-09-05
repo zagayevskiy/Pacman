@@ -69,6 +69,7 @@ public:
 	void getPacmanMapPos(int& x, int& y) const;
 	inline Pacman* getPacman() const {return pacman;};
 	inline int getLevelFoodCount() const {return levelFoodCount;};
+	inline int getLevelNumber() const {return levelNumber;};
 
 	inline float getTileSize() const {return tileSize;}
 	inline int getMapWidth() const {return mapWidth;}

@@ -15,10 +15,15 @@ public:
 	Bonus();
 	virtual ~Bonus();
 
-	/*
+	/**
 	 * @return true if this bonus should be removed from map
 	 */
 	virtual bool apply(Pacman* pacman) = 0;
+
+	virtual void onLevelStart() = 0;
+
+	virtual bool shouldBeRemovedAfterLoading() = 0;
+
 	void step(double elapsedTime){};
 	void save(){};
 	void load(){};
