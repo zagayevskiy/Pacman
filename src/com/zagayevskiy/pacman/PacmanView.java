@@ -6,7 +6,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class PacmanView extends GLSurfaceView {
@@ -50,7 +49,6 @@ public class PacmanView extends GLSurfaceView {
 	    }
 
 	    public void onSurfaceChanged(GL10 unused, int width, int height) {
-	    	Log.i(PacmanLib.tag, "PacmanView.onSurfaceChanded");
 	    	PacmanLib.init(width, height, new PngManager(assetManager), assetManager, storeManager);
 	    }
 	}

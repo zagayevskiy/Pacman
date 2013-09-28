@@ -2,7 +2,6 @@ package com.zagayevskiy.pacman;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.KeyEvent;
 
 public class PacmanActivity extends Activity{
@@ -33,7 +32,6 @@ public class PacmanActivity extends Activity{
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(PacmanLib.tag, "onStop");
         PacmanLib.free();
         finish();
     }
@@ -41,7 +39,6 @@ public class PacmanActivity extends Activity{
     @Override
     protected void onDestroy(){	
     	super.onDestroy();
-    	Log.w(PacmanLib.tag, "PacmanActivity.onDestroy");
     }
     
     public boolean onKeyDown(int keyCode, KeyEvent event) {
