@@ -429,5 +429,8 @@ void Pacman::render(double elapsedTime){
 
 Pacman::~Pacman() {
 	freeGraphics();
+	if(plume){
+		delete plume;
+	}
 }
 
